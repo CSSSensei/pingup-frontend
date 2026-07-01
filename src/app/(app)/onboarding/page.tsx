@@ -7,6 +7,7 @@ import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { IconAlertCircle, IconCamera, IconChevronLeft } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
+import { BallSpinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
 import { profilesApi } from "@/lib/api/endpoints/profiles";
@@ -119,10 +120,11 @@ export default function OnboardingPage() {
 
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  const [level, setLevel] = useState<SkillLevel | null>("intermediate");
+  const [level, setLevel] = useState<SkillLevel | null>(null);
   const [gender, setGender] = useState<Gender | null>(null);
   const [hand, setHand] = useState<PlayingHand | null>(null);
   const [birthYear, setBirthYear] = useState("");
@@ -139,6 +141,35 @@ export default function OnboardingPage() {
   useEffect(() => {
     headingRef.current?.focus();
   }, [step]);
+
+  // Префилл из текущего профиля — иначе «Готово» затрёт сохранённые поля null-ами.
+  useEffect(() => {
+    let cancelled = false;
+    profilesApi
+      .me()
+      .then((p) => {
+        if (cancelled) return;
+        setLevel(p.skill_level);
+        setGender(p.gender);
+        setHand(p.playing_hand);
+        setBirthYear(p.birth_year ? String(p.birth_year) : "");
+        setBlade(p.blade ?? "");
+        setRubberFh(p.rubber_forehand ?? "");
+        setRubberBh(p.rubber_backhand ?? "");
+        setTelegram(p.telegram_username ?? "");
+        setPhone(p.phone ? formatRuPhone(p.phone) : "");
+        setPhoneVisible(p.phone_visible);
+        setTennis67(p.tennis67_url ?? "");
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const setters: Record<VField, (v: string) => void> = {
     birthYear: setBirthYear,
     telegram: setTelegram,
@@ -267,6 +298,14 @@ export default function OnboardingPage() {
     } else {
       void finish();
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-surface-2">
+        <BallSpinner size={32} />
+      </div>
+    );
   }
 
   return (

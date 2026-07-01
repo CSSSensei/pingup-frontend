@@ -31,6 +31,7 @@ export default function RegisterPage() {
     handleSubmit,
     watch,
     setError,
+    setFocus,
     formState: { errors, touchedFields, isSubmitting, submitCount },
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
@@ -59,10 +60,12 @@ export default function RegisterPage() {
       const fe = fieldErrors(err);
       if (err instanceof ApiError && err.code === "EMAIL_TAKEN") {
         setError("email", { type: "server", message: "Этот email уже занят" });
+        setFocus("email");
       } else if (Object.keys(fe).length) {
         for (const [field, message] of Object.entries(fe)) {
           setError(field as keyof RegisterValues, { message });
         }
+        setFocus(Object.keys(fe)[0] as keyof RegisterValues);
       } else {
         toast.error(apiErrorMessage(err));
       }

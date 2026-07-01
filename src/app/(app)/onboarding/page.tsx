@@ -53,6 +53,12 @@ const SERVER_TO_FIELD: Record<string, { field: VField; step: number }> = {
   telegram_username: { field: "telegram", step: 4 },
   phone: { field: "phone", step: 4 },
 };
+const FIELD_IDS: Record<VField, string> = {
+  birthYear: "ob-birthYear",
+  telegram: "ob-telegram",
+  phone: "ob-phone",
+  tennis67: "ob-tennis67",
+};
 
 function validateField(name: VField, value: string): string | null {
   switch (name) {
@@ -162,6 +168,7 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [focusField, setFocusField] = useState<VField | null>(null);
 
   const [level, setLevel] = useState<SkillLevel | null>(null);
   const [gender, setGender] = useState<Gender | null>(null);
@@ -180,6 +187,13 @@ export default function OnboardingPage() {
   useEffect(() => {
     headingRef.current?.focus();
   }, [step]);
+
+  // Фокус на конкретное невалидное поле (после смены шага перебивает фокус заголовка).
+  useEffect(() => {
+    if (!focusField) return;
+    document.getElementById(FIELD_IDS[focusField])?.focus();
+    setFocusField(null);
+  }, [focusField]);
 
   // Префилл из текущего профиля — иначе «Готово» затрёт сохранённые поля null-ами.
   useEffect(() => {
@@ -279,6 +293,8 @@ export default function OnboardingPage() {
     if (!ok) {
       setTouched((t) => ({ ...t, ...Object.fromEntries(fields.map((f) => [f, true])) }));
       setErrors((e) => ({ ...e, ...stepErrors }));
+      const firstBad = fields.find((f) => stepErrors[f]);
+      if (firstBad) setFocusField(firstBad);
     }
     return ok;
   }
@@ -287,17 +303,22 @@ export default function OnboardingPage() {
     const fe = fieldErrors(err);
     const mapped: Record<string, string> = {};
     let jump: number | null = null;
+    let jumpField: VField | null = null;
     for (const [srv, msg] of Object.entries(fe)) {
       const m = SERVER_TO_FIELD[srv];
       if (m) {
         mapped[m.field] = msg;
-        jump = jump === null ? m.step : Math.min(jump, m.step);
+        if (jump === null || m.step < jump) {
+          jump = m.step;
+          jumpField = m.field;
+        }
       }
     }
     if (Object.keys(mapped).length) {
       setErrors((e) => ({ ...e, ...mapped }));
       setTouched((t) => ({ ...t, ...Object.fromEntries(Object.keys(mapped).map((f) => [f, true])) }));
       if (jump !== null) setStep(jump);
+      if (jumpField) setFocusField(jumpField);
     } else {
       toast.error(apiErrorMessage(err));
     }
@@ -468,8 +489,14 @@ export default function OnboardingPage() {
                   />
                 </div>
                 <div className="min-w-[160px] flex-1">
-                  <label className="mb-2.5 block text-[13px] font-bold text-fg-2">Год рождения</label>
+                  <label
+                    htmlFor="ob-birthYear"
+                    className="mb-2.5 block text-[13px] font-bold text-fg-2"
+                  >
+                    Год рождения
+                  </label>
                   <Input
+                    id="ob-birthYear"
                     type="number"
                     inputMode="numeric"
                     min={1920}
@@ -534,6 +561,7 @@ export default function OnboardingPage() {
                   >
                     <span className="font-bold text-muted">@</span>
                     <input
+                      id="ob-telegram"
                       value={telegram}
                       placeholder="telegram"
                       aria-label="Имя пользователя Telegram"
@@ -548,6 +576,7 @@ export default function OnboardingPage() {
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <Input
+                    id="ob-phone"
                     type="tel"
                     inputMode="tel"
                     aria-label="Телефон"
@@ -580,8 +609,11 @@ export default function OnboardingPage() {
 
           {step === 5 && (
             <div>
-              <label className="block text-[13px] font-bold text-fg-2">Ссылка на профиль теннис67.рф</label>
+              <label htmlFor="ob-tennis67" className="block text-[13px] font-bold text-fg-2">
+                Ссылка на профиль теннис67.рф
+              </label>
               <Input
+                id="ob-tennis67"
                 className="mt-2.5"
                 placeholder="https://теннис67.рф/rating/personal.php?sportsman=…"
                 value={tennis67}

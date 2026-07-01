@@ -3,6 +3,7 @@ import type {
   MyEventsParams,
   MyPartnerRequestsParams,
   PartnerRequestFilterParams,
+  ProfileFilterParams,
 } from "@/types/api";
 import type { ParticipantStatus } from "@/lib/enums";
 
@@ -19,5 +20,9 @@ export const qk = {
   myPartnerRequests: (params?: MyPartnerRequestsParams) => ["myPartnerRequests", params ?? {}] as const,
   notifications: ["notifications"] as const,
   unreadCount: ["notifications", "unread"] as const,
+  profiles: (filter?: ProfileFilterParams) => ["profiles", filter ?? {}] as const,
   profile: (slug: string) => ["profile", slug] as const,
+  ratingHistory: (slug: string) => ["profile", slug, "rating-history"] as const,
+  myProfile: ["myProfile"] as const,
+  myRatingHistory: ["myProfile", "rating-history"] as const,
 };

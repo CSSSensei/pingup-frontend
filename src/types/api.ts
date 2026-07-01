@@ -75,6 +75,7 @@ export interface ProfileMe {
   is_coach: boolean;
   current_rating: number | null;
   rating_is_stale: boolean;
+  rating_synced_at: string | null;
   tennis67_url: string | null;
   playing_hand: PlayingHand | null;
   blade: string | null;
@@ -126,6 +127,44 @@ export interface ProfilePublic {
   rubber_backhand: string | null;
   current_rating: number | null;
   rating_is_stale: boolean;
+}
+
+// Публичная деталь профиля: ProfilePublic + контакты (заполняются только под Bearer;
+// телефон — лишь при phone_visible). Гостю/в SEO контакты приходят как null.
+export interface ProfileDetail extends ProfilePublic {
+  telegram_username: string | null;
+  phone: string | null;
+}
+
+export interface ProfileFilterParams {
+  city_id?: number;
+  gender?: Gender;
+  skill_level?: SkillLevel;
+  is_coach?: boolean;
+  rating_min?: number;
+  rating_max?: number;
+  q?: string;
+  sort?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface RatingPoint {
+  rating: number;
+  source: string;
+  recorded_at: string;
+}
+
+export interface RatingHistory {
+  current_rating: number | null;
+  rating_synced_at: string | null;
+  rating_is_stale: boolean;
+  points: RatingPoint[];
+}
+
+export interface RatingSyncAccepted {
+  status: string;
+  detail: string;
 }
 
 export interface EventParticipant {

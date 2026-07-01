@@ -9,9 +9,12 @@ import { useAuthStore } from "@/stores/auth";
 import type { EventFilterParams, EventRead } from "@/types/api";
 
 export function useEvents(filter: EventFilterParams) {
+  const status = useAuthStore((s) => s.status);
   return useQuery({
     queryKey: qk.events(filter),
     queryFn: () => eventsApi.list(filter),
+    // До окончания silent-refresh запрос ушёл бы без Bearer и is_joined = null.
+    enabled: status !== "idle" && status !== "authenticating",
   });
 }
 

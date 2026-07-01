@@ -19,6 +19,12 @@ export const authApi = {
 
   me: () => apiFetch<MeResponse>(`${API_PREFIX}/auth/me`),
 
+  verifyEmail: (token: string) =>
+    apiFetch<void>(`${API_PREFIX}/auth/verify-email`, {
+      method: "POST",
+      body: JSON.stringify({ token }),
+    }),
+
   resendVerification: () =>
     apiFetch<void>(`${API_PREFIX}/auth/verify-email/resend`, { method: "POST" }),
 

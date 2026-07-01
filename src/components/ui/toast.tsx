@@ -47,7 +47,11 @@ export function Toaster() {
   const dismiss = useToastStore((s) => s.dismiss);
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-[100] flex flex-col items-center gap-2">
+    <div
+      role="status"
+      aria-live="polite"
+      className="pointer-events-none fixed inset-x-0 bottom-6 z-[100] flex flex-col items-center gap-2"
+    >
       {toasts.map((t) => (
         <button
           key={t.id}
@@ -56,7 +60,7 @@ export function Toaster() {
           className={cn(
             "pointer-events-auto flex max-w-[90vw] items-center gap-2.5 rounded px-4 py-3",
             "bg-fg text-sm font-semibold text-white shadow-float",
-            "animate-[pu-toast_0.18s_ease-out]",
+            "motion-safe:animate-[pu-toast_0.18s_ease-out]",
           )}
         >
           <span className={cn("size-2 flex-none rounded-full", DOT[t.variant])} />

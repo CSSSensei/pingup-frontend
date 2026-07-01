@@ -18,7 +18,6 @@ export const PasswordInput = forwardRef<HTMLInputElement, Omit<InputProps, "type
         />
         <button
           type="button"
-          tabIndex={-1}
           onClick={() => setShow((s) => !s)}
           aria-label={show ? "Скрыть пароль" : "Показать пароль"}
           className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-muted transition-colors hover:text-fg-2"

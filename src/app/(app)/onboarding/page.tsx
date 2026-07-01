@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
@@ -78,6 +78,8 @@ function OptionChip({
   return (
     <button
       type="button"
+      role="radio"
+      aria-checked={active}
       onClick={onClick}
       className={cn(
         "rounded border-[1.5px] px-[15px] py-[9px] text-[13.5px] font-bold whitespace-nowrap transition-colors",
@@ -113,6 +115,7 @@ export default function OnboardingPage() {
   const tgErrId = useId();
   const phoneErrId = useId();
   const tnErrId = useId();
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
@@ -133,6 +136,9 @@ export default function OnboardingPage() {
   const [tennis67, setTennis67] = useState("");
 
   const meta = STEPS[step - 1];
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [step]);
   const setters: Record<VField, (v: string) => void> = {
     birthYear: setBirthYear,
     telegram: setTelegram,
@@ -290,11 +296,17 @@ export default function OnboardingPage() {
             ))}
           </div>
           <div className="mb-3.5 text-xs font-bold tracking-wide text-primary">{meta.label}</div>
-          <h1 className="text-2xl font-extrabold tracking-[-0.01em]">{meta.title}</h1>
+          <h1
+            ref={headingRef}
+            tabIndex={-1}
+            className="text-2xl font-extrabold tracking-[-0.01em] outline-none"
+          >
+            {meta.title}
+          </h1>
           <p className="mt-1.5 mb-6 text-sm leading-relaxed text-muted">{meta.sub}</p>
 
           {step === 1 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Уровень игры">
               {SKILL_LEVELS.map((lvl) => (
                 <OptionChip key={lvl} active={level === lvl} onClick={() => setLevel(lvl)}>
                   {SKILL_LABELS[lvl]}
@@ -332,7 +344,7 @@ export default function OnboardingPage() {
               <div className="mb-5 flex flex-wrap gap-4">
                 <div className="min-w-[160px] flex-1">
                   <span className="mb-2.5 block text-[13px] font-bold text-fg-2">Пол</span>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2" role="radiogroup" aria-label="Пол">
                     {GENDERS.map((g) => (
                       <OptionChip key={g} active={gender === g} onClick={() => setGender(g)}>
                         {GENDER_LABELS[g]}
@@ -358,7 +370,7 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <span className="mb-2.5 block text-[13px] font-bold text-fg-2">Ведущая рука</span>
-                <div className="flex gap-2">
+                <div className="flex gap-2" role="radiogroup" aria-label="Ведущая рука">
                   {PLAYING_HANDS.map((h) => (
                     <OptionChip key={h} active={hand === h} onClick={() => setHand(h)}>
                       {PLAYING_HAND_LABELS[h]}
@@ -410,11 +422,12 @@ export default function OnboardingPage() {
                     <input
                       value={telegram}
                       placeholder="telegram"
+                      aria-label="Имя пользователя Telegram"
                       aria-invalid={errors.telegram ? true : undefined}
                       aria-describedby={errors.telegram ? tgErrId : undefined}
                       onChange={(e) => handleChange("telegram", e.target.value.replace(/^@+/, ""))}
                       onBlur={(e) => handleBlur("telegram", e.target.value)}
-                      className="flex-1 border-0 bg-transparent pl-1 text-[15px] font-medium text-fg outline-none placeholder:text-zinc-400"
+                      className="flex-1 border-0 bg-transparent pl-1 text-base font-medium text-fg outline-none placeholder:text-zinc-400 sm:text-[15px]"
                     />
                   </div>
                   <ErrorText id={tgErrId} msg={errors.telegram} />
@@ -423,6 +436,7 @@ export default function OnboardingPage() {
                   <Input
                     type="tel"
                     inputMode="tel"
+                    aria-label="Телефон"
                     maxLength={20}
                     placeholder="+7 (___) ___-__-__"
                     value={phone}

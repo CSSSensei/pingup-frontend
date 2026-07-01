@@ -60,6 +60,8 @@ export function validatePhone(value: string): string | null {
   const digits = value.replace(/\D/g, "");
   if (!digits) return null;
   if (digits.length < 11) return "Введите номер полностью";
+  // РФ-номер: код страны 7 + код зоны 3–9 (отсекает 0000…/7111… и подобное).
+  if (!/^7[3-9]\d{9}$/.test(digits)) return "Проверьте номер телефона";
   return null;
 }
 

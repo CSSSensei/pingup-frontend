@@ -24,7 +24,7 @@ export function HeroSearch() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Найти игру, зал или турнир…"
-          className="flex-1 border-0 bg-transparent text-[15px] text-fg outline-none placeholder:text-zinc-400"
+          className="flex-1 border-0 bg-transparent text-base text-fg outline-none placeholder:text-zinc-400 sm:text-[15px]"
           aria-label="Поиск"
         />
       </div>

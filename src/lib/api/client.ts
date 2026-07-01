@@ -45,6 +45,7 @@ export async function apiFetch<T>(
     const refreshed = await refreshAccessToken();
     if (refreshed) return apiFetch<T>(path, init, true);
     hardLogout();
+    throw new ApiError(401, "UNAUTHORIZED", "Сессия истекла — войдите заново");
   }
 
   if (res.status === 204) return undefined as T;

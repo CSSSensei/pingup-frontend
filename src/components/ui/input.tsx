@@ -2,7 +2,7 @@ import { forwardRef, type InputHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 export const inputClass = cn(
-  "h-11 w-full rounded border border-border bg-surface px-3.5 text-[15px] font-medium text-fg",
+  "h-11 w-full rounded border border-border bg-surface px-3.5 text-base font-medium text-fg sm:text-[15px]",
   "outline-none transition-colors placeholder:text-zinc-400 focus:border-primary",
   "disabled:opacity-60",
 );

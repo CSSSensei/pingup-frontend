@@ -1,49 +1,311 @@
+"use client";
+
+import { useRef, useState } from "react";
+
+import { formatDayMonthYear, formatMonthYear } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import type { RatingPoint } from "@/types/api";
 
-const W = 600;
-const H = 160;
-const PAD_Y = 16;
+type Win = 5 | 10 | "all";
 
-// Лёгкий SVG-линейный график рейтинга (без chart-либы, как в демо): area + line + маркер последней точки.
-export function RatingChart({ points }: { points: RatingPoint[] }) {
-  const sorted = [...points].sort(
+const WINS: { key: Win; label: string }[] = [
+  { key: 5, label: "5" },
+  { key: 10, label: "10" },
+  { key: "all", label: "Все" },
+];
+
+const VBW = 640;
+const VBH = 220;
+const PAD_L = 42; // место под подписи оси Y
+const PAD_R = 12;
+const PAD_T = 14;
+const PAD_B = 28; // место под подписи оси X
+const PLOT_W = VBW - PAD_L - PAD_R;
+const PLOT_H = VBH - PAD_T - PAD_B;
+const YEAR_MS = 365 * 24 * 3600 * 1000;
+
+export function RatingChart({
+  points,
+  currentRating,
+  title,
+}: {
+  points: RatingPoint[];
+  currentRating?: number | null;
+  title?: string;
+}) {
+  const [win, setWin] = useState<Win>("all");
+  const [hover, setHover] = useState<{ i: number; x: number; y: number } | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  const all = [...points].sort(
     (a, b) => new Date(a.recorded_at).getTime() - new Date(b.recorded_at).getTime(),
   );
-  if (sorted.length < 2) return null;
+  if (all.length < 2) return null;
 
-  const ratings = sorted.map((p) => p.rating);
+  const visible = win === "all" ? all : all.slice(-win);
+  const n = visible.length;
+
+  const ratings = visible.map((p) => p.rating);
   const min = Math.min(...ratings);
   const max = Math.max(...ratings);
   const span = max - min || 1;
 
-  const coords = sorted.map((p, i) => {
-    const x = (i / (sorted.length - 1)) * W;
-    const y = H - PAD_Y - ((p.rating - min) / span) * (H - 2 * PAD_Y);
-    return { x, y };
-  });
+  const xAt = (i: number) => PAD_L + (n === 1 ? 0 : (i / (n - 1)) * PLOT_W);
+  const yAt = (r: number) => PAD_T + (1 - (r - min) / span) * PLOT_H;
 
-  const line = coords.map((c, i) => `${i === 0 ? "M" : "L"}${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(" ");
-  const area = `${line} L${W} ${H} L0 ${H} Z`;
-  const last = coords[coords.length - 1];
+  const line = visible
+    .map((p, i) => `${i === 0 ? "M" : "L"}${xAt(i).toFixed(1)} ${yAt(p.rating).toFixed(1)}`)
+    .join(" ");
+  const area = `${line} L${(PAD_L + PLOT_W).toFixed(1)} ${PAD_T + PLOT_H} L${PAD_L} ${PAD_T + PLOT_H} Z`;
+
+  const cur = currentRating ?? visible[n - 1].rating;
+  let refRating: number;
+  let winLabel: string;
+  if (win === "all") {
+    const yearAgo = Date.now() - YEAR_MS;
+    const older = all.filter((p) => new Date(p.recorded_at).getTime() <= yearAgo);
+    if (older.length) {
+      refRating = older[older.length - 1].rating;
+      winLabel = "за год";
+    } else {
+      refRating = all[0].rating;
+      winLabel = "за всё время";
+    }
+  } else {
+    refRating = visible[0].rating;
+    winLabel = n >= win ? `за последние ${win}` : "за всё время";
+  }
+  const delta = cur - refRating;
+
+  const yTickVals = yTicks(min, max);
+  const xTickIdx = xLabelIndices(n);
+
+  function onMove(e: React.PointerEvent) {
+    const rect = wrapRef.current?.getBoundingClientRect();
+    if (!rect || rect.width === 0) return;
+    const vbX = ((e.clientX - rect.left) / rect.width) * VBW;
+    const i = clamp(Math.round(((vbX - PAD_L) / PLOT_W) * (n - 1)), 0, n - 1);
+    setHover({
+      i,
+      x: (xAt(i) / VBW) * rect.width,
+      y: (yAt(visible[i].rating) / VBH) * rect.height,
+    });
+  }
+
+  const hi = hover ? visible[hover.i] : null;
 
   return (
     <div>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" className="block overflow-visible" role="img" aria-label="История рейтинга">
-        <path d={area} fill="var(--color-primary-tint)" stroke="none" />
-        <path
-          d={line}
-          fill="none"
-          stroke="var(--color-primary)"
-          strokeWidth={2.5}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
-        <circle cx={last.x} cy={last.y} r={4.5} fill="var(--color-primary)" stroke="#fff" strokeWidth={2} />
-      </svg>
-      <div className="mt-1 flex justify-between text-[11px] font-semibold text-muted">
-        <span>мин {min}</span>
-        <span>макс {max}</span>
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          {title && <h3 className="mb-1.5 text-sm font-bold text-fg-2">{title}</h3>}
+          <div className="flex flex-wrap items-baseline gap-2.5">
+            <span className="text-[26px] leading-none font-extrabold tracking-[-0.01em] text-fg">
+              {cur}
+            </span>
+            <DeltaBadge delta={delta} />
+            <span className="text-xs text-muted">{winLabel}</span>
+          </div>
+        </div>
+
+        <div
+          role="radiogroup"
+          aria-label="Период графика рейтинга"
+          className="inline-flex gap-0.5 rounded bg-surface-3 p-[3px]"
+        >
+          {WINS.map((w) => {
+            const active = win === w.key;
+            return (
+              <button
+                key={String(w.key)}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => {
+                  setWin(w.key);
+                  setHover(null);
+                }}
+                className={cn(
+                  "rounded-[6px] px-2.5 py-1 text-xs font-bold transition-colors",
+                  active ? "bg-surface text-fg shadow-card" : "text-muted hover:text-fg-2",
+                )}
+              >
+                {w.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div ref={wrapRef} className="relative">
+        <svg
+          viewBox={`0 0 ${VBW} ${VBH}`}
+          width="100%"
+          className="block select-none"
+          role="img"
+          aria-label={`Рейтинг ${cur}, изменение ${winLabel}: ${delta >= 0 ? "+" : "−"}${Math.abs(delta)}`}
+        >
+          {yTickVals.map((t) => {
+            const y = yAt(t);
+            return (
+              <g key={t}>
+                <line
+                  x1={PAD_L}
+                  y1={y}
+                  x2={PAD_L + PLOT_W}
+                  y2={y}
+                  stroke="var(--color-border)"
+                  strokeWidth={1}
+                />
+                <text
+                  x={PAD_L - 8}
+                  y={y}
+                  textAnchor="end"
+                  dominantBaseline="middle"
+                  fontSize={11}
+                  fill="var(--color-muted)"
+                >
+                  {t}
+                </text>
+              </g>
+            );
+          })}
+
+          <line
+            x1={PAD_L}
+            y1={PAD_T + PLOT_H}
+            x2={PAD_L + PLOT_W}
+            y2={PAD_T + PLOT_H}
+            stroke="var(--color-border-strong)"
+            strokeWidth={1}
+          />
+          {xTickIdx.map((i) => {
+            const x = xAt(i);
+            const anchor = i === 0 ? "start" : i === n - 1 ? "end" : "middle";
+            return (
+              <g key={i}>
+                <line
+                  x1={x}
+                  y1={PAD_T + PLOT_H}
+                  x2={x}
+                  y2={PAD_T + PLOT_H + 4}
+                  stroke="var(--color-border-strong)"
+                  strokeWidth={1}
+                />
+                <text
+                  x={x}
+                  y={VBH - 8}
+                  textAnchor={anchor}
+                  fontSize={11}
+                  fill="var(--color-muted)"
+                >
+                  {formatMonthYear(visible[i].recorded_at)}
+                </text>
+              </g>
+            );
+          })}
+
+          <path d={area} fill="var(--color-primary-tint)" stroke="none" />
+          <path
+            d={line}
+            fill="none"
+            stroke="var(--color-primary)"
+            strokeWidth={2.5}
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+
+          {hover && hi && (
+            <g pointerEvents="none">
+              <line
+                x1={xAt(hover.i)}
+                y1={PAD_T}
+                x2={xAt(hover.i)}
+                y2={PAD_T + PLOT_H}
+                stroke="var(--color-border-strong)"
+                strokeWidth={1}
+                strokeDasharray="3 3"
+              />
+              <circle
+                cx={xAt(hover.i)}
+                cy={yAt(hi.rating)}
+                r={5}
+                fill="var(--color-primary)"
+                stroke="#fff"
+                strokeWidth={2}
+              />
+            </g>
+          )}
+          {!hover && (
+            <circle
+              cx={xAt(n - 1)}
+              cy={yAt(visible[n - 1].rating)}
+              r={4.5}
+              fill="var(--color-primary)"
+              stroke="#fff"
+              strokeWidth={2}
+            />
+          )}
+
+          <rect
+            x={0}
+            y={0}
+            width={VBW}
+            height={VBH}
+            fill="transparent"
+            onPointerMove={onMove}
+            onPointerDown={onMove}
+            onPointerLeave={() => setHover(null)}
+            onPointerCancel={() => setHover(null)}
+          />
+        </svg>
+
+        {hover && hi && (
+          <div
+            className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-[calc(100%+10px)] rounded-md bg-fg px-2.5 py-1.5 text-center whitespace-nowrap text-white shadow-pop"
+            style={{ left: hover.x, top: hover.y }}
+          >
+            <div className="text-sm font-extrabold leading-none">{hi.rating}</div>
+            <div className="mt-1 text-[10.5px] font-medium text-white/70">
+              {formatDayMonthYear(hi.recorded_at)}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
+}
+
+function DeltaBadge({ delta }: { delta: number }) {
+  const cls =
+    delta > 0
+      ? "bg-status-confirmed/12 text-status-confirmed"
+      : delta < 0
+        ? "bg-status-declined/12 text-status-declined"
+        : "bg-surface-3 text-muted";
+  const text = delta > 0 ? `+${delta}` : delta < 0 ? `−${Math.abs(delta)}` : "0";
+  return (
+    <span className={cn("rounded-pill px-2 py-[2px] text-xs font-bold", cls)}>{text}</span>
+  );
+}
+
+function clamp(v: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, v));
+}
+
+function yTicks(min: number, max: number): number[] {
+  if (min === max) return [min];
+  const count = 4;
+  const step = (max - min) / count;
+  const out: number[] = [];
+  for (let i = 0; i <= count; i++) out.push(Math.round(min + step * i));
+  return Array.from(new Set(out));
+}
+
+function xLabelIndices(n: number): number[] {
+  if (n <= 1) return [0];
+  const labels = Math.min(4, n);
+  const out: number[] = [];
+  for (let k = 0; k < labels; k++) out.push(Math.round((k * (n - 1)) / (labels - 1)));
+  return Array.from(new Set(out));
 }

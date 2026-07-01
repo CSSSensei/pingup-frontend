@@ -9,7 +9,6 @@ import { RatingChart } from "@/components/features/rating-chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStatus, useMe } from "@/hooks/useMe";
 import { useRatingHistory } from "@/hooks/useProfiles";
-import { formatRelative } from "@/lib/format";
 import type { ProfileDetail } from "@/types/api";
 
 export function PlayerDetail({ profile, slug }: { profile: ProfileDetail; slug: string }) {
@@ -45,19 +44,15 @@ export function PlayerDetail({ profile, slug }: { profile: ProfileDetail; slug: 
       {history.isPending ? (
         <div className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
           <Skeleton className="h-4 w-40" />
-          <Skeleton className="mt-4 h-24 w-full" />
+          <Skeleton className="mt-4 h-40 w-full" />
         </div>
       ) : history.data && history.data.points.length >= 2 ? (
         <section className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
-          <div className="mb-4 flex items-baseline justify-between gap-3">
-            <h2 className="text-sm font-bold text-fg-2">Динамика рейтинга</h2>
-            {history.data.rating_synced_at && (
-              <span className="text-xs text-muted">
-                обновлён {formatRelative(history.data.rating_synced_at)}
-              </span>
-            )}
-          </div>
-          <RatingChart points={history.data.points} />
+          <RatingChart
+            points={history.data.points}
+            currentRating={profile.current_rating}
+            title="Динамика рейтинга"
+          />
         </section>
       ) : null}
 

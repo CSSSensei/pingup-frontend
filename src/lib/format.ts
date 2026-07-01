@@ -21,6 +21,23 @@ const timeFmt = new Intl.DateTimeFormat("ru-RU", {
 
 const weekdayFmt = new Intl.DateTimeFormat("ru-RU", { timeZone: TZ, weekday: "short" });
 
+const monthYearFmt = new Intl.DateTimeFormat("ru-RU", { timeZone: TZ, month: "short", year: "numeric" });
+
+export function formatMonthYear(iso: string): string {
+  return monthYearFmt.format(new Date(iso));
+}
+
+const dayMonthYearFmt = new Intl.DateTimeFormat("ru-RU", {
+  timeZone: TZ,
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
+export function formatDayMonthYear(iso: string): string {
+  return dayMonthYearFmt.format(new Date(iso));
+}
+
 export function formatDate(iso: string): string {
   return dateFmt.format(new Date(iso));
 }

@@ -148,7 +148,7 @@ function RatingSection({ profile }: { profile: ProfileMe }) {
             <Skeleton className="mt-4 h-24 w-full" />
           ) : history.data && history.data.points.length >= 2 ? (
             <div className="mt-4">
-              <RatingChart points={history.data.points} />
+              <RatingChart points={history.data.points} currentRating={profile.current_rating} />
             </div>
           ) : (
             <p className="mt-3 text-xs text-muted">

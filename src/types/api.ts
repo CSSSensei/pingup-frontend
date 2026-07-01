@@ -38,6 +38,7 @@ import type {
   Gender,
   NotificationType,
   ParticipantStatus,
+  PartnerRequestStatus,
   PlayingHand,
   SkillLevel,
 } from "@/lib/enums";
@@ -212,4 +213,72 @@ export interface NotificationListResponse extends Paginated<NotificationItem> {
 
 export interface UnreadCountResponse {
   unread_count: number;
+}
+
+export interface PartnerRequestRead {
+  id: number;
+  author_id: number;
+  city_id: number;
+  status: PartnerRequestStatus;
+  title: string;
+  description: string | null;
+  desired_skill_min: SkillLevel | null;
+  desired_skill_max: SkillLevel | null;
+  desired_gender: Gender | null;
+  preferred_venue_id: number | null;
+  preferred_days: Record<string, unknown> | null;
+  event_type: EventType | null;
+  expires_at: string | null;
+  created_at: string;
+  responses_count: number;
+  has_responded: boolean | null;
+  author: ProfilePublic | null;
+}
+
+export interface PartnerResponseRead {
+  id: number;
+  request_id: number;
+  responder_id: number;
+  message: string | null;
+  status: PartnerRequestStatus;
+  created_at: string;
+  responder: ProfilePublic | null;
+}
+
+export interface PartnerRequestCreatePayload {
+  city_id: number;
+  title: string;
+  description?: string | null;
+  desired_skill_min?: SkillLevel | null;
+  desired_skill_max?: SkillLevel | null;
+  desired_gender?: Gender | null;
+  event_type?: EventType | null;
+}
+
+export interface PartnerResponseCreatePayload {
+  message?: string | null;
+}
+
+// close только переводит в один из терминальных статусов (совпадение / без совпадения).
+export type PartnerCloseStatus = "matched" | "closed";
+
+export interface PartnerRequestFilterParams {
+  city_id?: number;
+  status?: PartnerRequestStatus;
+  desired_skill_min?: SkillLevel;
+  desired_skill_max?: SkillLevel;
+  desired_gender?: Gender;
+  event_type?: EventType;
+  preferred_venue_id?: number;
+  q?: string;
+  sort?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface MyPartnerRequestsParams {
+  status?: PartnerRequestStatus;
+  q?: string;
+  limit?: number;
+  offset?: number;
 }

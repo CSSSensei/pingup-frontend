@@ -114,6 +114,23 @@ export const PARTICIPANT_STATUS_BADGE: Record<ParticipantStatus, string> = {
   no_show: "bg-status-declined/12 text-status-declined",
 };
 
+export const PARTNER_REQUEST_STATUSES = ["active", "matched", "closed", "expired"] as const;
+export type PartnerRequestStatus = (typeof PARTNER_REQUEST_STATUSES)[number];
+
+export const PARTNER_STATUS_LABELS: Record<PartnerRequestStatus, string> = {
+  active: "Активно",
+  matched: "Найден",
+  closed: "Закрыто",
+  expired: "Истекло",
+};
+
+export const PARTNER_STATUS_BADGE: Record<PartnerRequestStatus, string> = {
+  active: "bg-status-open/12 text-status-open",
+  matched: "bg-status-confirmed/12 text-status-confirmed",
+  closed: "bg-surface-3 text-fg-2",
+  expired: "bg-surface-3 text-fg-2",
+};
+
 export const NOTIFICATION_TYPES = [
   "event_invite",
   "event_join_request",

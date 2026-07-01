@@ -14,13 +14,13 @@ const PROTECTED_PREFIXES = [
   "/venues/new",
 ];
 
-const PROTECTED_SUFFIX_MANAGE = "/manage";
+const PROTECTED_SUFFIXES = ["/manage", "/responses"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isProtected =
     PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`)) ||
-    pathname.endsWith(PROTECTED_SUFFIX_MANAGE);
+    PROTECTED_SUFFIXES.some((s) => pathname.endsWith(s));
   if (!isProtected) return NextResponse.next();
 
   const hasSession = request.cookies.get("has_session")?.value === "1";

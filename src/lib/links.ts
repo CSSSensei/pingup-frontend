@@ -15,7 +15,9 @@ export function eventHref(event: { id: number; event_type: EventType }): string 
 export function notificationHref(n: NotificationItem): string | null {
   const data = n.data ?? {};
   const eventId = typeof data.event_id === "number" ? data.event_id : null;
-  const requestId = typeof data.request_id === "number" ? data.request_id : null;
+  // Бэкенд кладёт id объявления как partner_request_id (см. partner_service).
+  const requestId =
+    typeof data.partner_request_id === "number" ? data.partner_request_id : null;
   const tournamentSlug = typeof data.tournament_slug === "string" ? data.tournament_slug : null;
 
   const eventTargets: Partial<Record<NotificationType, string>> = {
@@ -28,9 +30,9 @@ export function notificationHref(n: NotificationItem): string | null {
   const target = eventTargets[n.type];
   if (target) return target;
 
-  if ((n.type === "partner_response" || n.type === "partner_matched") && requestId) {
-    return `/partners/${requestId}`;
-  }
+  // Автору отклика — сразу в консоль откликов; откликнувшемуся о совпадении — на объявление.
+  if (n.type === "partner_response" && requestId) return `/partners/${requestId}/responses`;
+  if (n.type === "partner_matched" && requestId) return `/partners/${requestId}`;
   if (n.type === "tournament_announce" || n.type === "tournament_reminder") {
     return tournamentSlug ? `/tournaments/${tournamentSlug}` : "/tournaments";
   }

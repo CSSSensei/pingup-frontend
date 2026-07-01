@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 505 502">
+  <radialGradient id="pingupMarkBall" cx="311.5568" cy="247.6891" r="97.2985" gradientTransform="matrix(0.8306 0.5568 -0.4809 0.7173 171.8667 -103.4647)" gradientUnits="userSpaceOnUse">
+    <stop offset="0.0636" stop-color="#FFFFFF"></stop>
+    <stop offset="0.5" stop-color="#E2E2E2"></stop>
+    <stop offset="1" stop-color="#ABABAB"></stop>
+  </radialGradient>
+  <path fill="#a00010" d="M262.7,486.6c13.1,13.1,32.6,17.8,50.1,11.7c37.6-13.1,74.1-36.2,107.2-69.4c110.2-110.2,110.2-248,6.9-351.3S185.8-25.7,75.5,84.5c-33.1,33.1-56.3,69.6-69.4,107.2c-6.1,17.5-1.4,37,11.7,50.1L262.7,486.6z"></path>
+  <circle cx="349.9" cy="274.9" r="83.3" fill="url(#pingupMarkBall)"></circle>
+</svg>

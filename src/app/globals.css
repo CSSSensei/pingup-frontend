@@ -1,24 +1,135 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+/* Менять брендбук = менять эти переменные, не литералы в компонентах. */
+@theme {
+  --font-sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-primary: #1c5fd0;
+  --color-primary-600: #1550b8;
+  --color-primary-fg: #ffffff;
+  --color-primary-tint: #1c5fd014;
+
+  --color-danger: #a00010;
+  --color-danger-600: #88000e;
+  --color-danger-fg: #ffffff;
+
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-2: #f6f6f7;
+  --color-surface-3: #efeff1;
+
+  --color-fg: #0a0a0a;
+  --color-fg-2: #3f3f46;
+  --color-muted: #71717a;
+
+  --color-border: #e7e7ea;
+  --color-border-strong: #d6d6db;
+
+  /* Уровни игроков (--skill-*) */
+  --color-skill-beginner: #2e7d5b;
+  --color-skill-amateur: #2f7da8;
+  --color-skill-intermediate: #3a5bb5;
+  --color-skill-advanced: #7a4fb0;
+  --color-skill-pro: #b07a1f;
+
+  /* Статусы событий/участия (--status-*) */
+  --color-status-open: #2e7d5b;
+  --color-status-full: #6b7280;
+  --color-status-progress: #2f7da8;
+  --color-status-completed: #6b7280;
+  --color-status-cancelled: #b23a3a;
+  --color-status-pending: #b07a1f;
+  --color-status-confirmed: #2e7d5b;
+  --color-status-declined: #b23a3a;
+
+  --radius: 10px;
+  --radius-sm: 8px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 1px 2px rgba(10, 10, 10, 0.06);
+  --shadow-pop: 0 6px 22px rgba(10, 10, 10, 0.08);
+  --shadow-float: 0 18px 50px rgba(10, 10, 10, 0.16);
+
+  --animate-ball: pu-spin 0.9s linear infinite;
+  --animate-shimmer: pu-shimmer 1.4s infinite;
+
+  --default-ring-color: var(--color-primary);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@keyframes pu-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes pu-shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+@keyframes pu-toast {
+  from {
+    transform: translate(-50%, 16px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+@keyframes pu-pop {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes pu-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-surface-2);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::placeholder {
+    color: #a1a1aa;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d4d4d8;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b8b8bf;
+    background-clip: content-box;
+  }
 }

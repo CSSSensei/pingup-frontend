@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <radialGradient id="pingupBall" cx="27.0077" cy="33.6905" r="58.379" gradientTransform="matrix(0.8306 0.5568 -0.4809 0.7173 20.7742 -5.5151)" gradientUnits="userSpaceOnUse">
+    <stop offset="0.0636" stop-color="#FFFFFF"></stop>
+    <stop offset="0.5" stop-color="#E2E2E2"></stop>
+    <stop offset="1" stop-color="#ABABAB"></stop>
+  </radialGradient>
+  <circle cx="50" cy="50" r="50" fill="url(#pingupBall)"></circle>
+</svg>

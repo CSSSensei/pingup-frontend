@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-// Ранний редирект по cookie has_session; точная авторизация — на стороне API.
-const PROTECTED_PREFIXES = ["/profile", "/events", "/partners", "/notifications", "/admin"];
+const PROTECTED_PREFIXES = ["/onboarding", "/profile", "/me", "/settings", "/notifications", "/admin"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -19,5 +18,12 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile/:path*", "/events/:path*", "/partners/:path*", "/notifications/:path*", "/admin/:path*"],
+  matcher: [
+    "/onboarding",
+    "/profile/:path*",
+    "/me/:path*",
+    "/settings/:path*",
+    "/notifications/:path*",
+    "/admin/:path*",
+  ],
 };

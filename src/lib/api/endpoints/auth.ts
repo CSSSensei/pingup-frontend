@@ -21,4 +21,16 @@ export const authApi = {
 
   resendVerification: () =>
     apiFetch<void>(`${API_PREFIX}/auth/verify-email/resend`, { method: "POST" }),
+
+  requestPasswordReset: (email: string) =>
+    apiFetch<void>(`${API_PREFIX}/auth/password-reset/request`, {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }),
+
+  confirmPasswordReset: (token: string, newPassword: string) =>
+    apiFetch<void>(`${API_PREFIX}/auth/password-reset/confirm`, {
+      method: "POST",
+      body: JSON.stringify({ token, new_password: newPassword }),
+    }),
 };

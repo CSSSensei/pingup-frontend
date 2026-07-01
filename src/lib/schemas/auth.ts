@@ -1,6 +1,14 @@
 import { z } from "zod";
 
 // Порядок .min-проверок важен: первый провалившийся чек — показанное сообщение.
+const strongPassword = z
+  .string()
+  .min(1, "Придумайте пароль")
+  .min(8, "Пароль короткий — нужно минимум 8 символов")
+  .max(128, "Слишком длинный пароль — до 128 символов")
+  .regex(/\p{L}/u, "Добавьте хотя бы одну букву")
+  .regex(/\d/, "Добавьте хотя бы одну цифру");
+
 export const registerSchema = z.object({
   display_name: z
     .string()
@@ -13,13 +21,7 @@ export const registerSchema = z.object({
     .trim()
     .min(1, "Введите email")
     .email("Проверьте email — кажется, есть опечатка. Нужен формат you@example.com"),
-  password: z
-    .string()
-    .min(1, "Придумайте пароль")
-    .min(8, "Пароль короткий — нужно минимум 8 символов")
-    .max(128, "Слишком длинный пароль — до 128 символов")
-    .regex(/\p{L}/u, "Добавьте хотя бы одну букву")
-    .regex(/\d/, "Добавьте хотя бы одну цифру"),
+  password: strongPassword,
   // Согласие на обработку ПДн — обязательно ТОЛЬКО на клиенте (бэк его не валидирует).
   consent: z.boolean().refine((v) => v === true, {
     message: "Поставьте галочку — без согласия мы не сможем создать аккаунт",
@@ -36,3 +38,21 @@ export const loginSchema = z.object({
 });
 
 export type LoginValues = z.infer<typeof loginSchema>;
+
+export const passwordResetRequestSchema = z.object({
+  email: z.string().trim().min(1, "Введите email").email("Проверьте email — нужен формат you@example.com"),
+});
+
+export type PasswordResetRequestValues = z.infer<typeof passwordResetRequestSchema>;
+
+export const passwordResetConfirmSchema = z
+  .object({
+    password: strongPassword,
+    confirmPassword: z.string().min(1, "Повторите пароль"),
+  })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Пароли не совпадают",
+    path: ["confirmPassword"],
+  });
+
+export type PasswordResetConfirmValues = z.infer<typeof passwordResetConfirmSchema>;

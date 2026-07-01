@@ -1,12 +1,26 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED_PREFIXES = ["/onboarding", "/profile", "/me", "/settings", "/notifications", "/admin"];
+const PROTECTED_PREFIXES = [
+  "/onboarding",
+  "/profile",
+  "/me",
+  "/settings",
+  "/notifications",
+  "/admin",
+  "/games/new",
+  "/trainings/new",
+  "/partners/new",
+  "/tournaments/new",
+  "/venues/new",
+];
+
+const PROTECTED_SUFFIX_MANAGE = "/manage";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isProtected = PROTECTED_PREFIXES.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`),
-  );
+  const isProtected =
+    PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`)) ||
+    pathname.endsWith(PROTECTED_SUFFIX_MANAGE);
   if (!isProtected) return NextResponse.next();
 
   const hasSession = request.cookies.get("has_session")?.value === "1";
@@ -25,5 +39,10 @@ export const config = {
     "/settings/:path*",
     "/notifications/:path*",
     "/admin/:path*",
+    "/games/:path*",
+    "/trainings/:path*",
+    "/partners/:path*",
+    "/tournaments/:path*",
+    "/venues/:path*",
   ],
 };

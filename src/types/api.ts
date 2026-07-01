@@ -31,7 +31,16 @@ export interface Paginated<T> {
   offset: number;
 }
 
-import type { Gender, PlayingHand, SkillLevel } from "@/lib/enums";
+import type {
+  EventFormat,
+  EventStatus,
+  EventType,
+  Gender,
+  NotificationType,
+  ParticipantStatus,
+  PlayingHand,
+  SkillLevel,
+} from "@/lib/enums";
 
 export type UserRole = "guest" | "user" | "moderator" | "admin";
 
@@ -99,4 +108,108 @@ export interface MeResponse {
   is_superuser: boolean;
   marketing_consent: boolean;
   profile: ProfileMe;
+}
+
+// Контактов не содержит — утечки телефона/telegram нет даже под Bearer.
+export interface ProfilePublic {
+  slug: string | null;
+  display_name: string;
+  gender: Gender | null;
+  skill_level: SkillLevel | null;
+  avatar_url: string | null;
+  bio: string | null;
+  is_coach: boolean;
+  playing_hand: PlayingHand | null;
+  blade: string | null;
+  rubber_forehand: string | null;
+  rubber_backhand: string | null;
+  current_rating: number | null;
+  rating_is_stale: boolean;
+}
+
+export interface EventParticipant {
+  user_id: number;
+  status: ParticipantStatus;
+  is_organizer: boolean;
+  joined_at: string;
+  profile: ProfilePublic | null;
+}
+
+export interface EventRead {
+  id: number;
+  event_type: EventType;
+  event_format: EventFormat;
+  status: EventStatus;
+  title: string;
+  description: string | null;
+  city_id: number;
+  venue_id: number | null;
+  location_text: string | null;
+  lat: number | null;
+  lng: number | null;
+  organizer_id: number;
+  coach_id: number | null;
+  starts_at: string;
+  ends_at: string | null;
+  max_participants: number | null;
+  min_skill_level: SkillLevel | null;
+  max_skill_level: SkillLevel | null;
+  gender_restriction: Gender | null;
+  price: string | null;
+  is_public: boolean;
+  created_at: string;
+  participants_count: number;
+  is_joined: boolean | null;
+  distance_km: number | null;
+  participants: EventParticipant[] | null;
+}
+
+export interface EventFilterParams {
+  event_type?: EventType;
+  event_format?: EventFormat;
+  status?: EventStatus;
+  city_id?: number;
+  venue_id?: number;
+  coach_id?: number;
+  date_from?: string;
+  date_to?: string;
+  skill_level?: SkillLevel;
+  gender?: Gender;
+  has_slots?: boolean;
+  is_public?: boolean;
+  q?: string;
+  sort?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export type MyEventsRole = "organizer" | "participant";
+
+export interface MyEventsParams {
+  role?: MyEventsRole;
+  status?: EventStatus;
+  event_type?: EventType;
+  date_from?: string;
+  date_to?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface NotificationItem {
+  id: number;
+  type: NotificationType;
+  title: string;
+  body: string | null;
+  data: Record<string, unknown> | null;
+  is_read: boolean;
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface NotificationListResponse extends Paginated<NotificationItem> {
+  unread_count: number;
+}
+
+export interface UnreadCountResponse {
+  unread_count: number;
 }

@@ -19,10 +19,18 @@ export const SKILL_BADGE: Record<SkillLevel, string> = {
   pro: "bg-skill-pro/12 text-skill-pro",
 };
 
-export const EVENT_STATUSES = ["open", "full", "in_progress", "completed", "cancelled"] as const;
+export const EVENT_STATUSES = [
+  "draft",
+  "open",
+  "full",
+  "in_progress",
+  "completed",
+  "cancelled",
+] as const;
 export type EventStatus = (typeof EVENT_STATUSES)[number];
 
 export const EVENT_STATUS_LABELS: Record<EventStatus, string> = {
+  draft: "Черновик",
   open: "Открыто",
   full: "Мест нет",
   in_progress: "Идёт",
@@ -31,6 +39,7 @@ export const EVENT_STATUS_LABELS: Record<EventStatus, string> = {
 };
 
 export const EVENT_STATUS_BADGE: Record<EventStatus, string> = {
+  draft: "bg-surface-3 text-fg-2",
   open: "bg-status-open/12 text-status-open",
   full: "bg-status-full/12 text-status-full",
   in_progress: "bg-status-progress/12 text-status-progress",
@@ -73,3 +82,50 @@ export const PLAYING_HAND_LABELS: Record<PlayingHand, string> = {
   right: "Правая",
   left: "Левая",
 };
+
+export const PARTICIPANT_STATUSES = [
+  "pending",
+  "confirmed",
+  "declined",
+  "cancelled",
+  "kicked",
+  "attended",
+  "no_show",
+] as const;
+export type ParticipantStatus = (typeof PARTICIPANT_STATUSES)[number];
+
+export const PARTICIPANT_STATUS_LABELS: Record<ParticipantStatus, string> = {
+  pending: "Ожидает",
+  confirmed: "Подтверждён",
+  declined: "Отклонён",
+  cancelled: "Отменён",
+  kicked: "Удалён",
+  attended: "Пришёл",
+  no_show: "Не пришёл",
+};
+
+export const PARTICIPANT_STATUS_BADGE: Record<ParticipantStatus, string> = {
+  pending: "bg-status-pending/12 text-status-pending",
+  confirmed: "bg-status-confirmed/12 text-status-confirmed",
+  declined: "bg-status-declined/12 text-status-declined",
+  cancelled: "bg-status-cancelled/12 text-status-cancelled",
+  kicked: "bg-status-cancelled/12 text-status-cancelled",
+  attended: "bg-status-confirmed/12 text-status-confirmed",
+  no_show: "bg-status-declined/12 text-status-declined",
+};
+
+export const NOTIFICATION_TYPES = [
+  "event_invite",
+  "event_join_request",
+  "event_confirmed",
+  "event_cancelled",
+  "event_reminder",
+  "partner_response",
+  "partner_matched",
+  "review_received",
+  "tournament_announce",
+  "tournament_reminder",
+  "rating_updated",
+  "report_resolved",
+] as const;
+export type NotificationType = (typeof NOTIFICATION_TYPES)[number];

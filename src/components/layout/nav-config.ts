@@ -1,11 +1,9 @@
 import type { ComponentType, SVGProps } from "react";
 
 import {
-  IconBell,
   IconCalendar,
   IconPaddle,
   IconPin,
-  IconSettings,
   IconTrophy,
   IconUser,
   IconUsers,
@@ -29,24 +27,16 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: "/players", label: "Игроки", icon: IconUser },
 ];
 
-// Персональные поверхности (низ сайдбара / sheet «Ещё»).
-export const PERSONAL_NAV: NavItem[] = [
-  { href: "/me", label: "Мои", icon: IconCalendar },
-  { href: "/notifications", label: "Уведомления", icon: IconBell },
-  { href: "/profile", label: "Профиль", icon: IconUser },
-  { href: "/settings", label: "Настройки", icon: IconSettings },
-];
+// Личное для вошедшего в сайдбаре — только «Мои» (мои игры/события).
+// Аккаунт (Профиль/Настройки/Уведомления/Выйти) НЕ здесь: он в топбаре
+// (колокол + меню аватара), чтобы не дублировать сайдбар.
+export const PERSONAL_NAV: NavItem[] = [{ href: "/me", label: "Мои", icon: IconCalendar }];
 
 // Нижний таб-бар (мобайл): 4 раздела + слот «Ещё» рендерится отдельно.
 export const MOBILE_TABS: NavItem[] = PRIMARY_NAV.slice(0, 4);
 
-// Содержимое sheet «Ещё».
-export const MORE_SHEET: NavItem[] = [
-  ...PRIMARY_NAV.slice(4),
-  { href: "/me", label: "Мои", icon: IconCalendar },
-  { href: "/profile", label: "Профиль", icon: IconUser },
-  { href: "/settings", label: "Настройки", icon: IconSettings },
-];
+// Sheet «Ещё» — только разделы, не влезшие в таб-бар (+ «Мои» для вошедшего).
+export const MORE_SHEET: NavItem[] = [...PRIMARY_NAV.slice(4), ...PERSONAL_NAV];
 
 export function isActivePath(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);

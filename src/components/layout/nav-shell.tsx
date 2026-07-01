@@ -69,19 +69,6 @@ function Sidebar({
           </>
         )}
       </nav>
-      {!authed && (
-        <div className="border-t border-border p-3">
-          <LinkButton href="/register" size="sm" fullWidth>
-            Регистрация
-          </LinkButton>
-          <Link
-            href="/login"
-            className="mt-2 flex h-9 items-center justify-center rounded-lg text-sm font-bold text-fg-2 hover:bg-surface-2"
-          >
-            Войти
-          </Link>
-        </div>
-      )}
     </aside>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { use, useState } from "react";
 
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
@@ -23,6 +24,7 @@ import type { EventParticipant } from "@/types/api";
 export default function ManageEventPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const eventId = Number(id);
+  if (!Number.isInteger(eventId) || eventId <= 0) notFound();
 
   const eventQuery = useEvent(eventId);
   const participantsQuery = useEventParticipants(eventId);
@@ -97,7 +99,7 @@ export default function ManageEventPage({ params }: { params: Promise<{ id: stri
                         <Button
                           size="sm"
                           loading={rowBusy(confirm, p.user_id)}
-                          disabled={isFull || decline.isPending}
+                          disabled={isFull || rowBusy(decline, p.user_id)}
                           title={isFull ? "Нет свободных мест" : undefined}
                           onClick={() => confirm.mutate(p.user_id)}
                         >

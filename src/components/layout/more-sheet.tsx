@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 import { IconLogOut, IconX } from "@/components/ui/icons";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLogout } from "@/hooks/useAuth";
 import { MORE_SHEET, isActivePath } from "@/components/layout/nav-config";
 import { cn } from "@/lib/utils";
@@ -12,6 +13,7 @@ import { cn } from "@/lib/utils";
 export function MoreSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const { logout } = useLogout();
+  const sheetRef = useFocusTrap<HTMLDivElement>(open);
 
   useEffect(() => {
     if (!open) return;
@@ -34,7 +36,11 @@ export function MoreSheet({ open, onClose }: { open: boolean; onClose: () => voi
         onClick={onClose}
         className="absolute inset-0 bg-black/40 motion-safe:animate-[pu-fade_0.15s_ease-out]"
       />
-      <div className="absolute inset-x-0 bottom-0 rounded-t-lg border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] shadow-float motion-safe:animate-[pu-toast_0.2s_ease-out]">
+      <div
+        ref={sheetRef}
+        tabIndex={-1}
+        className="absolute inset-x-0 bottom-0 rounded-t-lg border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] shadow-float outline-none motion-safe:animate-[pu-toast_0.2s_ease-out]"
+      >
         <div className="flex items-center justify-between px-4 py-3">
           <span className="text-sm font-bold text-fg">Ещё</span>
           <button

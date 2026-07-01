@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 import { EventCard } from "@/components/features/event-card";
 import { EventFilters } from "@/components/features/event-filters";
@@ -8,15 +9,42 @@ import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/st
 import { IconPaddle } from "@/components/ui/icons";
 import { useEvents } from "@/hooks/useEvents";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
+import { GENDERS, SKILL_LEVELS, type Gender, type SkillLevel } from "@/lib/enums";
 import type { EventFilterParams } from "@/types/api";
 
-export function GamesListView() {
-  const [filter, setFilter] = useState<EventFilterParams>({
+// URL-параметры короче ключей API — читаемее в адресной строке и в шаринге.
+const asSkill = (v: string | null): SkillLevel | undefined =>
+  v && (SKILL_LEVELS as readonly string[]).includes(v) ? (v as SkillLevel) : undefined;
+const asGender = (v: string | null): Gender | undefined =>
+  v && (GENDERS as readonly string[]).includes(v) ? (v as Gender) : undefined;
+
+function GamesListInner() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+
+  const skill = asSkill(params.get("level"));
+  const gender = asGender(params.get("gender"));
+  const hasSlots = params.get("slots") === "1";
+
+  const filter: EventFilterParams = {
     event_type: "game",
     city_id: SMOLENSK_CITY_ID,
-  });
+    ...(skill ? { skill_level: skill } : {}),
+    ...(gender ? { gender } : {}),
+    ...(hasSlots ? { has_slots: true } : {}),
+  };
+
   const query = useEvents(filter);
-  const patch = (p: Partial<EventFilterParams>) => setFilter((f) => ({ ...f, ...p }));
+
+  const patch = (p: Partial<EventFilterParams>) => {
+    const next = new URLSearchParams(params.toString());
+    if ("skill_level" in p) setOrDelete(next, "level", p.skill_level);
+    if ("gender" in p) setOrDelete(next, "gender", p.gender);
+    if ("has_slots" in p) setOrDelete(next, "slots", p.has_slots ? "1" : undefined);
+    const qs = next.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  };
 
   return (
     <div className="space-y-5">
@@ -40,5 +68,18 @@ export function GamesListView() {
         </div>
       )}
     </div>
+  );
+}
+
+function setOrDelete(params: URLSearchParams, key: string, value: string | undefined) {
+  if (value) params.set(key, value);
+  else params.delete(key);
+}
+
+export function GamesListView() {
+  return (
+    <Suspense fallback={<CardListSkeleton />}>
+      <GamesListInner />
+    </Suspense>
   );
 }

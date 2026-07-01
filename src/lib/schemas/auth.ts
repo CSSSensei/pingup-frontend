@@ -34,7 +34,6 @@ export type RegisterValues = z.infer<typeof registerSchema>;
 export const loginSchema = z.object({
   email: z.string().trim().min(1, "Введите email").email("Проверьте email — нужен формат you@example.com"),
   password: z.string().min(1, "Введите пароль"),
-  remember: z.boolean().optional(),
 });
 
 export type LoginValues = z.infer<typeof loginSchema>;

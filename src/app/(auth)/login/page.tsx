@@ -36,7 +36,7 @@ function LoginForm() {
     resolver: zodResolver(loginSchema),
     mode: "onTouched",
     reValidateMode: "onChange",
-    defaultValues: { email: "", password: "", remember: false },
+    defaultValues: { email: "", password: "" },
   });
 
   const onSubmit: SubmitHandler<LoginValues> = async (values) => {
@@ -100,11 +100,7 @@ function LoginForm() {
               {...register("password")}
             />
           </Field>
-          <div className="flex items-center justify-between text-[13px]">
-            <label className="flex cursor-pointer items-center gap-1.5 font-semibold text-fg-2">
-              <input type="checkbox" className="size-4 accent-primary" {...register("remember")} />
-              Запомнить меня
-            </label>
+          <div className="flex justify-end text-[13px]">
             <Link href="/password-reset" className="font-bold text-primary">
               Забыли пароль?
             </Link>

@@ -3,6 +3,7 @@
 import { useEffect, type ReactNode } from "react";
 
 import { IconX } from "@/components/ui/icons";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { cn } from "@/lib/utils";
 
 export function Modal({
@@ -18,6 +19,8 @@ export function Modal({
   children: ReactNode;
   className?: string;
 }) {
+  const dialogRef = useFocusTrap<HTMLDivElement>(open);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -40,9 +43,12 @@ export function Modal({
         className="absolute inset-0 bg-black/45 motion-safe:animate-[pu-fade_0.15s_ease-out]"
       />
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
+        tabIndex={-1}
         className={cn(
+          "outline-none",
           "relative w-full max-w-md rounded-t-lg border border-border bg-surface p-6 shadow-float sm:rounded-lg",
           "motion-safe:animate-[pu-pop_0.16s_ease-out]",
           className,

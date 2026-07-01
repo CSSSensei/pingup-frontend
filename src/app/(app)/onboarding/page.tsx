@@ -67,30 +67,69 @@ function validateField(name: VField, value: string): string | null {
   }
 }
 
-function OptionChip({
-  active,
-  onClick,
-  children,
+function RadioChipGroup<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
 }: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
+  label: string;
+  options: readonly { value: T; label: string }[];
+  value: T | null;
+  onChange: (v: T) => void;
 }) {
+  const groupRef = useRef<HTMLDivElement>(null);
+
+  function move(delta: number, from: number) {
+    const next = (from + delta + options.length) % options.length;
+    onChange(options[next].value);
+    groupRef.current?.querySelectorAll<HTMLButtonElement>('[role="radio"]')?.[next]?.focus();
+  }
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    const cur = Math.max(
+      0,
+      options.findIndex((o) => o.value === value),
+    );
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      move(1, cur);
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      move(-1, cur);
+    }
+  }
+
   return (
-    <button
-      type="button"
-      role="radio"
-      aria-checked={active}
-      onClick={onClick}
-      className={cn(
-        "rounded border-[1.5px] px-[15px] py-[9px] text-[13.5px] font-bold whitespace-nowrap transition-colors",
-        active
-          ? "border-primary bg-primary-tint text-primary"
-          : "border-border bg-surface text-fg-2 hover:bg-surface-2",
-      )}
+    <div
+      ref={groupRef}
+      role="radiogroup"
+      aria-label={label}
+      onKeyDown={onKeyDown}
+      className="flex flex-wrap gap-2"
     >
-      {children}
-    </button>
+      {options.map((o, i) => {
+        const active = value === o.value;
+        return (
+          <button
+            key={o.value}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            tabIndex={active || (value === null && i === 0) ? 0 : -1}
+            onClick={() => onChange(o.value)}
+            className={cn(
+              "rounded border-[1.5px] px-[15px] py-[9px] text-[13.5px] font-bold whitespace-nowrap transition-colors",
+              active
+                ? "border-primary bg-primary-tint text-primary"
+                : "border-border bg-surface text-fg-2 hover:bg-surface-2",
+            )}
+          >
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -183,10 +222,42 @@ export default function OnboardingPage() {
     if (touched[name]) setErrors((e) => ({ ...e, [name]: validateField(name, value) ?? "" }));
   }
 
-  function handlePhoneChange(raw: string) {
-    const formatted = formatRuPhone(raw);
+  function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const input = e.target;
+    const raw = input.value;
+    const caret = input.selectionStart ?? raw.length;
+    const prevDigits = phone.replace(/\D/g, "");
+    const rawDigits = raw.replace(/\D/g, "");
+    let digitsLeft = raw.slice(0, caret).replace(/\D/g, "").length;
+    let digits = rawDigits;
+    // Backspace по разделителю: цифры не изменились, длина упала → удаляем левую цифру.
+    if (raw.length < phone.length && rawDigits === prevDigits && digitsLeft > 0) {
+      digits = rawDigits.slice(0, digitsLeft - 1) + rawDigits.slice(digitsLeft);
+      digitsLeft -= 1;
+    }
+    const formatted = formatRuPhone(digits);
     setPhone(formatted);
-    if (touched.phone) setErrors((e) => ({ ...e, phone: validatePhone(formatted) ?? "" }));
+    if (touched.phone) setErrors((er) => ({ ...er, phone: validatePhone(formatted) ?? "" }));
+    // Вернуть каретку после digitsLeft-й цифры в отформатированной строке.
+    requestAnimationFrame(() => {
+      if (document.activeElement !== input) return;
+      let pos = 0;
+      if (digitsLeft > 0) {
+        pos = formatted.length;
+        let seen = 0;
+        for (let i = 0; i < formatted.length; i++) {
+          const ch = formatted.charAt(i);
+          if (ch >= "0" && ch <= "9") {
+            seen += 1;
+            if (seen === digitsLeft) {
+              pos = i + 1;
+              break;
+            }
+          }
+        }
+      }
+      input.setSelectionRange(pos, pos);
+    });
   }
 
   function handleBlur(name: VField, value: string) {
@@ -323,7 +394,14 @@ export default function OnboardingPage() {
         </div>
 
         <div className="rounded-lg border border-border bg-surface p-[26px] shadow-card">
-          <div className="mb-2.5 flex gap-1.5">
+          <div
+            className="mb-2.5 flex gap-1.5"
+            role="progressbar"
+            aria-valuemin={1}
+            aria-valuemax={STEPS.length}
+            aria-valuenow={step}
+            aria-label={`Шаг ${step} из ${STEPS.length}`}
+          >
             {STEPS.map((_, i) => (
               <div
                 key={i}
@@ -345,13 +423,12 @@ export default function OnboardingPage() {
           <p className="mt-1.5 mb-6 text-sm leading-relaxed text-muted">{meta.sub}</p>
 
           {step === 1 && (
-            <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Уровень игры">
-              {SKILL_LEVELS.map((lvl) => (
-                <OptionChip key={lvl} active={level === lvl} onClick={() => setLevel(lvl)}>
-                  {SKILL_LABELS[lvl]}
-                </OptionChip>
-              ))}
-            </div>
+            <RadioChipGroup
+              label="Уровень игры"
+              options={SKILL_LEVELS.map((l) => ({ value: l, label: SKILL_LABELS[l] }))}
+              value={level}
+              onChange={setLevel}
+            />
           )}
 
           {step === 2 && (
@@ -383,13 +460,12 @@ export default function OnboardingPage() {
               <div className="mb-5 flex flex-wrap gap-4">
                 <div className="min-w-[160px] flex-1">
                   <span className="mb-2.5 block text-[13px] font-bold text-fg-2">Пол</span>
-                  <div className="flex gap-2" role="radiogroup" aria-label="Пол">
-                    {GENDERS.map((g) => (
-                      <OptionChip key={g} active={gender === g} onClick={() => setGender(g)}>
-                        {GENDER_LABELS[g]}
-                      </OptionChip>
-                    ))}
-                  </div>
+                  <RadioChipGroup
+                    label="Пол"
+                    options={GENDERS.map((g) => ({ value: g, label: GENDER_LABELS[g] }))}
+                    value={gender}
+                    onChange={setGender}
+                  />
                 </div>
                 <div className="min-w-[160px] flex-1">
                   <label className="mb-2.5 block text-[13px] font-bold text-fg-2">Год рождения</label>
@@ -409,13 +485,12 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <span className="mb-2.5 block text-[13px] font-bold text-fg-2">Ведущая рука</span>
-                <div className="flex gap-2" role="radiogroup" aria-label="Ведущая рука">
-                  {PLAYING_HANDS.map((h) => (
-                    <OptionChip key={h} active={hand === h} onClick={() => setHand(h)}>
-                      {PLAYING_HAND_LABELS[h]}
-                    </OptionChip>
-                  ))}
-                </div>
+                <RadioChipGroup
+                  label="Ведущая рука"
+                  options={PLAYING_HANDS.map((h) => ({ value: h, label: PLAYING_HAND_LABELS[h] }))}
+                  value={hand}
+                  onChange={setHand}
+                />
               </div>
             </>
           )}
@@ -481,7 +556,7 @@ export default function OnboardingPage() {
                     value={phone}
                     invalid={!!errors.phone}
                     aria-describedby={errors.phone ? phoneErrId : undefined}
-                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    onChange={handlePhoneChange}
                     onBlur={(e) => handleBlur("phone", e.target.value)}
                   />
                   <ErrorText id={phoneErrId} msg={errors.phone} />

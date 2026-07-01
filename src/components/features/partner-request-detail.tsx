@@ -8,7 +8,7 @@ import { Badge, LevelBadge, RatingBadge } from "@/components/ui/badge";
 import { IconUser, IconUsers } from "@/components/ui/icons";
 import { EVENT_TYPE_LABELS, GENDER_LABELS } from "@/lib/enums";
 import { formatRelative } from "@/lib/format";
-import { responsesLabel, skillRangeLabel } from "@/lib/partners";
+import { ratingRangeLabel, responsesLabel, skillRangeLabel } from "@/lib/partners";
 import type { PartnerRequestRead } from "@/types/api";
 
 export function PartnerRequestDetail({ request }: { request: PartnerRequestRead }) {
@@ -30,6 +30,11 @@ export function PartnerRequestDetail({ request }: { request: PartnerRequestRead 
           <Meta icon={<IconUser size={17} />} label="Кого ищут">
             {request.desired_gender ? GENDER_LABELS[request.desired_gender] : "Любой пол"}
           </Meta>
+          {ratingRangeLabel(request.desired_rating_min, request.desired_rating_max) && (
+            <Meta icon={<IconUsers size={17} />} label="Рейтинг напарника">
+              {ratingRangeLabel(request.desired_rating_min, request.desired_rating_max)}
+            </Meta>
+          )}
           {request.event_type && (
             <Meta icon={<IconUsers size={17} />} label="Формат">
               {EVENT_TYPE_LABELS[request.event_type]}

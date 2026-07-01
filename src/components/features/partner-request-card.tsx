@@ -4,7 +4,7 @@ import { Avatar } from "@/components/common/avatar";
 import { LevelBadge, PartnerStatusBadge } from "@/components/ui/badge";
 import { IconCheck } from "@/components/ui/icons";
 import { EVENT_TYPE_LABELS, GENDER_LABELS } from "@/lib/enums";
-import { responsesLabel, skillRangeLabel } from "@/lib/partners";
+import { ratingRangeLabel, responsesLabel, skillRangeLabel } from "@/lib/partners";
 import type { PartnerRequestRead } from "@/types/api";
 
 export function PartnerRequestCard({ request }: { request: PartnerRequestRead }) {
@@ -42,6 +42,12 @@ export function PartnerRequestCard({ request }: { request: PartnerRequestRead })
         {request.desired_gender && (
           <span>
             <span className="text-muted">Пол:</span> {GENDER_LABELS[request.desired_gender]}
+          </span>
+        )}
+        {ratingRangeLabel(request.desired_rating_min, request.desired_rating_max) && (
+          <span>
+            <span className="text-muted">Рейтинг:</span>{" "}
+            {ratingRangeLabel(request.desired_rating_min, request.desired_rating_max)}
           </span>
         )}
         {request.event_type && (

@@ -1,9 +1,19 @@
 "use client";
 
-import { Select } from "@/components/ui/select";
+import { ChipSelect, FilterBar, FilterRow, type FilterOption } from "@/components/features/filters/filter-bar";
 import { Switch } from "@/components/ui/switch";
 import { GENDERS, GENDER_LABELS, SKILL_LABELS, SKILL_LEVELS } from "@/lib/enums";
 import type { EventFilterParams } from "@/types/api";
+
+const LEVEL_OPTIONS: FilterOption[] = [
+  { value: "", label: "Любой" },
+  ...SKILL_LEVELS.map((l) => ({ value: l, label: SKILL_LABELS[l] })),
+];
+
+const GENDER_OPTIONS: FilterOption[] = [
+  { value: "", label: "Любой" },
+  ...GENDERS.map((g) => ({ value: g, label: GENDER_LABELS[g] })),
+];
 
 export function EventFilters({
   value,
@@ -13,42 +23,34 @@ export function EventFilters({
   onChange: (patch: Partial<EventFilterParams>) => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-2.5">
-      <Select
-        aria-label="Уровень"
-        className="h-10 w-auto min-w-[140px]"
-        value={value.skill_level ?? ""}
-        onChange={(e) => onChange({ skill_level: (e.target.value || undefined) as never })}
-      >
-        <option value="">Любой уровень</option>
-        {SKILL_LEVELS.map((lvl) => (
-          <option key={lvl} value={lvl}>
-            {SKILL_LABELS[lvl]}
-          </option>
-        ))}
-      </Select>
-
-      <Select
-        aria-label="Пол"
-        className="h-10 w-auto min-w-[120px]"
-        value={value.gender ?? ""}
-        onChange={(e) => onChange({ gender: (e.target.value || undefined) as never })}
-      >
-        <option value="">Любой пол</option>
-        {GENDERS.map((g) => (
-          <option key={g} value={g}>
-            {GENDER_LABELS[g]}
-          </option>
-        ))}
-      </Select>
-
-      <label className="flex h-10 cursor-pointer items-center gap-2 rounded border border-border bg-surface px-3 text-sm font-semibold text-fg-2">
-        <Switch
-          checked={value.has_slots ?? false}
-          onCheckedChange={(v) => onChange({ has_slots: v || undefined })}
+    <FilterBar>
+      <FilterRow label="Уровень">
+        <ChipSelect
+          ariaLabel="Уровень"
+          options={LEVEL_OPTIONS}
+          value={value.skill_level ?? ""}
+          onChange={(v) => onChange({ skill_level: (v || undefined) as never })}
         />
-        Есть места
-      </label>
-    </div>
+      </FilterRow>
+
+      <FilterRow label="Пол">
+        <ChipSelect
+          ariaLabel="Пол"
+          options={GENDER_OPTIONS}
+          value={value.gender ?? ""}
+          onChange={(v) => onChange({ gender: (v || undefined) as never })}
+        />
+      </FilterRow>
+
+      <FilterRow label="Места">
+        <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-fg-2">
+          <Switch
+            checked={value.has_slots ?? false}
+            onCheckedChange={(v) => onChange({ has_slots: v || undefined })}
+          />
+          Есть места
+        </label>
+      </FilterRow>
+    </FilterBar>
   );
 }

@@ -47,13 +47,15 @@ export const EVENT_STATUS_BADGE: Record<EventStatus, string> = {
   cancelled: "bg-status-cancelled/12 text-status-cancelled",
 };
 
-export const EVENT_TYPES = ["game", "group_training", "personal_sparring"] as const;
+// "tournament" — только тип объявления напарника («сокомандник на турнир»); события его не создают.
+export const EVENT_TYPES = ["game", "group_training", "personal_sparring", "tournament"] as const;
 export type EventType = (typeof EVENT_TYPES)[number];
 
 export const EVENT_TYPE_LABELS: Record<EventType, string> = {
   game: "Игра",
   group_training: "Групповая тренировка",
   personal_sparring: "Личный спарринг",
+  tournament: "Турнир",
 };
 
 export const EVENT_FORMATS = ["singles", "doubles", "group", "coaching"] as const;

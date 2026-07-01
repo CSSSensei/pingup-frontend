@@ -224,6 +224,8 @@ export interface PartnerRequestRead {
   description: string | null;
   desired_skill_min: SkillLevel | null;
   desired_skill_max: SkillLevel | null;
+  desired_rating_min: number | null;
+  desired_rating_max: number | null;
   desired_gender: Gender | null;
   preferred_venue_id: number | null;
   preferred_days: Record<string, unknown> | null;
@@ -251,6 +253,8 @@ export interface PartnerRequestCreatePayload {
   description?: string | null;
   desired_skill_min?: SkillLevel | null;
   desired_skill_max?: SkillLevel | null;
+  desired_rating_min?: number | null;
+  desired_rating_max?: number | null;
   desired_gender?: Gender | null;
   event_type?: EventType | null;
 }
@@ -270,6 +274,9 @@ export interface PartnerRequestFilterParams {
   desired_gender?: Gender;
   event_type?: EventType;
   preferred_venue_id?: number;
+  rating_min?: number;
+  rating_max?: number;
+  suitable?: boolean;
   q?: string;
   sort?: string;
   limit?: number;

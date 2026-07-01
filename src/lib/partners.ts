@@ -9,6 +9,13 @@ export function skillRangeLabel(min: SkillLevel | null, max: SkillLevel | null):
   return "Любой";
 }
 
+export function ratingRangeLabel(min: number | null, max: number | null): string | null {
+  if (min != null && max != null) return `${min}–${max}`;
+  if (min != null) return `от ${min}`;
+  if (max != null) return `до ${max}`;
+  return null;
+}
+
 // «4 отклика» с правильным склонением.
 export function responsesLabel(n: number): string {
   const mod10 = n % 10;

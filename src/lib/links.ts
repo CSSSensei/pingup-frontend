@@ -1,14 +1,15 @@
 import type { EventType, NotificationType } from "@/lib/enums";
 import type { NotificationItem } from "@/types/api";
 
-const SECTION_BY_TYPE: Record<EventType, string> = {
+// "tournament" здесь нет намеренно — это тип только у объявлений напарников, не у событий.
+const SECTION_BY_TYPE: Partial<Record<EventType, string>> = {
   game: "/games",
   group_training: "/trainings",
   personal_sparring: "/trainings",
 };
 
 export function eventHref(event: { id: number; event_type: EventType }): string {
-  return `${SECTION_BY_TYPE[event.event_type]}/${event.id}`;
+  return `${SECTION_BY_TYPE[event.event_type] ?? "/games"}/${event.id}`;
 }
 
 // Диплинк уведомления по его type + data-payload; null → просто отметить прочитанным.

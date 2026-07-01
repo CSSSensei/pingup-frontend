@@ -31,6 +31,7 @@ import { fieldErrors } from "@/lib/errors/messages";
 import { createPartnerRequestSchema, type CreatePartnerRequestValues } from "@/lib/schemas/partner";
 
 const clean = (v: string | undefined) => (v ? v : undefined);
+const cleanNum = (v: string | undefined) => (v && v.trim() ? Number(v) : undefined);
 
 export default function NewPartnerRequestPage() {
   const router = useRouter();
@@ -50,6 +51,8 @@ export default function NewPartnerRequestPage() {
       description: "",
       desired_skill_min: "",
       desired_skill_max: "",
+      desired_rating_min: "",
+      desired_rating_max: "",
       desired_gender: "",
       event_type: "",
     },
@@ -63,6 +66,8 @@ export default function NewPartnerRequestPage() {
         description: clean(values.description),
         desired_skill_min: clean(values.desired_skill_min) as SkillLevel | undefined,
         desired_skill_max: clean(values.desired_skill_max) as SkillLevel | undefined,
+        desired_rating_min: cleanNum(values.desired_rating_min),
+        desired_rating_max: cleanNum(values.desired_rating_max),
         desired_gender: clean(values.desired_gender) as Gender | undefined,
         event_type: clean(values.event_type) as EventType | undefined,
       });
@@ -142,6 +147,28 @@ export default function NewPartnerRequestPage() {
                   </option>
                 ))}
               </Select>
+            </Field>
+
+            <Field label="Рейтинг напарника: от" error={errors.desired_rating_min?.message}>
+              <Input
+                type="number"
+                inputMode="numeric"
+                min={0}
+                placeholder="напр. 600"
+                invalid={!!errors.desired_rating_min}
+                {...register("desired_rating_min")}
+              />
+            </Field>
+
+            <Field label="Рейтинг напарника: до" error={errors.desired_rating_max?.message}>
+              <Input
+                type="number"
+                inputMode="numeric"
+                min={0}
+                placeholder="напр. 900"
+                invalid={!!errors.desired_rating_max}
+                {...register("desired_rating_max")}
+              />
             </Field>
 
             <Field label="Кого ищете" error={errors.desired_gender?.message}>

@@ -1,13 +1,16 @@
-export default async function PlayerPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+import { ComingSoon } from "@/components/common/coming-soon";
+import { PublicShell } from "@/components/layout/public-shell";
+
+export const metadata = { title: "Профиль игрока" };
+
+export default async function PlayerPage({ params }: { params: Promise<{ id: string }> }) {
+  await params;
   return (
-    <main className="mx-auto max-w-2xl p-8">
-      <h1 className="text-2xl font-bold">Профиль игрока #{id}</h1>
-      <p className="mt-2 text-gray-500">Раздел в разработке.</p>
-    </main>
+    <PublicShell>
+      <ComingSoon
+        title="Профиль игрока"
+        description="Публичная страница игрока с рейтингом теннис67 — скоро."
+      />
+    </PublicShell>
   );
 }

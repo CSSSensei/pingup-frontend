@@ -7,13 +7,24 @@ import { useEffect } from "react";
 import { IconLogOut, IconX } from "@/components/ui/icons";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useLogout } from "@/hooks/useAuth";
-import { MORE_SHEET, isActivePath } from "@/components/layout/nav-config";
+import { MORE_SHEET, PRIMARY_NAV, isActivePath } from "@/components/layout/nav-config";
+import { LinkButton } from "@/components/ui/link-button";
 import { cn } from "@/lib/utils";
 
-export function MoreSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+// authed → разделы каталога + персональные + «Выйти»; anon → оставшиеся разделы + вход/регистрация.
+export function MoreSheet({
+  open,
+  onClose,
+  authed,
+}: {
+  open: boolean;
+  onClose: () => void;
+  authed: boolean;
+}) {
   const pathname = usePathname();
   const { logout } = useLogout();
   const sheetRef = useFocusTrap<HTMLDivElement>(open);
+  const items = authed ? MORE_SHEET : PRIMARY_NAV.slice(4);
 
   useEffect(() => {
     if (!open) return;
@@ -53,7 +64,7 @@ export function MoreSheet({ open, onClose }: { open: boolean; onClose: () => voi
           </button>
         </div>
         <nav className="grid grid-cols-3 gap-1 px-3 pb-3">
-          {MORE_SHEET.map((item) => {
+          {items.map((item) => {
             const active = isActivePath(pathname, item.href);
             return (
               <Link
@@ -72,17 +83,32 @@ export function MoreSheet({ open, onClose }: { open: boolean; onClose: () => voi
           })}
         </nav>
         <div className="border-t border-border p-3">
-          <button
-            type="button"
-            onClick={() => {
-              onClose();
-              logout();
-            }}
-            className="flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-bold text-danger hover:bg-surface-2"
-          >
-            <IconLogOut size={18} />
-            Выйти
-          </button>
+          {authed ? (
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                logout();
+              }}
+              className="flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-bold text-danger hover:bg-surface-2"
+            >
+              <IconLogOut size={18} />
+              Выйти
+            </button>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <LinkButton href="/register" fullWidth onClick={onClose}>
+                Регистрация
+              </LinkButton>
+              <Link
+                href="/login"
+                onClick={onClose}
+                className="flex h-10 items-center justify-center rounded-lg text-sm font-bold text-fg-2 hover:bg-surface-2"
+              >
+                Войти
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

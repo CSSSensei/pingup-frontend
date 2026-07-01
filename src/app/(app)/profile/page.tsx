@@ -1,10 +1,14 @@
+import { ComingSoon } from "@/components/common/coming-soon";
+
 export const metadata = { title: "Профиль" };
 
 export default function ProfilePage() {
   return (
-    <main className="mx-auto max-w-2xl p-8">
-      <h1 className="text-2xl font-bold">Мой профиль</h1>
-      <p className="mt-2 text-gray-500">Раздел в разработке.</p>
-    </main>
+    <div className="mx-auto w-full max-w-2xl px-4 py-6 sm:py-8">
+      <ComingSoon
+        title="Мой профиль"
+        description="Здесь появятся ваши данные, рейтинг и экипировка — раздел в разработке."
+      />
+    </div>
   );
 }

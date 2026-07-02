@@ -63,12 +63,18 @@ export function loadYmaps3(): Promise<YMapsApi | null> {
   return loading;
 }
 
-// Маркер-«шарик» из брендовых ассетов; центрируется на координате.
+// Маркер-«шарик» из брендовых ассетов. Внешний элемент v3 сам ставит углом в
+// координату — центрируем на точке ВНУТРЕННИЙ <img> (его transform библиотека не
+// трогает). Инлайн-стили, а не Tailwind: маркер живёт в DOM, которым правит карта.
 export function ballMarkerElement(opts: { size?: number; button?: boolean } = {}): HTMLElement {
-  const size = opts.size ?? 30;
-  const el = document.createElement(opts.button ? "button" : "div");
-  if (el instanceof HTMLButtonElement) el.type = "button";
-  el.className = "block -translate-x-1/2 -translate-y-1/2 cursor-pointer border-0 bg-transparent p-0";
-  el.innerHTML = `<img src="/brand/ball.svg" alt="" width="${size}" height="${size}" draggable="false" style="filter:drop-shadow(0 3px 5px rgba(0,0,0,.3))" />`;
-  return el;
+  const size = opts.size ?? 32;
+  const outer = document.createElement(opts.button ? "button" : "div");
+  if (outer instanceof HTMLButtonElement) outer.type = "button";
+  outer.style.cssText =
+    "padding:0;margin:0;border:0;background:transparent;line-height:0;" +
+    (opts.button ? "cursor:pointer;" : "");
+  outer.innerHTML =
+    `<img src="/brand/ball.svg" alt="" width="${size}" height="${size}" draggable="false" ` +
+    `style="display:block;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))" />`;
+  return outer;
 }

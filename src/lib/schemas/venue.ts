@@ -1,8 +1,11 @@
 import { z } from "zod";
 
 // Инпуты координат отдают строки; допускаем запятую как десятичный разделитель.
+// Пустая строка → null (а НЕ 0: Number("") === 0 увёл бы пикер в точку (0,0)).
 export function parseCoord(v: string): number | null {
-  const n = Number(v.trim().replace(",", "."));
+  const t = v.trim().replace(",", ".");
+  if (t === "") return null;
+  const n = Number(t);
   return Number.isFinite(n) ? n : null;
 }
 

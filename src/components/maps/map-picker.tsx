@@ -46,7 +46,7 @@ export function MapPicker({
         location: { center: [c.lng, c.lat], zoom: value ? 15 : 12 },
       });
       map.addChild(new api.YMapDefaultSchemeLayer());
-      map.addChild(new api.YMapDefaultFeaturesLayer());
+      map.addChild(new api.YMapDefaultFeaturesLayer({ zIndex: 1800 }));
       map.addChild(
         new api.YMapListener({
           layer: "any",

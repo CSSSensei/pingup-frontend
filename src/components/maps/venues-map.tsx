@@ -65,7 +65,7 @@ export function VenuesMap({
         location: { center: [c.lng, c.lat], zoom },
       });
       map.addChild(new api.YMapDefaultSchemeLayer());
-      map.addChild(new api.YMapDefaultFeaturesLayer());
+      map.addChild(new api.YMapDefaultFeaturesLayer({ zIndex: 1800 }));
       apiRef.current = api;
       mapRef.current = map;
       setStatus("ready");

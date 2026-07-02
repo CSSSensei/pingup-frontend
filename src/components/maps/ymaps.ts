@@ -1,6 +1,3 @@
-// Ручной лоадер Yandex Maps JS API v3 (без npm-обёрток — ключ привязан к домену,
-// а churn v3 делает обёртки хрупкими). Без ключа карта деградирует до плейсхолдера.
-
 export type LngLat = [number, number];
 
 export interface YMapInstance {
@@ -63,18 +60,35 @@ export function loadYmaps3(): Promise<YMapsApi | null> {
   return loading;
 }
 
-// Маркер-«шарик» из брендовых ассетов. Внешний элемент v3 сам ставит углом в
-// координату — центрируем на точке ВНУТРЕННИЙ <img> (его transform библиотека не
-// трогает). Инлайн-стили, а не Tailwind: маркер живёт в DOM, которым правит карта.
-export function ballMarkerElement(opts: { size?: number; button?: boolean } = {}): HTMLElement {
-  const size = opts.size ?? 32;
+
+function pinSvg(fill: string): string {
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 36">` +
+    `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">` +
+    `<stop offset="0" stop-color="#5b93ea"/><stop offset="1" stop-color="${fill}"/>` +
+    `</linearGradient></defs>` +
+    `<path d="M14 1.4C7.7 1.4 2.6 6.5 2.6 12.8c0 8.2 11.4 21.8 11.4 21.8s11.4-13.6 11.4-21.8` +
+    `C25.4 6.5 20.3 1.4 14 1.4Z" fill="url(#g)" stroke="#fff" stroke-width="2"/>` +
+    `<circle cx="14" cy="12.8" r="4.3" fill="#fff"/></svg>`
+  );
+}
+
+export function markerElement(opts: { size?: number; button?: boolean } = {}): HTMLElement {
+  const w = opts.size ?? 30;
+  const h = Math.round(w * 1.29);
+  const primary =
+    getComputedStyle(document.documentElement).getPropertyValue("--color-primary").trim() ||
+    "#1c5fd0";
   const outer = document.createElement(opts.button ? "button" : "div");
   if (outer instanceof HTMLButtonElement) outer.type = "button";
   outer.style.cssText =
     "padding:0;margin:0;border:0;background:transparent;line-height:0;" +
     (opts.button ? "cursor:pointer;" : "");
-  outer.innerHTML =
-    `<img src="/brand/ball.svg" alt="" width="${size}" height="${size}" draggable="false" ` +
-    `style="display:block;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))" />`;
+  const inner = document.createElement("span");
+  inner.style.cssText =
+    `display:block;width:${w}px!important;height:${h}px!important;` +
+    `background:url("data:image/svg+xml,${encodeURIComponent(pinSvg(primary))}") center/contain no-repeat;` +
+    "transform:translate(-50%,-100%);filter:drop-shadow(0 3px 4px rgba(0,0,0,.3))";
+  outer.appendChild(inner);
   return outer;
 }

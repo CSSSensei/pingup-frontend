@@ -6,13 +6,13 @@ import { SMOLENSK_CENTER } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import {
   MAPS_API_KEY,
-  ballMarkerElement,
+  markerElement,
   loadYmaps3,
   type YMapInstance,
   type YMapsApi,
 } from "@/components/maps/ymaps";
 
-// Клик по карте → координаты точки в форму. Без ключа API поле остаётся ручным вводом.
+
 export function MapPicker({
   value,
   onChange,
@@ -80,7 +80,7 @@ export function MapPicker({
     if (value) {
       const marker = new api.YMapMarker(
         { coordinates: [value.lng, value.lat] },
-        ballMarkerElement(),
+        markerElement(),
       );
       map.addChild(marker);
       markerRef.current = marker;

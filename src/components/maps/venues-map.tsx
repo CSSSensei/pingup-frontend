@@ -8,7 +8,7 @@ import { SMOLENSK_CENTER } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import {
   MAPS_API_KEY,
-  ballMarkerElement,
+  markerElement,
   loadYmaps3,
   type YMapInstance,
   type YMapsApi,
@@ -86,7 +86,7 @@ export function VenuesMap({
 
     for (const m of markersRef.current) map.removeChild(m);
     markersRef.current = points.map((point) => {
-      const el = ballMarkerElement({ button: showCard });
+      const el = markerElement({ button: showCard });
       el.title = point.name;
       if (showCard) el.addEventListener("click", () => setSelected(point));
       const marker = new api.YMapMarker({ coordinates: [point.lng, point.lat] }, el);

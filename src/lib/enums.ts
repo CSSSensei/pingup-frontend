@@ -133,6 +133,15 @@ export const PARTNER_STATUS_BADGE: Record<PartnerRequestStatus, string> = {
   expired: "bg-surface-3 text-fg-2",
 };
 
+export const REVIEW_TARGET_TYPES = ["venue", "player", "coach"] as const;
+export type ReviewTargetType = (typeof REVIEW_TARGET_TYPES)[number];
+
+export const REVIEW_TARGET_LABELS: Record<ReviewTargetType, string> = {
+  venue: "Зал",
+  player: "Игрок",
+  coach: "Тренер",
+};
+
 export const NOTIFICATION_TYPES = [
   "event_invite",
   "event_join_request",

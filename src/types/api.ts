@@ -40,6 +40,7 @@ import type {
   ParticipantStatus,
   PartnerRequestStatus,
   PlayingHand,
+  ReviewTargetType,
   SkillLevel,
 } from "@/lib/enums";
 
@@ -421,6 +422,41 @@ export interface VenueFilterParams {
   lng?: number;
   radius_km?: number;
   q?: string;
+  sort?: string;
+  limit?: number;
+  offset?: number;
+}
+
+// target_id: для venue — id зала, для player/coach — user_id профиля.
+export interface ReviewRead {
+  id: number;
+  author_id: number;
+  target_type: ReviewTargetType;
+  target_id: number;
+  rating: number;
+  comment: string | null;
+  is_hidden: boolean;
+  created_at: string;
+  author: ProfilePublic | null;
+}
+
+export interface ReviewCreatePayload {
+  target_type: ReviewTargetType;
+  target_id: number;
+  rating: number;
+  comment?: string | null;
+}
+
+export interface ReviewUpdatePayload {
+  rating?: number;
+  comment?: string | null;
+}
+
+export interface ReviewFilterParams {
+  target_type?: ReviewTargetType;
+  target_id?: number;
+  author_id?: number;
+  rating?: number;
   sort?: string;
   limit?: number;
   offset?: number;

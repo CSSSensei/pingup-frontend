@@ -4,6 +4,7 @@ import { ContactLinks } from "@/components/features/contact-links";
 import { EquipmentCard } from "@/components/features/equipment-card";
 import { ProfileHeaderCard } from "@/components/features/profile-header-card";
 import { RatingChart } from "@/components/features/rating-chart";
+import { ReviewsSection } from "@/components/features/reviews-section";
 import { ErrorState } from "@/components/common/states";
 import { PageHeader } from "@/components/common/page-header";
 import { Button } from "@/components/ui/button";
@@ -12,12 +13,14 @@ import { LinkButton } from "@/components/ui/link-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import { BallSpinner } from "@/components/ui/spinner";
+import { useMe } from "@/hooks/useMe";
 import { useMyProfile, useMyRatingHistory, useSyncRating } from "@/hooks/useProfiles";
 import { formatRelative } from "@/lib/format";
 import type { ProfileMe } from "@/types/api";
 
 export function MyProfileView() {
   const query = useMyProfile();
+  const { data: me } = useMe();
 
   if (query.isPending) {
     return (
@@ -83,6 +86,23 @@ export function MyProfileView() {
           Телефон {profile.phone_visible ? "виден" : "скрыт"} в публичном профиле · Telegram виден
           всегда. Изменить — в редактировании.
         </p>
+      )}
+
+      {me && (
+        <ReviewsSection
+          targetType="player"
+          targetId={me.id}
+          loginNext="/profile"
+          title={profile.is_coach ? "Отзывы как об игроке" : "Отзывы обо мне"}
+        />
+      )}
+      {me && profile.is_coach && (
+        <ReviewsSection
+          targetType="coach"
+          targetId={me.id}
+          loginNext="/profile"
+          title="Отзывы как о тренере"
+        />
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { ContactLinks } from "@/components/features/contact-links";
 import { EquipmentCard } from "@/components/features/equipment-card";
+import { PlayerReviews } from "@/components/features/player-reviews";
 import { ProfileHeaderCard } from "@/components/features/profile-header-card";
 import { RatingChart } from "@/components/features/rating-chart";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -77,6 +78,8 @@ export function PlayerDetail({ profile, slug }: { profile: ProfileDetail; slug: 
         mode={contactMode}
         loginNext={`/players/${slug}`}
       />
+
+      <PlayerReviews profile={profile} slug={slug} />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { EventCard } from "@/components/features/event-card";
+import { ReviewsSection } from "@/components/features/reviews-section";
 import { VenuesMap } from "@/components/maps/venues-map";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
@@ -208,6 +209,14 @@ export function VenueDetail({ venue }: { venue: VenueRead }) {
       />
 
       <VenueEvents venueId={venue.id} />
+
+      <ReviewsSection
+        targetType="venue"
+        targetId={venue.id}
+        loginNext={`/venues/${venue.slug}`}
+        denormAvg={Number(venue.rating_avg)}
+        denormCount={venue.reviews_count}
+      />
     </div>
   );
 }

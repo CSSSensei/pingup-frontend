@@ -20,10 +20,12 @@ export function LeaderboardColumn({
   gender,
   title,
   q,
+  className,
 }: {
   gender: Gender;
   title: string;
   q: string;
+  className?: string;
 }) {
   const me = useMe();
   const mySlug = me.data?.profile.slug ?? null;
@@ -39,7 +41,7 @@ export function LeaderboardColumn({
   });
 
   return (
-    <section className="rounded-lg border border-border bg-surface p-2 shadow-card sm:p-3">
+    <section className={cn("rounded-lg border border-border bg-surface p-2 shadow-card sm:p-3", className)}>
       <div className="flex items-center justify-between px-2 py-1.5">
         <h2 className="text-sm font-extrabold text-fg">{title}</h2>
         {query.data && <span className="text-xs font-bold text-muted">{query.data.total}</span>}

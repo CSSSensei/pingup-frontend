@@ -1,6 +1,7 @@
 import type { ComponentType, SVGProps } from "react";
 
 import {
+  IconAward,
   IconCalendar,
   IconPaddle,
   IconPin,
@@ -25,6 +26,7 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: "/tournaments", label: "Турниры", icon: IconTrophy },
   { href: "/venues", label: "Залы", icon: IconPin },
   { href: "/players", label: "Игроки", icon: IconUser },
+  { href: "/rating", label: "Рейтинг", icon: IconAward },
 ];
 
 // Личное для вошедшего в сайдбаре — только «Мои» (мои игры/события).

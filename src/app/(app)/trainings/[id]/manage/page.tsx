@@ -5,10 +5,10 @@ import { use } from "react";
 
 import { ManageEventView } from "@/components/features/manage-event-view";
 
-export default function ManageGamePage({ params }: { params: Promise<{ id: string }> }) {
+export default function ManageTrainingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const eventId = Number(id);
   if (!Number.isInteger(eventId) || eventId <= 0) notFound();
 
-  return <ManageEventView id={eventId} section="games" />;
+  return <ManageEventView id={eventId} section="trainings" />;
 }

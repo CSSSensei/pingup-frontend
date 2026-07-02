@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { profilesApi } from "@/lib/api/endpoints/profiles";
+import { SMOLENSK_CITY_ID } from "@/lib/constants";
 import { handleApiError } from "@/lib/errors/handle";
 import { qk } from "@/lib/queryKeys";
 import { useAuthStore } from "@/stores/auth";
@@ -14,6 +15,17 @@ export function useProfiles(filter: ProfileFilterParams) {
     queryKey: qk.profiles(filter),
     queryFn: () => profilesApi.list(filter),
     enabled: status !== "idle" && status !== "authenticating",
+  });
+}
+
+// Тренеры города — для пикера тренера в форме тренировки.
+export function useCoaches(enabled = true) {
+  const status = useAuthStore((s) => s.status);
+  const filter: ProfileFilterParams = { city_id: SMOLENSK_CITY_ID, is_coach: true, limit: 100 };
+  return useQuery({
+    queryKey: qk.profiles(filter),
+    queryFn: () => profilesApi.list(filter),
+    enabled: enabled && status !== "idle" && status !== "authenticating",
   });
 }
 

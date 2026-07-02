@@ -8,7 +8,7 @@ import { Badge, GenderBadge, LevelBadge, RatingBadge, StatusBadge } from "@/comp
 import { IconCalendar, IconClock, IconPin, IconUsers } from "@/components/ui/icons";
 import { EVENT_FORMAT_LABELS, EVENT_TYPE_LABELS } from "@/lib/enums";
 import { formatDate, formatDistance, formatPrice, formatTimeRange } from "@/lib/format";
-import type { EventParticipant, EventRead } from "@/types/api";
+import type { EventRead, ProfilePublic } from "@/types/api";
 
 export function EventDetail({ event }: { event: EventRead }) {
   const organizer = event.participants?.find((p) => p.is_organizer) ?? null;
@@ -68,10 +68,17 @@ export function EventDetail({ event }: { event: EventRead }) {
         </section>
       )}
 
+      {event.coach && (
+        <section className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
+          <h2 className="mb-3 text-sm font-bold text-fg-2">Тренер</h2>
+          <PlayerRow profile={event.coach} />
+        </section>
+      )}
+
       {organizer && (
         <section className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
           <h2 className="mb-3 text-sm font-bold text-fg-2">Организатор</h2>
-          <PlayerRow participant={organizer} />
+          <PlayerRow profile={organizer.profile} />
         </section>
       )}
 
@@ -82,7 +89,7 @@ export function EventDetail({ event }: { event: EventRead }) {
           </h2>
           <div className="space-y-3">
             {confirmed.map((p) => (
-              <PlayerRow key={p.user_id} participant={p} />
+              <PlayerRow key={p.user_id} profile={p.profile} />
             ))}
           </div>
         </section>
@@ -111,8 +118,7 @@ function Meta({
   );
 }
 
-function PlayerRow({ participant }: { participant: EventParticipant }) {
-  const p = participant.profile;
+function PlayerRow({ profile: p }: { profile: ProfilePublic | null }) {
   const name = p?.display_name ?? "Игрок";
   const body = (
     <div className="flex items-center gap-3">

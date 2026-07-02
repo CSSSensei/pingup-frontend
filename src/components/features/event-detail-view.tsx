@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 import { EventDetail } from "@/components/features/event-detail";
 import { EmptyState, ErrorState } from "@/components/common/states";
@@ -8,25 +10,41 @@ import { ApiError } from "@/lib/api/client";
 import { IconArrowLeft } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEvent } from "@/hooks/useEvents";
+import { eventHref, eventSection, type EventSection } from "@/lib/links";
 
-export function EventDetailView({ id, backHref = "/games" }: { id: number; backHref?: string }) {
+const SECTION_TEXT: Record<EventSection, { back: string; notFound: string }> = {
+  games: { back: "К списку игр", notFound: "Игра не найдена" },
+  trainings: { back: "К списку тренировок", notFound: "Тренировка не найдена" },
+};
+
+export function EventDetailView({ id, section }: { id: number; section: EventSection }) {
   const query = useEvent(id);
+  const router = useRouter();
+
+  // Игры и тренировки — одни события; чужой раздел в URL тихо поправляем.
+  const event = query.data;
+  const wrongSection = event != null && eventSection(event.event_type) !== section;
+  useEffect(() => {
+    if (event && wrongSection) router.replace(eventHref(event));
+  }, [event, wrongSection, router]);
+
+  const text = SECTION_TEXT[section];
 
   return (
     <div className="space-y-4">
       <Link
-        href={backHref}
+        href={`/${section}`}
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-fg"
       >
         <IconArrowLeft size={16} />
-        К списку игр
+        {text.back}
       </Link>
 
-      {query.isPending ? (
+      {query.isPending || wrongSection ? (
         <DetailSkeleton />
       ) : query.isError ? (
         query.error instanceof ApiError && query.error.status === 404 ? (
-          <EmptyState title="Игра не найдена" description="Возможно, событие удалили или отменили." />
+          <EmptyState title={text.notFound} description="Возможно, событие удалили или отменили." />
         ) : (
           <ErrorState onRetry={() => query.refetch()} />
         )

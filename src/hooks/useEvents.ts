@@ -6,7 +6,12 @@ import { eventsApi } from "@/lib/api/endpoints/events";
 import { handleApiError } from "@/lib/errors/handle";
 import { qk } from "@/lib/queryKeys";
 import { useAuthStore } from "@/stores/auth";
-import type { EventFilterParams, EventRead } from "@/types/api";
+import type {
+  EventCreatePayload,
+  EventFilterParams,
+  EventRead,
+  EventUpdatePayload,
+} from "@/types/api";
 
 export function useEvents(filter: EventFilterParams) {
   const status = useAuthStore((s) => s.status);
@@ -25,6 +30,43 @@ export function useEvent(id: number) {
     queryFn: () => eventsApi.get(id),
     // Ждём итог silent-refresh: иначе первый запрос уходит без Bearer и is_joined = null.
     enabled: Number.isFinite(id) && status !== "idle" && status !== "authenticating",
+  });
+}
+
+// create/update без onError — форма сама мапит 422 на поля.
+export function useCreateEvent() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: EventCreatePayload) => eventsApi.create(body),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["events"] });
+      qc.invalidateQueries({ queryKey: ["myEvents"] });
+    },
+  });
+}
+
+export function useUpdateEvent(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: EventUpdatePayload) => eventsApi.update(id, body),
+    onSuccess: (event) => {
+      qc.setQueryData(qk.event(id), event);
+      qc.invalidateQueries({ queryKey: ["events"] });
+      qc.invalidateQueries({ queryKey: ["myEvents"] });
+    },
+  });
+}
+
+export function useDeleteEvent(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => eventsApi.remove(id),
+    onError: handleApiError,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.event(id) });
+      qc.invalidateQueries({ queryKey: ["events"] });
+      qc.invalidateQueries({ queryKey: ["myEvents"] });
+    },
   });
 }
 

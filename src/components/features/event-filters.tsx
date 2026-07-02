@@ -18,12 +18,16 @@ const GENDER_OPTIONS: FilterOption[] = [
 export function EventFilters({
   value,
   onChange,
+  children,
 }: {
   value: EventFilterParams;
   onChange: (patch: Partial<EventFilterParams>) => void;
+  // Доп. ряды фильтров перед общими (например, «Тип» у тренировок).
+  children?: React.ReactNode;
 }) {
   return (
     <FilterBar>
+      {children}
       <FilterRow label="Уровень">
         <ChipSelect
           ariaLabel="Уровень"

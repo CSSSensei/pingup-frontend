@@ -14,7 +14,7 @@ const PROTECTED_PREFIXES = [
   "/venues/new",
 ];
 
-const PROTECTED_SUFFIXES = ["/manage", "/responses"];
+const PROTECTED_SUFFIXES = ["/manage", "/responses", "/edit"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

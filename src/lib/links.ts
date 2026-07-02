@@ -12,6 +12,15 @@ export function eventHref(event: { id: number; event_type: EventType }): string 
   return `${SECTION_BY_TYPE[event.event_type] ?? "/games"}/${event.id}`;
 }
 
+// Разделы «Игры» и «Тренировки» — одни и те же события; страницы деталей/manage
+// сами перекидывают на верный раздел, если тип не совпал с URL (поэтому
+// диплинки уведомлений могут смело вести в /games/...).
+export type EventSection = "games" | "trainings";
+
+export function eventSection(type: EventType): EventSection {
+  return type === "game" ? "games" : "trainings";
+}
+
 // Диплинк уведомления по его type + data-payload; null → просто отметить прочитанным.
 export function notificationHref(n: NotificationItem): string | null {
   const data = n.data ?? {};

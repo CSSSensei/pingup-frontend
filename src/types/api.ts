@@ -114,6 +114,7 @@ export interface MeResponse {
 
 // Контактов не содержит — утечки телефона/telegram нет даже под Bearer.
 export interface ProfilePublic {
+  user_id: number;
   slug: string | null;
   display_name: string;
   gender: Gender | null;
@@ -202,6 +203,45 @@ export interface EventRead {
   is_joined: boolean | null;
   distance_km: number | null;
   participants: EventParticipant[] | null;
+  // Заполнен только в детальном ответе (в списках всегда null).
+  coach: ProfilePublic | null;
+}
+
+export interface EventCreatePayload {
+  city_id: number;
+  event_type: EventType;
+  event_format: EventFormat;
+  title: string;
+  description?: string;
+  venue_id?: number;
+  location_text?: string;
+  coach_id?: number;
+  starts_at: string;
+  ends_at?: string;
+  max_participants?: number;
+  min_skill_level?: SkillLevel;
+  max_skill_level?: SkillLevel;
+  gender_restriction?: Gender;
+  price?: string;
+  is_public?: boolean;
+}
+
+// PATCH — exclude_unset на бэке: undefined = не трогать, null = очистить поле.
+// event_type/event_format/coach_id после создания не меняются (нет в EventUpdate).
+export interface EventUpdatePayload {
+  title?: string;
+  description?: string | null;
+  venue_id?: number | null;
+  location_text?: string | null;
+  starts_at?: string;
+  ends_at?: string | null;
+  max_participants?: number | null;
+  min_skill_level?: SkillLevel | null;
+  max_skill_level?: SkillLevel | null;
+  gender_restriction?: Gender | null;
+  price?: string | null;
+  status?: EventStatus;
+  is_public?: boolean;
 }
 
 export interface EventFilterParams {

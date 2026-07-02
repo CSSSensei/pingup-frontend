@@ -38,7 +38,7 @@ export function JoinButton({ event }: { event: EventRead }) {
   const isOrganizer = me?.id === event.organizer_id;
   if (isOrganizer) {
     return (
-      <Link href={`/games/${event.id}/manage`} className="w-full sm:w-auto">
+      <Link href={`${eventHref(event)}/manage`} className="w-full sm:w-auto">
         <Button size="lg" fullWidth variant="secondary" className="sm:w-auto sm:px-10">
           Управлять участниками
         </Button>

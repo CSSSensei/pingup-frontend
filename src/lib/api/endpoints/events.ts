@@ -1,9 +1,11 @@
 import { apiFetch } from "@/lib/api/client";
 import { API_PREFIX } from "@/lib/constants";
 import type {
+  EventCreatePayload,
   EventFilterParams,
   EventParticipant,
   EventRead,
+  EventUpdatePayload,
   MyEventsParams,
   Paginated,
 } from "@/types/api";
@@ -24,6 +26,17 @@ export const eventsApi = {
     apiFetch<Paginated<EventRead>>(`${API_PREFIX}/events${toQuery(filter)}`),
 
   get: (id: number) => apiFetch<EventRead>(`${API_PREFIX}/events/${id}`),
+
+  create: (body: EventCreatePayload) =>
+    apiFetch<EventRead>(`${API_PREFIX}/events`, { method: "POST", body: JSON.stringify(body) }),
+
+  update: (id: number, body: EventUpdatePayload) =>
+    apiFetch<EventRead>(`${API_PREFIX}/events/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }),
+
+  remove: (id: number) => apiFetch<void>(`${API_PREFIX}/events/${id}`, { method: "DELETE" }),
 
   join: (id: number) =>
     apiFetch<EventParticipant>(`${API_PREFIX}/events/${id}/join`, { method: "POST" }),

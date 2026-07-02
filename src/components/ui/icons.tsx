@@ -242,3 +242,34 @@ export const IconAward = (p: IconProps) => (
     <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
   </Svg>
 );
+
+export const IconStar = ({ size = 20, ...p }: IconProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill="currentColor"
+    stroke="currentColor"
+    strokeWidth={1}
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...p}
+  >
+    <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z" />
+  </svg>
+);
+
+export const IconShieldCheck = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+    <path d="m9 12 2 2 4-4" />
+  </Svg>
+);
+
+export const IconRoute = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="6" cy="19" r="3" />
+    <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" />
+    <circle cx="18" cy="5" r="3" />
+  </Svg>
+);

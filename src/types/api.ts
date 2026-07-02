@@ -328,3 +328,60 @@ export interface MyPartnerRequestsParams {
   limit?: number;
   offset?: number;
 }
+
+export interface VenuePhoto {
+  id: number;
+  url: string;
+  sort_order: number;
+  is_cover: boolean;
+}
+
+export interface VenueRead {
+  id: number;
+  city_id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  address: string;
+  lat: number;
+  lng: number;
+  tables_count: number | null;
+  phone: string | null;
+  website: string | null;
+  // Свободный JSONB; фронт-конвенция — {"text": "Пн–Вс 09:00–22:00"}.
+  working_hours: Record<string, unknown> | null;
+  price_info: string | null;
+  is_verified: boolean;
+  rating_avg: string;
+  reviews_count: number;
+  created_at: string;
+  photos: VenuePhoto[];
+  distance_km: number | null;
+}
+
+export interface VenueCreatePayload {
+  city_id: number;
+  name: string;
+  description?: string | null;
+  address: string;
+  lat: number;
+  lng: number;
+  tables_count?: number | null;
+  phone?: string | null;
+  website?: string | null;
+  working_hours?: Record<string, unknown> | null;
+  price_info?: string | null;
+}
+
+export interface VenueFilterParams {
+  city_id?: number;
+  is_verified?: boolean;
+  tables_min?: number;
+  lat?: number;
+  lng?: number;
+  radius_km?: number;
+  q?: string;
+  sort?: string;
+  limit?: number;
+  offset?: number;
+}

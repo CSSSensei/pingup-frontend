@@ -1,0 +1,55 @@
+"use client";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { venuesApi } from "@/lib/api/endpoints/venues";
+import { qk } from "@/lib/queryKeys";
+import type { VenueCreatePayload, VenueFilterParams } from "@/types/api";
+
+export function useVenues(filter: VenueFilterParams) {
+  return useQuery({
+    queryKey: qk.venues(filter),
+    queryFn: () => venuesApi.list(filter),
+  });
+}
+
+export function useVenue(slug: string) {
+  return useQuery({
+    queryKey: qk.venue(slug),
+    queryFn: () => venuesApi.get(slug),
+    enabled: !!slug,
+  });
+}
+
+// Ошибки обрабатывает форма (маппинг 422 на поля) — без общего onError-тоста.
+export function useCreateVenue() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: VenueCreatePayload) => venuesApi.create(body),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["venues"] });
+    },
+  });
+}
+
+// Фото грузятся best-effort после создания зала — ошибку показывает вызывающий.
+export function useAddVenuePhoto() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      venueId,
+      file,
+      sortOrder,
+      isCover,
+    }: {
+      venueId: number;
+      file: File;
+      sortOrder?: number;
+      isCover?: boolean;
+    }) => venuesApi.addPhoto(venueId, file, { sortOrder, isCover }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["venues"] });
+      qc.invalidateQueries({ queryKey: ["venue"] });
+    },
+  });
+}

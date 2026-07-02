@@ -133,6 +133,34 @@ export const PARTNER_STATUS_BADGE: Record<PartnerRequestStatus, string> = {
   expired: "bg-surface-3 text-fg-2",
 };
 
+export const TOURNAMENT_STATUSES = [
+  "announced",
+  "registration_open",
+  "registration_closed",
+  "in_progress",
+  "completed",
+  "cancelled",
+] as const;
+export type TournamentStatus = (typeof TOURNAMENT_STATUSES)[number];
+
+export const TOURNAMENT_STATUS_LABELS: Record<TournamentStatus, string> = {
+  announced: "Анонсирован",
+  registration_open: "Регистрация открыта",
+  registration_closed: "Регистрация закрыта",
+  in_progress: "Идёт",
+  completed: "Завершён",
+  cancelled: "Отменён",
+};
+
+export const TOURNAMENT_STATUS_BADGE: Record<TournamentStatus, string> = {
+  announced: "bg-status-pending/12 text-status-pending",
+  registration_open: "bg-status-open/12 text-status-open",
+  registration_closed: "bg-status-full/12 text-status-full",
+  in_progress: "bg-status-progress/12 text-status-progress",
+  completed: "bg-status-completed/12 text-status-completed",
+  cancelled: "bg-status-cancelled/12 text-status-cancelled",
+};
+
 export const REVIEW_TARGET_TYPES = ["venue", "player", "coach"] as const;
 export type ReviewTargetType = (typeof REVIEW_TARGET_TYPES)[number];
 

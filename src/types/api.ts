@@ -42,6 +42,7 @@ import type {
   PlayingHand,
   ReviewTargetType,
   SkillLevel,
+  TournamentStatus,
 } from "@/lib/enums";
 
 export type UserRole = "guest" | "user" | "moderator" | "admin";
@@ -458,6 +459,110 @@ export interface ReviewFilterParams {
   author_id?: number;
   rating?: number;
   sort?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface TournamentParticipantRead {
+  user_id: number;
+  status: ParticipantStatus;
+  seed: number | null;
+  final_place: number | null;
+  registered_at: string;
+  profile: ProfilePublic | null;
+}
+
+export interface TournamentRead {
+  id: number;
+  city_id: number;
+  venue_id: number | null;
+  status: TournamentStatus;
+  title: string;
+  slug: string;
+  description: string | null;
+  starts_at: string;
+  ends_at: string | null;
+  registration_deadline: string | null;
+  max_participants: number | null;
+  skill_level_min: SkillLevel | null;
+  skill_level_max: SkillLevel | null;
+  rating_min: number | null;
+  rating_max: number | null;
+  gender_restriction: Gender | null;
+  // entry_fee — Decimal с бэка, приходит строкой ("300.00"), как price событий.
+  entry_fee: string | null;
+  is_official: boolean;
+  organizer_id: number | null;
+  external_url: string | null;
+  created_at: string;
+  participants_count: number;
+  is_registered: boolean | null;
+}
+
+export interface TournamentCreatePayload {
+  city_id: number;
+  title: string;
+  description?: string | null;
+  venue_id?: number | null;
+  starts_at: string;
+  ends_at?: string | null;
+  registration_deadline?: string | null;
+  max_participants?: number | null;
+  skill_level_min?: SkillLevel | null;
+  skill_level_max?: SkillLevel | null;
+  rating_min?: number | null;
+  rating_max?: number | null;
+  gender_restriction?: Gender | null;
+  entry_fee?: string | null;
+  external_url?: string | null;
+}
+
+// PATCH — exclude_unset на бэке: undefined = не трогать, null = очистить поле.
+export interface TournamentUpdatePayload {
+  title?: string;
+  description?: string | null;
+  venue_id?: number | null;
+  status?: TournamentStatus;
+  starts_at?: string;
+  ends_at?: string | null;
+  registration_deadline?: string | null;
+  max_participants?: number | null;
+  skill_level_min?: SkillLevel | null;
+  skill_level_max?: SkillLevel | null;
+  rating_min?: number | null;
+  rating_max?: number | null;
+  gender_restriction?: Gender | null;
+  entry_fee?: string | null;
+  external_url?: string | null;
+}
+
+export interface TournamentFilterParams {
+  city_id?: number;
+  status?: TournamentStatus;
+  venue_id?: number;
+  date_from?: string;
+  date_to?: string;
+  skill_level_min?: SkillLevel;
+  skill_level_max?: SkillLevel;
+  gender?: Gender;
+  is_official?: boolean;
+  q?: string;
+  sort?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface MyTournamentsParams {
+  role?: "organizer" | "participant";
+  status?: TournamentStatus;
+  date_from?: string;
+  date_to?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface TournamentParticipantsFilterParams {
+  status?: ParticipantStatus;
   limit?: number;
   offset?: number;
 }

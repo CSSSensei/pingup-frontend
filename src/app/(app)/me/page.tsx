@@ -4,20 +4,23 @@ import { useState } from "react";
 
 import { EventCard } from "@/components/features/event-card";
 import { PartnerRequestCard } from "@/components/features/partner-request-card";
+import { TournamentCard } from "@/components/features/tournament-card";
 import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/states";
 import { PageHeader } from "@/components/common/page-header";
 import { LinkButton } from "@/components/ui/link-button";
-import { IconCalendar, IconUsers } from "@/components/ui/icons";
+import { IconCalendar, IconTrophy, IconUsers } from "@/components/ui/icons";
 import { useMyEvents } from "@/hooks/useMyEvents";
 import { useMyPartnerRequests } from "@/hooks/usePartners";
+import { useMyTournaments } from "@/hooks/useTournaments";
 import { cn } from "@/lib/utils";
 
-type Tab = "participant" | "organizer" | "partners";
+type Tab = "participant" | "organizer" | "partners" | "tournaments";
 
 const TABS: { key: Tab; label: string }[] = [
   { key: "participant", label: "Я участвую" },
   { key: "organizer", label: "Организую" },
-  { key: "partners", label: "Мои объявления" },
+  { key: "partners", label: "Объявления" },
+  { key: "tournaments", label: "Турниры" },
 ];
 
 export default function MyPage() {
@@ -43,7 +46,13 @@ export default function MyPage() {
         ))}
       </div>
 
-      {tab === "partners" ? <MyPartners /> : <MyEvents role={tab} />}
+      {tab === "partners" ? (
+        <MyPartners />
+      ) : tab === "tournaments" ? (
+        <MyTournaments />
+      ) : (
+        <MyEvents role={tab} />
+      )}
     </div>
   );
 }
@@ -99,6 +108,34 @@ function MyPartners() {
     <div className="space-y-3">
       {query.data.items.map((request) => (
         <PartnerRequestCard key={request.id} request={request} />
+      ))}
+    </div>
+  );
+}
+
+function MyTournaments() {
+  const query = useMyTournaments();
+
+  if (query.isPending) return <CardListSkeleton />;
+  if (query.isError) return <ErrorState onRetry={() => query.refetch()} />;
+  if (query.data.items.length === 0) {
+    return (
+      <EmptyState
+        icon={<IconTrophy size={32} />}
+        title="Пока нет турниров"
+        description="Зарегистрируйтесь на турнир или создайте свой — он появится здесь."
+        action={
+          <LinkButton href="/tournaments" size="sm">
+            К списку турниров
+          </LinkButton>
+        }
+      />
+    );
+  }
+  return (
+    <div className="space-y-3">
+      {query.data.items.map((tournament) => (
+        <TournamentCard key={tournament.id} tournament={tournament} />
       ))}
     </div>
   );

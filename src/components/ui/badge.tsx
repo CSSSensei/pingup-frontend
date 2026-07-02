@@ -8,10 +8,13 @@ import {
   PARTNER_STATUS_LABELS,
   SKILL_BADGE,
   SKILL_LABELS,
+  TOURNAMENT_STATUS_BADGE,
+  TOURNAMENT_STATUS_LABELS,
   type EventStatus,
   type Gender,
   type PartnerRequestStatus,
   type SkillLevel,
+  type TournamentStatus,
 } from "@/lib/enums";
 
 const base =
@@ -58,6 +61,14 @@ export function GenderBadge({ gender }: { gender: Gender | "all" }) {
 
 export function PartnerStatusBadge({ status }: { status: PartnerRequestStatus }) {
   return <span className={cn(base, PARTNER_STATUS_BADGE[status])}>{PARTNER_STATUS_LABELS[status]}</span>;
+}
+
+export function TournamentStatusBadge({ status }: { status: TournamentStatus }) {
+  return (
+    <span className={cn(base, TOURNAMENT_STATUS_BADGE[status])}>
+      {TOURNAMENT_STATUS_LABELS[status]}
+    </span>
+  );
 }
 
 const StarIcon = () => (

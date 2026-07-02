@@ -2,9 +2,11 @@ import type {
   EventFilterParams,
   MyEventsParams,
   MyPartnerRequestsParams,
+  MyTournamentsParams,
   PartnerRequestFilterParams,
   ProfileFilterParams,
   ReviewFilterParams,
+  TournamentFilterParams,
   VenueFilterParams,
 } from "@/types/api";
 import type { ParticipantStatus } from "@/lib/enums";
@@ -30,4 +32,9 @@ export const qk = {
   venues: (filter?: VenueFilterParams) => ["venues", filter ?? {}] as const,
   venue: (slug: string) => ["venue", slug] as const,
   reviews: (filter?: ReviewFilterParams) => ["reviews", filter ?? {}] as const,
+  tournaments: (filter?: TournamentFilterParams) => ["tournaments", filter ?? {}] as const,
+  tournament: (slug: string) => ["tournament", slug] as const,
+  tournamentParticipants: (id: number, status?: ParticipantStatus) =>
+    ["tournament", id, "participants", status ?? "all"] as const,
+  myTournaments: (params?: MyTournamentsParams) => ["myTournaments", params ?? {}] as const,
 };

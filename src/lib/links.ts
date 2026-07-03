@@ -46,6 +46,7 @@ export function notificationHref(n: NotificationItem): string | null {
   if (n.type === "tournament_announce" || n.type === "tournament_reminder") {
     return tournamentSlug ? `/tournaments/${tournamentSlug}` : "/tournaments";
   }
+  if (n.type === "report_resolved") return "/me/reports";
   if (n.type === "rating_updated" || n.type === "review_received") return "/profile";
   return null;
 }

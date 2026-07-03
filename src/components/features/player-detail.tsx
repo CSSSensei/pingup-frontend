@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ContactLinks } from "@/components/features/contact-links";
 import { EquipmentCard } from "@/components/features/equipment-card";
 import { PlayerReviews } from "@/components/features/player-reviews";
+import { ReportButton } from "@/components/features/report-button";
 import { ProfileHeaderCard } from "@/components/features/profile-header-card";
 import { RatingChart } from "@/components/features/rating-chart";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -80,6 +81,17 @@ export function PlayerDetail({ profile, slug }: { profile: ProfileDetail; slug: 
       />
 
       <PlayerReviews profile={profile} slug={slug} />
+
+      {!isSelf && (
+        <div className="flex justify-end pt-1">
+          <ReportButton
+            targetType="user"
+            targetId={profile.user_id}
+            ownerId={profile.user_id}
+            loginNext={`/players/${slug}`}
+          />
+        </div>
+      )}
     </div>
   );
 }

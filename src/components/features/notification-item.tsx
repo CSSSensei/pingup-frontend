@@ -6,6 +6,7 @@ import {
   IconBell,
   IconCalendar,
   IconCheck,
+  IconFlag,
   IconTrophy,
   IconUsers,
 } from "@/components/ui/icons";
@@ -26,6 +27,7 @@ const ICONS: Partial<Record<NotificationType, typeof IconBell>> = {
   partner_matched: IconUsers,
   tournament_announce: IconTrophy,
   tournament_reminder: IconTrophy,
+  report_resolved: IconFlag,
 };
 
 export function NotificationItem({ notification }: { notification: Notification }) {

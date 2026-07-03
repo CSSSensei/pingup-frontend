@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { EventCard } from "@/components/features/event-card";
+import { ReportButton } from "@/components/features/report-button";
 import { ReviewsSection } from "@/components/features/reviews-section";
 import { VenuesMap } from "@/components/maps/venues-map";
 import { Badge } from "@/components/ui/badge";
@@ -217,6 +218,10 @@ export function VenueDetail({ venue }: { venue: VenueRead }) {
         denormAvg={Number(venue.rating_avg)}
         denormCount={venue.reviews_count}
       />
+
+      <div className="flex justify-end">
+        <ReportButton targetType="venue" targetId={venue.id} loginNext={`/venues/${venue.slug}`} />
+      </div>
     </div>
   );
 }

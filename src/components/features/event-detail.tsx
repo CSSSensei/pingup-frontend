@@ -4,10 +4,12 @@ import Link from "next/link";
 
 import { Avatar } from "@/components/common/avatar";
 import { JoinButton } from "@/components/features/join-button";
+import { ReportButton } from "@/components/features/report-button";
 import { Badge, GenderBadge, LevelBadge, RatingBadge, StatusBadge } from "@/components/ui/badge";
 import { IconCalendar, IconClock, IconPin, IconUsers } from "@/components/ui/icons";
 import { EVENT_FORMAT_LABELS, EVENT_TYPE_LABELS } from "@/lib/enums";
 import { formatDate, formatDistance, formatPrice, formatTimeRange } from "@/lib/format";
+import { eventHref } from "@/lib/links";
 import type { EventRead, ProfilePublic } from "@/types/api";
 
 export function EventDetail({ event }: { event: EventRead }) {
@@ -94,6 +96,15 @@ export function EventDetail({ event }: { event: EventRead }) {
           </div>
         </section>
       )}
+
+      <div className="flex justify-end">
+        <ReportButton
+          targetType="event"
+          targetId={event.id}
+          ownerId={event.organizer_id}
+          loginNext={eventHref(event)}
+        />
+      </div>
     </div>
   );
 }

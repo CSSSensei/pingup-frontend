@@ -28,7 +28,15 @@ export default function MyPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-6 sm:py-8">
-      <PageHeader title="Мои" description="События и объявления, где вы участвуете или которые создали" />
+      <PageHeader
+        title="Мои"
+        description="События и объявления, где вы участвуете или которые создали"
+        actions={
+          <LinkButton href="/me/reports" variant="ghost" size="sm">
+            Мои жалобы
+          </LinkButton>
+        }
+      />
 
       <div className="mb-5 flex gap-1 rounded-lg border border-border bg-surface p-1">
         {TABS.map((t) => (

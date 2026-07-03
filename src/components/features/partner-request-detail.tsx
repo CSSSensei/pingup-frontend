@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { Avatar } from "@/components/common/avatar";
+import { ReportButton } from "@/components/features/report-button";
 import { RespondButton } from "@/components/features/respond-button";
 import { Badge, LevelBadge, RatingBadge } from "@/components/ui/badge";
 import { IconUser, IconUsers } from "@/components/ui/icons";
@@ -60,6 +61,15 @@ export function PartnerRequestDetail({ request }: { request: PartnerRequestRead 
           <AuthorRow author={author} />
         </section>
       )}
+
+      <div className="flex justify-end">
+        <ReportButton
+          targetType="partner_request"
+          targetId={request.id}
+          ownerId={request.author_id}
+          loginNext={`/partners/${request.id}`}
+        />
+      </div>
     </div>
   );
 }

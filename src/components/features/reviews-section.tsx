@@ -138,7 +138,7 @@ export function ReviewsSection({
               />
             )}
             {others.map((r) => (
-              <ReviewCard key={r.id} review={r} />
+              <ReviewCard key={r.id} review={r} loginNext={loginNext} />
             ))}
           </div>
         )}

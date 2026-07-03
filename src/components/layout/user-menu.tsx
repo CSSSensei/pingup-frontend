@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { Avatar } from "@/components/common/avatar";
-import { IconLogOut, IconSettings, IconUser } from "@/components/ui/icons";
+import { IconLogOut, IconSettings, IconShieldCheck, IconUser } from "@/components/ui/icons";
 import { useLogout } from "@/hooks/useAuth";
 import { useMe } from "@/hooks/useMe";
+import { isModerator } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 
 export function UserMenu() {
@@ -58,6 +59,11 @@ export function UserMenu() {
           <MenuLink href="/settings" icon={<IconSettings size={17} />} onClick={() => setOpen(false)}>
             Настройки
           </MenuLink>
+          {isModerator(me.role) && (
+            <MenuLink href="/admin" icon={<IconShieldCheck size={17} />} onClick={() => setOpen(false)}>
+              Модерация
+            </MenuLink>
+          )}
           <button
             type="button"
             role="menuitem"

@@ -170,6 +170,48 @@ export const REVIEW_TARGET_LABELS: Record<ReviewTargetType, string> = {
   coach: "Тренер",
 };
 
+// Цели жалобы (отличается от REVIEW_TARGET_TYPES!). target_id: для user — user.id,
+// для остальных — id объекта (venue/event/review/partner_request/tournament).
+export const REPORT_TARGET_TYPES = [
+  "user",
+  "venue",
+  "event",
+  "review",
+  "partner_request",
+  "tournament",
+] as const;
+export type ReportTargetType = (typeof REPORT_TARGET_TYPES)[number];
+
+export const REPORT_TARGET_LABELS: Record<ReportTargetType, string> = {
+  user: "Игрок",
+  venue: "Зал",
+  event: "Событие",
+  review: "Отзыв",
+  partner_request: "Объявление",
+  tournament: "Турнир",
+};
+
+export const REPORT_STATUSES = ["open", "in_review", "resolved", "rejected"] as const;
+export type ReportStatus = (typeof REPORT_STATUSES)[number];
+
+export const REPORT_STATUS_LABELS: Record<ReportStatus, string> = {
+  open: "Открыта",
+  in_review: "В работе",
+  resolved: "Решена",
+  rejected: "Отклонена",
+};
+
+export const REPORT_STATUS_BADGE: Record<ReportStatus, string> = {
+  open: "bg-status-open/12 text-status-open",
+  in_review: "bg-status-progress/12 text-status-progress",
+  resolved: "bg-status-completed/12 text-status-completed",
+  rejected: "bg-status-cancelled/12 text-status-cancelled",
+};
+
+// Терминальные статусы жалобы, на которые модератор может её закрыть (open недопустим — бэк 422).
+export const REPORT_RESOLVE_STATUSES = ["in_review", "resolved", "rejected"] as const;
+export type ReportResolveStatus = (typeof REPORT_RESOLVE_STATUSES)[number];
+
 export const NOTIFICATION_TYPES = [
   "event_invite",
   "event_join_request",

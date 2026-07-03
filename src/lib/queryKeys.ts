@@ -2,9 +2,11 @@ import type {
   EventFilterParams,
   MyEventsParams,
   MyPartnerRequestsParams,
+  MyReportsFilterParams,
   MyTournamentsParams,
   PartnerRequestFilterParams,
   ProfileFilterParams,
+  ReportQueueFilterParams,
   ReviewFilterParams,
   TournamentFilterParams,
   VenueFilterParams,
@@ -37,4 +39,7 @@ export const qk = {
   tournamentParticipants: (id: number, status?: ParticipantStatus) =>
     ["tournament", id, "participants", status ?? "all"] as const,
   myTournaments: (params?: MyTournamentsParams) => ["myTournaments", params ?? {}] as const,
+  reportQueue: (filter?: ReportQueueFilterParams) => ["reportQueue", filter ?? {}] as const,
+  report: (id: number) => ["report", id] as const,
+  myReports: (filter?: MyReportsFilterParams) => ["myReports", filter ?? {}] as const,
 };

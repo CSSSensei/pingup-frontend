@@ -40,6 +40,9 @@ import type {
   ParticipantStatus,
   PartnerRequestStatus,
   PlayingHand,
+  ReportResolveStatus,
+  ReportStatus,
+  ReportTargetType,
   ReviewTargetType,
   SkillLevel,
   TournamentStatus,
@@ -563,6 +566,53 @@ export interface MyTournamentsParams {
 
 export interface TournamentParticipantsFilterParams {
   status?: ParticipantStatus;
+  limit?: number;
+  offset?: number;
+}
+
+// target_id: для user — user.id; venue/event/review/partner_request/tournament — id объекта.
+export interface ReportRead {
+  id: number;
+  reporter_id: number | null;
+  target_type: ReportTargetType;
+  target_id: number;
+  reason: string;
+  status: ReportStatus;
+  resolution_note: string | null;
+  resolved_by: number | null;
+  resolved_at: string | null;
+  created_at: string;
+}
+
+// Снапшот цели (тип полей зависит от target_type) — только в детальном ответе модератору.
+export interface ReportDetail extends ReportRead {
+  target_snapshot: Record<string, unknown> | null;
+}
+
+export interface ReportCreatePayload {
+  target_type: ReportTargetType;
+  target_id: number;
+  reason: string;
+}
+
+export interface ReportResolvePayload {
+  status: ReportResolveStatus;
+  resolution_note?: string | null;
+}
+
+export interface ReportQueueFilterParams {
+  status?: ReportStatus;
+  target_type?: ReportTargetType;
+  reporter_id?: number;
+  sort?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface MyReportsFilterParams {
+  status?: ReportStatus;
+  target_type?: ReportTargetType;
+  sort?: string;
   limit?: number;
   offset?: number;
 }

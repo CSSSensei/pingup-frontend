@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ReportButton } from "@/components/features/report-button";
 import { Avatar } from "@/components/common/avatar";
 import { LevelBadge } from "@/components/ui/badge";
 import { IconPencil } from "@/components/ui/icons";
@@ -12,11 +13,14 @@ export function ReviewCard({
   isOwn = false,
   onEdit,
   onDelete,
+  loginNext,
 }: {
   review: ReviewRead;
   isOwn?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
+  // Задан → под чужим отзывом показывается «Пожаловаться».
+  loginNext?: string;
 }) {
   const author = review.author;
   const name = author?.display_name ?? "Игрок";
@@ -80,6 +84,17 @@ export function ReviewCard({
               Удалить
             </button>
           )}
+        </div>
+      )}
+
+      {!isOwn && loginNext && (
+        <div className="mt-3 flex justify-end border-t border-border pt-3">
+          <ReportButton
+            targetType="review"
+            targetId={review.id}
+            ownerId={review.author_id}
+            loginNext={loginNext}
+          />
         </div>
       )}
     </article>

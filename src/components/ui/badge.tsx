@@ -6,6 +6,8 @@ import {
   GENDER_LABELS,
   PARTNER_STATUS_BADGE,
   PARTNER_STATUS_LABELS,
+  REPORT_STATUS_BADGE,
+  REPORT_STATUS_LABELS,
   SKILL_BADGE,
   SKILL_LABELS,
   TOURNAMENT_STATUS_BADGE,
@@ -13,6 +15,7 @@ import {
   type EventStatus,
   type Gender,
   type PartnerRequestStatus,
+  type ReportStatus,
   type SkillLevel,
   type TournamentStatus,
 } from "@/lib/enums";
@@ -68,6 +71,12 @@ export function TournamentStatusBadge({ status }: { status: TournamentStatus }) 
     <span className={cn(base, TOURNAMENT_STATUS_BADGE[status])}>
       {TOURNAMENT_STATUS_LABELS[status]}
     </span>
+  );
+}
+
+export function ReportStatusBadge({ status }: { status: ReportStatus }) {
+  return (
+    <span className={cn(base, REPORT_STATUS_BADGE[status])}>{REPORT_STATUS_LABELS[status]}</span>
   );
 }
 

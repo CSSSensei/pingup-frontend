@@ -1,4 +1,9 @@
 import type {
+  AdminEventFilterParams,
+  AdminReviewFilterParams,
+  AdminTournamentFilterParams,
+  AdminUserFilterParams,
+  AdminVenueFilterParams,
   EventFilterParams,
   MyEventsParams,
   MyPartnerRequestsParams,
@@ -6,6 +11,7 @@ import type {
   MyTournamentsParams,
   PartnerRequestFilterParams,
   ProfileFilterParams,
+  RatingSyncLogFilterParams,
   ReportQueueFilterParams,
   ReviewFilterParams,
   TournamentFilterParams,
@@ -42,4 +48,14 @@ export const qk = {
   reportQueue: (filter?: ReportQueueFilterParams) => ["reportQueue", filter ?? {}] as const,
   report: (id: number) => ["report", id] as const,
   myReports: (filter?: MyReportsFilterParams) => ["myReports", filter ?? {}] as const,
+  adminUsers: (filter?: AdminUserFilterParams) => ["adminUsers", filter ?? {}] as const,
+  adminUser: (id: number) => ["adminUser", id] as const,
+  adminVenues: (filter?: AdminVenueFilterParams) => ["adminVenues", filter ?? {}] as const,
+  adminEvents: (filter?: AdminEventFilterParams) => ["adminEvents", filter ?? {}] as const,
+  adminTournaments: (filter?: AdminTournamentFilterParams) =>
+    ["adminTournaments", filter ?? {}] as const,
+  adminReviews: (filter?: AdminReviewFilterParams) => ["adminReviews", filter ?? {}] as const,
+  ratingSyncLog: (filter?: RatingSyncLogFilterParams) => ["ratingSyncLog", filter ?? {}] as const,
+  ratingSyncStale: (params?: { limit?: number; offset?: number }) =>
+    ["ratingSyncStale", params ?? {}] as const,
 };

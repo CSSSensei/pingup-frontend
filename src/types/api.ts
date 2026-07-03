@@ -204,6 +204,7 @@ export interface EventRead {
   price: string | null;
   is_public: boolean;
   created_at: string;
+  deleted_at: string | null;
   participants_count: number;
   is_joined: boolean | null;
   distance_km: number | null;
@@ -400,6 +401,7 @@ export interface VenueRead {
   rating_avg: string;
   reviews_count: number;
   created_at: string;
+  deleted_at: string | null;
   photos: VenuePhoto[];
   distance_km: number | null;
 }
@@ -411,6 +413,20 @@ export interface VenueCreatePayload {
   address: string;
   lat: number;
   lng: number;
+  tables_count?: number | null;
+  phone?: string | null;
+  website?: string | null;
+  working_hours?: Record<string, unknown> | null;
+  price_info?: string | null;
+}
+
+// PATCH — все поля опциональны (VenueUpdate, extra="forbid" на бэке).
+export interface VenueUpdatePayload {
+  name?: string;
+  description?: string | null;
+  address?: string;
+  lat?: number;
+  lng?: number;
   tables_count?: number | null;
   phone?: string | null;
   website?: string | null;
@@ -441,6 +457,7 @@ export interface ReviewRead {
   comment: string | null;
   is_hidden: boolean;
   created_at: string;
+  deleted_at: string | null;
   author: ProfilePublic | null;
 }
 
@@ -498,6 +515,7 @@ export interface TournamentRead {
   organizer_id: number | null;
   external_url: string | null;
   created_at: string;
+  deleted_at: string | null;
   participants_count: number;
   is_registered: boolean | null;
 }
@@ -615,4 +633,128 @@ export interface MyReportsFilterParams {
   sort?: string;
   limit?: number;
   offset?: number;
+}
+
+export interface AdminUserRead {
+  id: number;
+  email: string;
+  role: UserRole;
+  is_superuser: boolean;
+  is_active: boolean;
+  is_email_verified: boolean;
+  marketing_consent: boolean;
+  city_id: number;
+  last_login_at: string | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  profile: ProfileMe | null;
+}
+
+export interface AdminUserDetail extends AdminUserRead {
+  counters: Record<string, number>;
+}
+
+export interface AdminUserFilterParams {
+  role?: UserRole;
+  is_active?: boolean;
+  is_email_verified?: boolean;
+  city_id?: number;
+  include_deleted?: boolean;
+  q?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface BanPayload {
+  reason?: string | null;
+}
+
+export interface SetRolePayload {
+  role: UserRole;
+}
+
+export interface SetSuperuserPayload {
+  is_superuser: boolean;
+}
+
+export interface AdminVenueFilterParams {
+  city_id?: number;
+  is_verified?: boolean;
+  include_deleted?: boolean;
+  q?: string;
+  sort?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface AdminEventFilterParams extends EventFilterParams {
+  organizer_id?: number;
+  include_deleted?: boolean;
+}
+
+export interface AdminTournamentFilterParams extends TournamentFilterParams {
+  organizer_id?: number;
+  include_deleted?: boolean;
+}
+
+export interface AdminTournamentCreatePayload extends TournamentCreatePayload {
+  is_official?: boolean;
+}
+
+export interface AdminTournamentUpdatePayload extends TournamentUpdatePayload {
+  is_official?: boolean | null;
+}
+
+export interface ParticipantAdminUpdatePayload {
+  status?: ParticipantStatus;
+  seed?: number | null;
+  final_place?: number | null;
+}
+
+export interface AdminReviewFilterParams {
+  target_type?: ReviewTargetType;
+  target_id?: number;
+  author_id?: number;
+  is_hidden?: boolean;
+  include_deleted?: boolean;
+  limit?: number;
+  offset?: number;
+}
+
+export interface AdminReviewUpdatePayload extends ReviewUpdatePayload {
+  is_hidden?: boolean | null;
+}
+
+export interface RatingSyncLogRead {
+  id: number;
+  profile_id: number;
+  triggered_by: string;
+  success: boolean;
+  old_rating: number | null;
+  new_rating: number | null;
+  error_message: string | null;
+  http_status: number | null;
+  duration_ms: number | null;
+  created_at: string;
+}
+
+export interface RatingSyncLogFilterParams {
+  profile_id?: number;
+  success?: boolean;
+  triggered_by?: string;
+  date_from?: string;
+  date_to?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface RatingSyncRunResult {
+  status: string;
+  detail: string;
+  profile_id: number;
+}
+
+export interface RunAllResult {
+  enqueued: number;
 }

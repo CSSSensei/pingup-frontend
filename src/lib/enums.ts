@@ -208,9 +208,25 @@ export const REPORT_STATUS_BADGE: Record<ReportStatus, string> = {
   rejected: "bg-status-cancelled/12 text-status-cancelled",
 };
 
-// Терминальные статусы жалобы, на которые модератор может её закрыть (open недопустим — бэк 422).
 export const REPORT_RESOLVE_STATUSES = ["in_review", "resolved", "rejected"] as const;
 export type ReportResolveStatus = (typeof REPORT_RESOLVE_STATUSES)[number];
+
+export const USER_ROLES = ["user", "moderator", "admin"] as const;
+export type UserRoleName = (typeof USER_ROLES)[number];
+
+export const USER_ROLE_LABELS: Record<string, string> = {
+  guest: "Гость",
+  user: "Пользователь",
+  moderator: "Модератор",
+  admin: "Администратор",
+};
+
+export const USER_ROLE_BADGE: Record<string, string> = {
+  guest: "bg-surface-3 text-fg-2",
+  user: "bg-surface-3 text-fg-2",
+  moderator: "bg-status-progress/12 text-status-progress",
+  admin: "bg-primary-tint text-primary",
+};
 
 export const NOTIFICATION_TYPES = [
   "event_invite",

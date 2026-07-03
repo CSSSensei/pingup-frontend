@@ -12,6 +12,8 @@ import {
   SKILL_LABELS,
   TOURNAMENT_STATUS_BADGE,
   TOURNAMENT_STATUS_LABELS,
+  USER_ROLE_BADGE,
+  USER_ROLE_LABELS,
   type EventStatus,
   type Gender,
   type PartnerRequestStatus,
@@ -77,6 +79,14 @@ export function TournamentStatusBadge({ status }: { status: TournamentStatus }) 
 export function ReportStatusBadge({ status }: { status: ReportStatus }) {
   return (
     <span className={cn(base, REPORT_STATUS_BADGE[status])}>{REPORT_STATUS_LABELS[status]}</span>
+  );
+}
+
+export function UserRoleBadge({ role }: { role: string }) {
+  return (
+    <span className={cn(base, USER_ROLE_BADGE[role] ?? "bg-surface-3 text-fg-2")}>
+      {USER_ROLE_LABELS[role] ?? role}
+    </span>
   );
 }
 

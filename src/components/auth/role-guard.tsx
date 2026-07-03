@@ -29,7 +29,11 @@ export function RoleGuard({ min, children }: { min: UserRole; children: ReactNod
         <EmptyState
           icon={<IconShieldCheck size={30} />}
           title="Нет доступа"
-          description="Этот раздел доступен только модераторам."
+          description={
+            min === "admin"
+              ? "Этот раздел доступен только администраторам."
+              : "Этот раздел доступен только модераторам."
+          }
           action={
             <LinkButton href="/games" variant="secondary" size="sm">
               На главную

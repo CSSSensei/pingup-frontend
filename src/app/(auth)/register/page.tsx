@@ -37,7 +37,14 @@ export default function RegisterPage() {
     resolver: zodResolver(registerSchema),
     mode: "onTouched",
     reValidateMode: "onChange",
-    defaultValues: { display_name: "", email: "", password: "", consent: false, marketing: false },
+    defaultValues: {
+      display_name: "",
+      email: "",
+      password: "",
+      terms_accept: false,
+      privacy_consent: false,
+      marketing: false,
+    },
   });
 
   const email = watch("email");
@@ -144,14 +151,18 @@ export default function RegisterPage() {
             />
           </div>
 
-          <Checkbox error={errors.consent?.message} {...register("consent")}>
+          <Checkbox error={errors.terms_accept?.message} {...register("terms_accept")}>
+            Принимаю{" "}
+            <Link href="/legal/terms" className="font-semibold text-primary underline underline-offset-2">
+              пользовательское соглашение
+            </Link>
+            .
+          </Checkbox>
+
+          <Checkbox error={errors.privacy_consent?.message} {...register("privacy_consent")}>
             Даю согласие на обработку персональных данных в соответствии с{" "}
             <Link href="/legal/privacy" className="font-semibold text-primary underline underline-offset-2">
               политикой обработки персональных данных
-            </Link>{" "}
-            и принимаю{" "}
-            <Link href="/legal/terms" className="font-semibold text-primary underline underline-offset-2">
-              пользовательское соглашение
             </Link>
             .
           </Checkbox>

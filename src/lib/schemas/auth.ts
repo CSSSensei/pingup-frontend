@@ -22,9 +22,11 @@ export const registerSchema = z.object({
     .min(1, "Введите email")
     .email("Проверьте email — кажется, есть опечатка. Нужен формат you@example.com"),
   password: strongPassword,
-  // Согласие на обработку ПДн — обязательно ТОЛЬКО на клиенте (бэк его не валидирует).
-  consent: z.boolean().refine((v) => v === true, {
-    message: "Поставьте галочку — без согласия мы не сможем создать аккаунт",
+  terms_accept: z.boolean().refine((v) => v === true, {
+    message: "Нужно принять пользовательское соглашение",
+  }),
+  privacy_consent: z.boolean().refine((v) => v === true, {
+    message: "Нужно согласие на обработку персональных данных",
   }),
   marketing: z.boolean().optional(),
 });

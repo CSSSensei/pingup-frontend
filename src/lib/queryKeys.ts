@@ -39,6 +39,8 @@ export const qk = {
   myRatingHistory: ["myProfile", "rating-history"] as const,
   venues: (filter?: VenueFilterParams) => ["venues", filter ?? {}] as const,
   venue: (slug: string) => ["venue", slug] as const,
+  venueLayouts: (venueId: number) => ["venueLayout", venueId] as const,
+  venueLayout: (venueId: number, date: string) => ["venueLayout", venueId, date] as const,
   reviews: (filter?: ReviewFilterParams) => ["reviews", filter ?? {}] as const,
   tournaments: (filter?: TournamentFilterParams) => ["tournaments", filter ?? {}] as const,
   tournament: (slug: string) => ["tournament", slug] as const,

@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { EventCard } from "@/components/features/event-card";
+import { HallMapSection } from "@/components/features/hall-map/hall-map-section";
 import { ReportButton } from "@/components/features/report-button";
 import { ReviewsSection } from "@/components/features/reviews-section";
 import { VenuesMap } from "@/components/maps/venues-map";
@@ -192,6 +193,8 @@ export function VenueDetail({ venue }: { venue: VenueRead }) {
           </p>
         </section>
       )}
+
+      <HallMapSection venue={venue} />
 
       <VenuesMap
         points={[

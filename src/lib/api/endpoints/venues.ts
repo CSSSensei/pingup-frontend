@@ -1,6 +1,8 @@
 import { apiFetch } from "@/lib/api/client";
 import { API_PREFIX } from "@/lib/constants";
 import type {
+  HallLayout,
+  HallLayoutUpdatePayload,
   Paginated,
   VenueCreatePayload,
   VenueFilterParams,
@@ -27,6 +29,15 @@ export const venuesApi = {
   create: (body: VenueCreatePayload) =>
     apiFetch<VenueRead>(`${API_PREFIX}/venues`, {
       method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  getLayout: (venueId: number, date?: string) =>
+    apiFetch<HallLayout>(`${API_PREFIX}/venues/${venueId}/layout${toQuery({ date })}`),
+
+  updateLayout: (venueId: number, body: HallLayoutUpdatePayload) =>
+    apiFetch<HallLayout>(`${API_PREFIX}/venues/${venueId}/layout`, {
+      method: "PUT",
       body: JSON.stringify(body),
     }),
 

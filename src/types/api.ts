@@ -447,6 +447,61 @@ export interface VenueFilterParams {
   offset?: number;
 }
 
+export interface TableBooking {
+  id: number;
+  starts_at: string;
+  ends_at: string;
+  is_mine: boolean;
+}
+
+export interface HallTable {
+  id: number;
+  label: string;
+  x: number;
+  y: number;
+  rotation: number;
+  is_active: boolean;
+  bookings: TableBooking[];
+}
+
+export interface HallLayout {
+  viewbox_width: number;
+  viewbox_height: number;
+  date: string;
+  tables: HallTable[];
+}
+
+export interface HallTableWritePayload {
+  id?: number;
+  label: string;
+  x: number;
+  y: number;
+  rotation: number;
+  is_active: boolean;
+}
+
+export interface HallLayoutUpdatePayload {
+  tables: HallTableWritePayload[];
+}
+
+export interface BookingCreatePayload {
+  table_id: number;
+  starts_at: string;
+  ends_at: string;
+}
+
+export interface BookingRead {
+  id: number;
+  table_id: number;
+  venue_id: number;
+  table_label: string;
+  user_id: number;
+  starts_at: string;
+  ends_at: string;
+  status: "active" | "cancelled";
+  created_at: string;
+}
+
 // target_id: для venue — id зала, для player/coach — user_id профиля.
 export interface ReviewRead {
   id: number;

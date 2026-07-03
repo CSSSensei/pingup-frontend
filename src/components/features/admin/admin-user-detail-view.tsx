@@ -192,7 +192,7 @@ function ActionsCard({ user }: { user: AdminUserDetail }) {
         </p>
       )}
 
-      <RoleControl user={user} disabled={isSelf} iAmSuperuser={iAmSuperuser} />
+      <RoleControl key={user.role} user={user} disabled={isSelf} iAmSuperuser={iAmSuperuser} />
       {user.role === "admin" && (
         <SuperuserControl user={user} disabled={isSelf || !iAmSuperuser} iAmSuperuser={iAmSuperuser} />
       )}
@@ -296,6 +296,10 @@ function BanControl({ user, disabled }: { user: AdminUserDetail; disabled: boole
   const [reason, setReason] = useState("");
   const ban = useBanUser(user.id);
   const unban = useUnbanUser(user.id);
+  const close = () => {
+    setOpen(false);
+    setReason("");
+  };
 
   if (!user.is_active) {
     return (
@@ -331,7 +335,7 @@ function BanControl({ user, disabled }: { user: AdminUserDetail; disabled: boole
         </Button>
       </div>
 
-      <Modal open={open} onClose={() => setOpen(false)} title="Заблокировать пользователя">
+      <Modal open={open} onClose={close} title="Заблокировать пользователя">
         <Field label="Причина" hint="Необязательно — для журнала аудита">
           <Textarea
             rows={3}
@@ -342,7 +346,7 @@ function BanControl({ user, disabled }: { user: AdminUserDetail; disabled: boole
           />
         </Field>
         <div className="mt-5 flex gap-2">
-          <Button variant="ghost" fullWidth onClick={() => setOpen(false)} disabled={ban.isPending}>
+          <Button variant="ghost" fullWidth onClick={close} disabled={ban.isPending}>
             Отмена
           </Button>
           <Button
@@ -355,8 +359,7 @@ function BanControl({ user, disabled }: { user: AdminUserDetail; disabled: boole
                 {
                   onSuccess: () => {
                     toast.success("Пользователь заблокирован");
-                    setOpen(false);
-                    setReason("");
+                    close();
                   },
                 },
               )

@@ -47,6 +47,7 @@ import type {
   SkillLevel,
   TournamentStatus,
 } from "@/lib/enums";
+import type { WeekScheduleMap } from "@/lib/schedule";
 
 export type UserRole = "guest" | "user" | "moderator" | "admin";
 
@@ -211,6 +212,31 @@ export interface EventRead {
   participants: EventParticipant[] | null;
   // Заполнен только в детальном ответе (в списках всегда null).
   coach: ProfilePublic | null;
+  // Столы, забронированные за событием (только детальный ответ с venue_id).
+  tables: EventTableRef[] | null;
+  series_id: number | null;
+  is_recurring: boolean;
+  recurrence_summary: string | null;
+}
+
+export type RecurrenceFreq = "daily" | "weekly" | "monthly";
+
+export interface RecurrenceInput {
+  freq: RecurrenceFreq;
+  interval: number;
+  byweekday?: number[];
+  until?: string;
+  count?: number;
+  table_ids?: number[];
+}
+
+export interface EventTableRef {
+  id: number;
+  label: string;
+}
+
+export interface EventTablesUpdatePayload {
+  table_ids: number[];
 }
 
 export interface EventCreatePayload {
@@ -230,6 +256,7 @@ export interface EventCreatePayload {
   gender_restriction?: Gender;
   price?: string;
   is_public?: boolean;
+  recurrence?: RecurrenceInput;
 }
 
 // PATCH — exclude_unset на бэке: undefined = не трогать, null = очистить поле.
@@ -404,6 +431,8 @@ export interface VenueRead {
   deleted_at: string | null;
   photos: VenuePhoto[];
   distance_km: number | null;
+  // Все не удалённые столы схемы; 0 — интерактивной схемы ещё нет.
+  map_tables_count: number;
 }
 
 export interface VenueCreatePayload {
@@ -452,6 +481,9 @@ export interface TableBooking {
   starts_at: string;
   ends_at: string;
   is_mine: boolean;
+  event_id: number | null;
+  event_title: string | null;
+  event_type: EventType | null;
 }
 
 export interface HallTable {
@@ -461,6 +493,7 @@ export interface HallTable {
   y: number;
   rotation: number;
   is_active: boolean;
+  schedule: WeekScheduleMap | null;
   bookings: TableBooking[];
 }
 
@@ -478,6 +511,7 @@ export interface HallTableWritePayload {
   y: number;
   rotation: number;
   is_active: boolean;
+  schedule: WeekScheduleMap | null;
 }
 
 export interface HallLayoutUpdatePayload {

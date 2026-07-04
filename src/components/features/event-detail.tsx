@@ -38,9 +38,15 @@ export function EventDetail({ event }: { event: EventRead }) {
           <Meta icon={<IconClock size={17} />} label="Время">
             {formatTimeRange(event.starts_at, event.ends_at)}
           </Meta>
-          {event.location_text && (
+          {(event.venue || event.location_text) && (
             <Meta icon={<IconPin size={17} />} label="Место">
-              {event.location_text}
+              {event.venue ? (
+                <Link href={`/venues/${event.venue.slug}`} className="text-primary hover:underline">
+                  {event.venue.name}
+                </Link>
+              ) : (
+                event.location_text
+              )}
             </Meta>
           )}
           <Meta icon={<IconUsers size={17} />} label="Участники">

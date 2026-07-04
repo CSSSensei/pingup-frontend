@@ -24,8 +24,6 @@ import {
 } from "@/components/ui/icons";
 import { useMe } from "@/hooks/useMe";
 import { useTournamentParticipants } from "@/hooks/useTournaments";
-import { useVenues } from "@/hooks/useVenues";
-import { SMOLENSK_CITY_ID } from "@/lib/constants";
 import { formatDate, formatDateTime, formatPrice, formatTime } from "@/lib/format";
 import { ratingRangeLabel } from "@/lib/partners";
 import { isModerator } from "@/lib/roles";
@@ -45,9 +43,6 @@ export function TournamentDetail({ tournament }: { tournament: TournamentRead })
     rating != null ||
     t.gender_restriction != null ||
     fee != null;
-
-  const venuesQuery = useVenues({ city_id: SMOLENSK_CITY_ID, limit: 100, sort: "name" });
-  const venue = t.venue_id != null ? venuesQuery.data?.items.find((v) => v.id === t.venue_id) : undefined;
 
   return (
     <div className="space-y-6">
@@ -72,10 +67,10 @@ export function TournamentDetail({ tournament }: { tournament: TournamentRead })
               {formatDateTime(t.registration_deadline)}
             </Meta>
           )}
-          {venue && (
+          {t.venue && (
             <Meta icon={<IconPin size={17} />} label="Место">
-              <Link href={`/venues/${venue.slug}`} className="text-primary hover:underline">
-                {venue.name}
+              <Link href={`/venues/${t.venue.slug}`} className="text-primary hover:underline">
+                {t.venue.name}
               </Link>
             </Meta>
           )}

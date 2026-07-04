@@ -48,11 +48,6 @@ export const createVenueSchema = z.object({
     .max(300, "Слишком длинная ссылка — до 300 символов")
     .refine((v) => !v || (/\./.test(v) && !/\s/.test(v)), "Похоже, это не адрес сайта")
     .optional(),
-  working_hours_text: z
-    .string()
-    .trim()
-    .max(200, "Слишком длинный график — до 200 символов")
-    .optional(),
   price_info: z.string().trim().max(2000, "Слишком длинное описание цен — до 2000 символов").optional(),
 });
 

@@ -8,6 +8,7 @@ import type {
   VenueFilterParams,
   VenuePhoto,
   VenueRead,
+  VenueUpdatePayload,
 } from "@/types/api";
 
 function toQuery(params: object): string {
@@ -29,6 +30,12 @@ export const venuesApi = {
   create: (body: VenueCreatePayload) =>
     apiFetch<VenueRead>(`${API_PREFIX}/venues`, {
       method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  update: (venueId: number, body: VenueUpdatePayload) =>
+    apiFetch<VenueRead>(`${API_PREFIX}/venues/${venueId}`, {
+      method: "PATCH",
       body: JSON.stringify(body),
     }),
 

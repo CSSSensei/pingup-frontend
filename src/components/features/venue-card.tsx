@@ -1,10 +1,17 @@
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
-import { IconClock, IconPin, IconShieldCheck, IconStar } from "@/components/ui/icons";
+import { IconClock, IconPaddle, IconPin, IconShieldCheck, IconStar } from "@/components/ui/icons";
 import { formatDistance } from "@/lib/format";
 import { mediaUrl } from "@/lib/media";
-import { coverPhoto, reviewsLabel, tablesLabel, venueRatingLabel, workingHoursLabel } from "@/lib/venues";
+import {
+  coverPhoto,
+  reviewsLabel,
+  tablesCount,
+  tablesLabel,
+  venueRatingLabel,
+  workingHoursLabel,
+} from "@/lib/venues";
 import type { VenueRead } from "@/types/api";
 
 const stripes =
@@ -14,6 +21,8 @@ export function VenueCard({ venue }: { venue: VenueRead }) {
   const cover = mediaUrl(coverPhoto(venue));
   const rating = venueRatingLabel(venue);
   const hours = workingHoursLabel(venue.working_hours);
+  const tables = tablesCount(venue);
+  const hasMap = venue.map_tables_count > 0;
 
   return (
     <Link
@@ -66,7 +75,12 @@ export function VenueCard({ venue }: { venue: VenueRead }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
-          {venue.tables_count != null && <Badge>{tablesLabel(venue.tables_count)}</Badge>}
+          {tables != null && (
+            <Badge>
+              {hasMap && <IconPaddle size={12} className="text-primary" />}
+              {tablesLabel(tables)}
+            </Badge>
+          )}
           <Badge tone="soft">{reviewsLabel(venue.reviews_count)}</Badge>
         </div>
 

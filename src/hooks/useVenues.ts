@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { venuesApi } from "@/lib/api/endpoints/venues";
 import { qk } from "@/lib/queryKeys";
-import type { VenueCreatePayload, VenueFilterParams } from "@/types/api";
+import type { VenueCreatePayload, VenueFilterParams, VenueUpdatePayload } from "@/types/api";
 
 export function useVenues(filter: VenueFilterParams) {
   return useQuery({
@@ -28,6 +28,19 @@ export function useCreateVenue() {
     mutationFn: (body: VenueCreatePayload) => venuesApi.create(body),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["venues"] });
+    },
+  });
+}
+
+// Ошибки маппит форма (422 → поля) — без общего onError-тоста.
+export function useUpdateVenue(venueId: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: VenueUpdatePayload) => venuesApi.update(venueId, body),
+    onSuccess: (venue) => {
+      qc.setQueryData(qk.venue(venue.slug), venue);
+      qc.invalidateQueries({ queryKey: ["venues"] });
+      qc.invalidateQueries({ queryKey: ["venue"] });
     },
   });
 }

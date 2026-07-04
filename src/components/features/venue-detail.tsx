@@ -1,17 +1,20 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import { EventCard } from "@/components/features/event-card";
 import { HallMapSection } from "@/components/features/hall-map/hall-map-section";
 import { ReportButton } from "@/components/features/report-button";
 import { ReviewsSection } from "@/components/features/reviews-section";
+import { VenueHours } from "@/components/features/schedule/venue-hours";
 import { VenuesMap } from "@/components/maps/venues-map";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
 import {
   IconClock,
   IconExternalLink,
+  IconPencil,
   IconPhone,
   IconPin,
   IconRoute,
@@ -19,11 +22,15 @@ import {
   IconStar,
 } from "@/components/ui/icons";
 import { useEvents } from "@/hooks/useEvents";
+import { useMe } from "@/hooks/useMe";
+import { isModerator } from "@/lib/roles";
 import { mediaUrl } from "@/lib/media";
 import { cn } from "@/lib/utils";
+import { parseWeekSchedule } from "@/lib/schedule";
 import {
   reviewsLabel,
   routeUrl,
+  tablesCount,
   tablesLabel,
   venueRatingLabel,
   websiteLabel,
@@ -91,8 +98,12 @@ function VenueEvents({ venueId }: { venueId: number }) {
 }
 
 export function VenueDetail({ venue }: { venue: VenueRead }) {
+  const { data: me } = useMe();
+  const canEdit = isModerator(me?.role);
   const rating = venueRatingLabel(venue);
-  const hours = workingHoursLabel(venue.working_hours);
+  const schedule = parseWeekSchedule(venue.working_hours);
+  const hours = schedule ? null : workingHoursLabel(venue.working_hours);
+  const tables = tablesCount(venue);
   const phoneHref = venue.phone ? `tel:${venue.phone.replace(/[^+\d]/g, "")}` : null;
 
   return (
@@ -107,7 +118,7 @@ export function VenueDetail({ venue }: { venue: VenueRead }) {
               Проверен
             </span>
           )}
-          {venue.tables_count != null && <Badge>{tablesLabel(venue.tables_count)}</Badge>}
+          {tables != null && <Badge>{tablesLabel(tables)}</Badge>}
         </div>
 
         <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
@@ -128,11 +139,15 @@ export function VenueDetail({ venue }: { venue: VenueRead }) {
             <IconPin size={16} className="flex-none text-muted" />
             {venue.address}
           </p>
-          {hours && (
-            <p className="flex items-center gap-2">
-              <IconClock size={16} className="flex-none text-muted" />
-              {hours}
-            </p>
+          {schedule ? (
+            <VenueHours schedule={schedule} />
+          ) : (
+            hours && (
+              <p className="flex items-center gap-2">
+                <IconClock size={16} className="flex-none text-muted" />
+                {hours}
+              </p>
+            )
           )}
           {venue.phone && (
             <p className="flex items-center gap-2">
@@ -172,6 +187,15 @@ export function VenueDetail({ venue }: { venue: VenueRead }) {
               <IconPhone size={16} />
               Позвонить
             </a>
+          )}
+          {canEdit && (
+            <Link
+              href={`/venues/${venue.slug}/edit`}
+              className={buttonStyles({ variant: "secondary" })}
+            >
+              <IconPencil size={16} />
+              Редактировать зал
+            </Link>
           )}
         </div>
       </div>

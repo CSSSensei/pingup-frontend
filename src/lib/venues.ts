@@ -1,3 +1,4 @@
+import { formatWeekScheduleBrief, parseWeekSchedule } from "@/lib/schedule";
 import type { VenueRead } from "@/types/api";
 
 function plural(n: number, forms: [string, string, string]): string {
@@ -12,6 +13,11 @@ export function tablesLabel(n: number): string {
   return `${n} ${plural(n, ["стол", "стола", "столов"])}`;
 }
 
+export function tablesCount(venue: VenueRead): number | null {
+  if (venue.map_tables_count > 0) return venue.map_tables_count;
+  return venue.tables_count;
+}
+
 export function reviewsLabel(n: number): string {
   return `${n} ${plural(n, ["отзыв", "отзыва", "отзывов"])}`;
 }
@@ -24,9 +30,11 @@ export function venueRatingLabel(venue: VenueRead): string | null {
   return n.toFixed(1).replace(".", ",");
 }
 
-// working_hours — свободный JSONB; фронт пишет и читает конвенцию {"text": "..."}.
+// Структурный {schedule} рендерим в компактную строку; legacy {text} — как есть.
 export function workingHoursLabel(wh: Record<string, unknown> | null): string | null {
   if (!wh) return null;
+  const schedule = parseWeekSchedule(wh);
+  if (schedule) return formatWeekScheduleBrief(schedule);
   const text = wh.text;
   return typeof text === "string" && text.trim() ? text : null;
 }

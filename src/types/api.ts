@@ -134,6 +134,7 @@ export interface ProfilePublic {
   rubber_backhand: string | null;
   current_rating: number | null;
   rating_is_stale: boolean;
+  rating_delta_30d: number | null;
 }
 
 // Публичная деталь профиля: ProfilePublic + контакты (заполняются только под Bearer;

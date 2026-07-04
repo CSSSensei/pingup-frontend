@@ -19,18 +19,24 @@ import {
   IconClock,
   IconExternalLink,
   IconPin,
+  IconSettings,
   IconUsers,
 } from "@/components/ui/icons";
+import { useMe } from "@/hooks/useMe";
 import { useTournamentParticipants } from "@/hooks/useTournaments";
 import { useVenues } from "@/hooks/useVenues";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
 import { formatDate, formatDateTime, formatPrice, formatTime } from "@/lib/format";
 import { ratingRangeLabel } from "@/lib/partners";
+import { isModerator } from "@/lib/roles";
 import { placeLabel, slotsLabel } from "@/lib/tournaments";
 import type { ProfilePublic, TournamentParticipantRead, TournamentRead } from "@/types/api";
 
 export function TournamentDetail({ tournament }: { tournament: TournamentRead }) {
   const t = tournament;
+  const { data: me } = useMe();
+  // Организатору кнопку управления уже даёт RegisterButton — здесь только для «сторонних» модераторов.
+  const canModerate = isModerator(me?.role) && me?.id !== t.organizer_id;
   const rating = ratingRangeLabel(t.rating_min, t.rating_max);
   const fee = formatPrice(t.entry_fee);
   const hasRestrictions =
@@ -92,6 +98,15 @@ export function TournamentDetail({ tournament }: { tournament: TournamentRead })
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <RegisterButton tournament={t} />
+          {canModerate && (
+            <Link
+              href={`/tournaments/${t.slug}/manage`}
+              className={buttonStyles({ variant: "secondary", size: "lg" })}
+            >
+              <IconSettings size={17} />
+              Управлять турниром
+            </Link>
+          )}
           {t.external_url && (
             <a
               href={t.external_url}

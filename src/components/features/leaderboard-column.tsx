@@ -122,9 +122,14 @@ function LeaderboardRow({
         )}
       </div>
 
-      <span className="flex-none text-[15px] font-extrabold text-fg tabular-nums">
-        {player.current_rating}
-      </span>
+      <div className="flex flex-none flex-col items-end leading-tight">
+        <span className="text-[15px] font-extrabold text-fg tabular-nums">
+          {player.current_rating}
+        </span>
+        {player.rating_delta_30d != null && player.rating_delta_30d !== 0 && (
+          <RatingDelta delta={player.rating_delta_30d} />
+        )}
+      </div>
     </>
   );
 
@@ -143,6 +148,21 @@ function LeaderboardRow({
         <div className={cn(cls, me && "bg-primary-tint")}>{body}</div>
       )}
     </li>
+  );
+}
+
+function RatingDelta({ delta }: { delta: number }) {
+  const up = delta > 0;
+  return (
+    <span
+      title="Изменение за месяц"
+      className={cn(
+        "text-[11px] font-bold tabular-nums",
+        up ? "text-status-confirmed" : "text-status-declined",
+      )}
+    >
+      {up ? `+${delta}` : `−${Math.abs(delta)}`}
+    </span>
   );
 }
 

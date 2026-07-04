@@ -44,7 +44,15 @@ export function useCreateBooking(venueId: number, date: string) {
                   ...t,
                   bookings: [
                     ...t.bookings,
-                    { id: -1, starts_at: body.starts_at, ends_at: body.ends_at, is_mine: true },
+                    {
+                      id: -1,
+                      starts_at: body.starts_at,
+                      ends_at: body.ends_at,
+                      is_mine: true,
+                      event_id: null,
+                      event_title: null,
+                      event_type: null,
+                    },
                   ],
                 }
               : t,

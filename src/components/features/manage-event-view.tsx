@@ -204,7 +204,11 @@ export function ManageEventView({ id, section }: { id: number; section: EventSec
       <ConfirmDialog
         open={cancelOpen}
         title="Отменить событие?"
-        message="Подтверждённые участники получат уведомление об отмене. Действие необратимо."
+        message={
+          event?.is_recurring
+            ? "Это повторяющееся событие — отменятся все его брони столов. Действие необратимо."
+            : "Подтверждённые участники получат уведомление об отмене. Действие необратимо."
+        }
         confirmLabel="Отменить событие"
         destructive
         loading={remove.isPending}

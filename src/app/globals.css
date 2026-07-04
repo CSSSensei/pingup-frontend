@@ -133,3 +133,11 @@
     background-clip: content-box;
   }
 }
+
+.hm-table {
+  filter: drop-shadow(0 1px 1.5px rgba(10, 10, 10, 0.16));
+  transition: filter 0.14s ease;
+}
+.hm-table:hover {
+  filter: drop-shadow(0 3px 5px rgba(10, 10, 10, 0.22));
+}

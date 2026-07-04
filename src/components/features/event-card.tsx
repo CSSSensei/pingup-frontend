@@ -23,6 +23,7 @@ export function EventCard({ event }: { event: EventRead }) {
           <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
             <Badge>{EVENT_TYPE_LABELS[event.event_type]}</Badge>
             <StatusBadge status={event.status} />
+            {event.is_recurring && <Badge tone="soft">↻ повтор</Badge>}
             {event.is_joined && (
               <span className="inline-flex items-center gap-1 rounded-pill bg-status-confirmed/12 px-[9px] py-[3px] text-xs font-bold text-status-confirmed">
                 <IconCheck size={12} /> Вы участвуете

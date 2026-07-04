@@ -1,16 +1,19 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
 import { ChipSelect } from "@/components/features/filters/filter-bar";
+import { EventTablePicker } from "@/components/features/hall-map/event-table-picker";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/toast";
+import { eventsApi } from "@/lib/api/endpoints/events";
 import { useCreateEvent, useUpdateEvent } from "@/hooks/useEvents";
 import { useCoaches } from "@/hooks/useProfiles";
 import { useVenues } from "@/hooks/useVenues";
@@ -27,6 +30,7 @@ import {
 } from "@/lib/enums";
 import { handleApiError } from "@/lib/errors/handle";
 import { fieldErrors } from "@/lib/errors/messages";
+import { WEEKDAYS } from "@/lib/schedule";
 import {
   buildEventFormSchema,
   GAME_FORMATS,
@@ -36,7 +40,8 @@ import {
   TRAINING_TYPES,
   type EventFormValues,
 } from "@/lib/schemas/event";
-import type { EventRead } from "@/types/api";
+import { cn } from "@/lib/utils";
+import type { EventRead, EventUpdatePayload, RecurrenceFreq, RecurrenceInput } from "@/types/api";
 
 export type EventFormKind = "game" | "training";
 
@@ -56,6 +61,11 @@ const SERVER_TO_FIELD: Record<string, keyof EventFormValues> = {
 };
 
 const clean = (v: string | undefined) => (v && v.trim() ? v.trim() : undefined);
+
+// День недели по МСК-дате, Пн = 0.
+function weekdayMon0(dateStr: string): number {
+  return (new Date(`${dateStr}T12:00:00+03:00`).getUTCDay() + 6) % 7;
+}
 
 export function EventForm({
   kind,
@@ -115,10 +125,60 @@ export function EventForm({
   const gameFormat = watch("game_format");
   const venueId = watch("venue_id");
   const isPublic = watch("is_public");
+  const dateVal = watch("date");
+  const startVal = watch("time_start");
+  const endVal = watch("time_end");
   const selectedVenue = venueId ? venues.find((v) => String(v.id) === venueId) : undefined;
+
+  const [tableIds, setTableIds] = useState<number[]>(() => initial?.tables?.map((t) => t.id) ?? []);
+  useEffect(() => {
+    const sameVenue = initial != null && String(initial.venue_id ?? "") === venueId;
+    setTableIds(sameVenue ? (initial?.tables?.map((t) => t.id) ?? []) : []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [venueId]);
 
   // Дата «сегодня» — по Москве, как и весь ввод времени.
   const minDate = isEdit ? undefined : isoToMoscowDate(new Date().toISOString());
+
+  const [repeat, setRepeat] = useState(false);
+  const [freq, setFreq] = useState<RecurrenceFreq>("weekly");
+  const [everyN, setEveryN] = useState("1");
+  const [byweekday, setByweekday] = useState<number[]>([]);
+  const [endMode, setEndMode] = useState<"until" | "count">("until");
+  const [untilDate, setUntilDate] = useState("");
+  const [countN, setCountN] = useState("8");
+
+  function handleErr(err: unknown) {
+    const mapped = Object.entries(fieldErrors(err))
+      .map(([field, message]) => [SERVER_TO_FIELD[field], message] as const)
+      .filter((e): e is [keyof EventFormValues, string] => !!e[0]);
+    if (mapped.length) {
+      for (const [field, message] of mapped) setError(field, { message });
+      setFocus(mapped[0][0]);
+    } else {
+      handleApiError(err);
+    }
+  }
+
+  async function applyTables(saved: EventRead) {
+    if (selectedVenue && selectedVenue.map_tables_count > 0 && endVal) {
+      try {
+        await eventsApi.setTables(saved.id, { table_ids: tableIds });
+      } catch {
+        toast.error("Событие сохранено, но столы забронировать не удалось");
+      }
+    }
+  }
+
+  async function doUpdate(body: EventUpdatePayload) {
+    try {
+      const saved = await update.mutateAsync(body);
+      await applyTables(saved);
+      onSaved(saved);
+    } catch (err) {
+      handleErr(err);
+    }
+  }
 
   const onSubmit: SubmitHandler<EventFormValues> = async (values) => {
     const venueIdNum = values.venue_id ? Number(values.venue_id) : undefined;
@@ -137,59 +197,76 @@ export function EventForm({
       ? (values.gender_restriction as Gender)
       : undefined;
 
+    if (isEdit) {
+      const body: EventUpdatePayload = {
+        title: values.title.trim(),
+        description: clean(values.description) ?? null,
+        venue_id: venueIdNum ?? null,
+        location_text: locationText || null,
+        starts_at: startsAt,
+        ends_at: endsAt ?? null,
+        max_participants: maxParticipants ?? null,
+        min_skill_level: minSkill ?? null,
+        max_skill_level: maxSkill ?? null,
+        gender_restriction: gender ?? null,
+        price: price ?? null,
+        is_public: values.is_public,
+      };
+      await doUpdate(body);
+      return;
+    }
+
+    const recurrence: RecurrenceInput | undefined = repeat
+      ? {
+          freq,
+          interval: Math.max(1, Number(everyN) || 1),
+          byweekday:
+            freq === "weekly"
+              ? byweekday.length
+                ? [...byweekday].sort((a, b) => a - b)
+                : [weekdayMon0(values.date)]
+              : undefined,
+          until: endMode === "until" && untilDate ? untilDate : undefined,
+          count: endMode === "count" ? Math.max(1, Number(countN) || 1) : undefined,
+          table_ids:
+            selectedVenue && selectedVenue.map_tables_count > 0 && tableIds.length
+              ? tableIds
+              : undefined,
+        }
+      : undefined;
+
     try {
-      const saved = isEdit
-        ? await update.mutateAsync({
-            title: values.title.trim(),
-            description: clean(values.description) ?? null,
-            venue_id: venueIdNum ?? null,
-            location_text: locationText || null,
-            starts_at: startsAt,
-            ends_at: endsAt ?? null,
-            max_participants: maxParticipants ?? null,
-            min_skill_level: minSkill ?? null,
-            max_skill_level: maxSkill ?? null,
-            gender_restriction: gender ?? null,
-            price: price ?? null,
-            is_public: values.is_public,
-          })
-        : await create.mutateAsync({
-            city_id: SMOLENSK_CITY_ID,
-            event_type: kind === "game" ? "game" : values.training_type,
-            event_format:
-              kind === "game"
-                ? values.game_format
-                : values.coach_id
-                  ? "coaching"
-                  : values.training_type === "group_training"
-                    ? "group"
-                    : "singles",
-            title: values.title.trim(),
-            description: clean(values.description),
-            venue_id: venueIdNum,
-            location_text: locationText || undefined,
-            coach_id: values.coach_id ? Number(values.coach_id) : undefined,
-            starts_at: startsAt,
-            ends_at: endsAt,
-            max_participants: maxParticipants,
-            min_skill_level: minSkill,
-            max_skill_level: maxSkill,
-            gender_restriction: gender,
-            price,
-            is_public: values.is_public,
-          });
+      const saved = await create.mutateAsync({
+        city_id: SMOLENSK_CITY_ID,
+        event_type: kind === "game" ? "game" : values.training_type,
+        event_format:
+          kind === "game"
+            ? values.game_format
+            : values.coach_id
+              ? "coaching"
+              : values.training_type === "group_training"
+                ? "group"
+                : "singles",
+        title: values.title.trim(),
+        description: clean(values.description),
+        venue_id: venueIdNum,
+        location_text: locationText || undefined,
+        coach_id: values.coach_id ? Number(values.coach_id) : undefined,
+        starts_at: startsAt,
+        ends_at: endsAt,
+        max_participants: maxParticipants,
+        min_skill_level: minSkill,
+        max_skill_level: maxSkill,
+        gender_restriction: gender,
+        price,
+        is_public: values.is_public,
+        recurrence,
+      });
+      // При повторе столы забронированы на каждый оккурренс из recurrence.table_ids.
+      if (!repeat) await applyTables(saved);
       onSaved(saved);
     } catch (err) {
-      const fe = fieldErrors(err);
-      const mapped = Object.entries(fe)
-        .map(([field, message]) => [SERVER_TO_FIELD[field], message] as const)
-        .filter((e): e is [keyof EventFormValues, string] => !!e[0]);
-      if (mapped.length) {
-        for (const [field, message] of mapped) setError(field, { message });
-        setFocus(mapped[0][0]);
-      } else {
-        handleApiError(err);
-      }
+      handleErr(err);
     }
   };
 
@@ -315,6 +392,131 @@ export function EventForm({
             <Input type="time" aria-invalid={!!errors.time_end} {...register("time_end")} />
           </Field>
         </div>
+
+        {!isEdit && (
+          <div className="space-y-3 rounded border border-border bg-surface-2 p-3.5">
+            <label className="flex cursor-pointer items-center gap-3">
+              <Switch
+                checked={repeat}
+                onCheckedChange={setRepeat}
+                label="Повторяющееся событие"
+              />
+              <span className="text-sm font-bold text-fg">Повторяющееся событие</span>
+            </label>
+
+            {repeat && (
+              <div className="space-y-3">
+                <ChipSelect
+                  ariaLabel="Частота"
+                  options={[
+                    { value: "daily", label: "Ежедневно" },
+                    { value: "weekly", label: "Еженедельно" },
+                    { value: "monthly", label: "Ежемесячно" },
+                  ]}
+                  value={freq}
+                  onChange={(v) => setFreq(v as RecurrenceFreq)}
+                />
+
+                <div className="flex items-center gap-2 text-sm font-semibold text-fg-2">
+                  <span>Каждые</span>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={52}
+                    value={everyN}
+                    onChange={(e) => setEveryN(e.target.value)}
+                    className="w-20"
+                    aria-label="Интервал повтора"
+                  />
+                  <span>{freq === "daily" ? "дн." : freq === "weekly" ? "нед." : "мес."}</span>
+                </div>
+
+                {freq === "weekly" && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {WEEKDAYS.map((d, i) => (
+                      <button
+                        key={d.key}
+                        type="button"
+                        aria-pressed={byweekday.includes(i)}
+                        onClick={() =>
+                          setByweekday(
+                            byweekday.includes(i)
+                              ? byweekday.filter((x) => x !== i)
+                              : [...byweekday, i],
+                          )
+                        }
+                        className={cn(
+                          "size-9 rounded-pill text-[13px] font-bold transition-colors",
+                          byweekday.includes(i)
+                            ? "bg-fg text-white"
+                            : "border border-border bg-surface text-fg-2 hover:bg-surface-2",
+                        )}
+                      >
+                        {d.short}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <ChipSelect
+                    ariaLabel="Окончание"
+                    options={[
+                      { value: "until", label: "До даты" },
+                      { value: "count", label: "N раз" },
+                    ]}
+                    value={endMode}
+                    onChange={(v) => setEndMode(v as "until" | "count")}
+                  />
+                  {endMode === "until" ? (
+                    <Input
+                      type="date"
+                      value={untilDate}
+                      min={dateVal || minDate}
+                      onChange={(e) => setUntilDate(e.target.value)}
+                      className="w-auto"
+                      aria-label="Повторять до"
+                    />
+                  ) : (
+                    <Input
+                      type="number"
+                      min={1}
+                      max={366}
+                      value={countN}
+                      onChange={(e) => setCountN(e.target.value)}
+                      className="w-24"
+                      aria-label="Число повторов"
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {selectedVenue && selectedVenue.map_tables_count > 0 && (
+          <Field
+            label="Столы в зале"
+            hint="Забронированные столы станут недоступны другим на время события."
+          >
+            {dateVal && startVal && endVal ? (
+              <EventTablePicker
+                venueId={selectedVenue.id}
+                workingHours={selectedVenue.working_hours}
+                date={dateVal}
+                start={startVal}
+                end={endVal}
+                value={tableIds}
+                onChange={setTableIds}
+                excludeEventId={initial?.id}
+              />
+            ) : (
+              <p className="text-sm font-semibold text-muted">
+                Укажите дату, начало и окончание, чтобы выбрать столы.
+              </p>
+            )}
+          </Field>
+        )}
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field

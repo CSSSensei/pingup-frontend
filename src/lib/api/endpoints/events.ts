@@ -5,6 +5,7 @@ import type {
   EventFilterParams,
   EventParticipant,
   EventRead,
+  EventTablesUpdatePayload,
   EventUpdatePayload,
   MyEventsParams,
   Paginated,
@@ -33,6 +34,12 @@ export const eventsApi = {
   update: (id: number, body: EventUpdatePayload) =>
     apiFetch<EventRead>(`${API_PREFIX}/events/${id}`, {
       method: "PATCH",
+      body: JSON.stringify(body),
+    }),
+
+  setTables: (id: number, body: EventTablesUpdatePayload) =>
+    apiFetch<EventRead>(`${API_PREFIX}/events/${id}/tables`, {
+      method: "PUT",
       body: JSON.stringify(body),
     }),
 

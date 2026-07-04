@@ -6,7 +6,7 @@ import { Avatar } from "@/components/common/avatar";
 import { JoinButton } from "@/components/features/join-button";
 import { ReportButton } from "@/components/features/report-button";
 import { Badge, GenderBadge, LevelBadge, RatingBadge, StatusBadge } from "@/components/ui/badge";
-import { IconCalendar, IconClock, IconPin, IconUsers } from "@/components/ui/icons";
+import { IconCalendar, IconClock, IconPaddle, IconPin, IconUsers } from "@/components/ui/icons";
 import { EVENT_FORMAT_LABELS, EVENT_TYPE_LABELS } from "@/lib/enums";
 import { formatDate, formatDistance, formatPrice, formatTimeRange } from "@/lib/format";
 import { eventHref } from "@/lib/links";
@@ -24,6 +24,9 @@ export function EventDetail({ event }: { event: EventRead }) {
           <Badge>{EVENT_TYPE_LABELS[event.event_type]}</Badge>
           <Badge tone="soft">{EVENT_FORMAT_LABELS[event.event_format]}</Badge>
           <StatusBadge status={event.status} />
+          {event.is_recurring && event.recurrence_summary && (
+            <Badge tone="soft">↻ {event.recurrence_summary}</Badge>
+          )}
           {event.distance_km != null && <Badge tone="soft">{formatDistance(event.distance_km)}</Badge>}
         </div>
         <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-fg">{event.title}</h1>
@@ -45,6 +48,11 @@ export function EventDetail({ event }: { event: EventRead }) {
               ? `${event.participants_count} из ${event.max_participants}`
               : `${event.participants_count}`}
           </Meta>
+          {event.tables && event.tables.length > 0 && (
+            <Meta icon={<IconPaddle size={17} />} label="Столы">
+              {event.tables.map((t) => t.label).join(", ")}
+            </Meta>
+          )}
         </dl>
 
         {(event.min_skill_level || event.max_skill_level || event.gender_restriction || price) && (

@@ -10,6 +10,7 @@ import type {
   EventCreatePayload,
   EventFilterParams,
   EventRead,
+  EventTablesUpdatePayload,
   EventUpdatePayload,
 } from "@/types/api";
 
@@ -53,6 +54,19 @@ export function useUpdateEvent(id: number) {
       qc.setQueryData(qk.event(id), event);
       qc.invalidateQueries({ queryKey: ["events"] });
       qc.invalidateQueries({ queryKey: ["myEvents"] });
+    },
+  });
+}
+
+export function useSetEventTables(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: EventTablesUpdatePayload) => eventsApi.setTables(id, body),
+    onSuccess: (event) => {
+      qc.setQueryData(qk.event(id), event);
+      if (event.venue_id != null) {
+        qc.invalidateQueries({ queryKey: qk.venueLayouts(event.venue_id) });
+      }
     },
   });
 }

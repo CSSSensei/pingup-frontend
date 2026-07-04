@@ -118,6 +118,51 @@ export interface MeResponse {
   profile: ProfileMe;
 }
 
+export interface AccountRead {
+  id: number;
+  email: string;
+  role: UserRole;
+  is_superuser: boolean;
+  is_active: boolean;
+  is_email_verified: boolean;
+  marketing_consent: boolean;
+  city_id: number;
+  last_login_at: string | null;
+  created_at: string;
+}
+
+export interface ChangeEmailPayload {
+  new_email: string;
+  password: string;
+}
+
+// PATCH /users/me/email — 202, письмо на новый адрес; email меняется только после confirm.
+export interface EmailChangeAccepted {
+  status: string;
+}
+
+export interface ChangePasswordPayload {
+  current_password: string;
+  new_password: string;
+}
+
+export interface DeleteAccountPayload {
+  password: string;
+}
+
+export interface MarketingConsentPayload {
+  marketing_consent: boolean;
+}
+
+export interface SessionRead {
+  family_id: string;
+  user_agent: string | null;
+  ip: string | null;
+  issued_at: string;
+  expires_at: string;
+  is_current: boolean;
+}
+
 // Контактов не содержит — утечки телефона/telegram нет даже под Bearer.
 export interface ProfilePublic {
   user_id: number;
@@ -215,6 +260,8 @@ export interface EventRead {
   coach: ProfilePublic | null;
   // Столы, забронированные за событием (только детальный ответ с venue_id).
   tables: EventTableRef[] | null;
+  // Зал из БД (только детальный ответ) — для ссылки на карточку зала.
+  venue: EventVenueRef | null;
   series_id: number | null;
   is_recurring: boolean;
   recurrence_summary: string | null;
@@ -234,6 +281,13 @@ export interface RecurrenceInput {
 export interface EventTableRef {
   id: number;
   label: string;
+}
+
+// Зал из БД — заполнен только в детальном ответе события (для ссылки на карточку зала).
+export interface EventVenueRef {
+  id: number;
+  name: string;
+  slug: string;
 }
 
 export interface EventTablesUpdatePayload {
@@ -608,6 +662,8 @@ export interface TournamentRead {
   deleted_at: string | null;
   participants_count: number;
   is_registered: boolean | null;
+  // Зал из БД (только детальный ответ) — для ссылки на карточку зала.
+  venue: EventVenueRef | null;
 }
 
 export interface TournamentCreatePayload {

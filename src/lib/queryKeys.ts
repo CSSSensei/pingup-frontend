@@ -21,6 +21,7 @@ import type { ParticipantStatus } from "@/lib/enums";
 
 export const qk = {
   me: ["me"] as const,
+  sessions: ["sessions"] as const,
   events: (filter?: EventFilterParams) => ["events", filter ?? {}] as const,
   event: (id: number) => ["event", id] as const,
   eventParticipants: (id: number, status?: ParticipantStatus) =>

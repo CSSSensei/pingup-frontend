@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Порядок .min-проверок важен: первый провалившийся чек — показанное сообщение.
-const strongPassword = z
+export const strongPassword = z
   .string()
   .min(1, "Придумайте пароль")
   .min(8, "Пароль короткий — нужно минимум 8 символов")

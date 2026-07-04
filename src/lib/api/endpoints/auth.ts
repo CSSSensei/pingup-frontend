@@ -1,6 +1,6 @@
 import { apiFetch } from "@/lib/api/client";
 import { API_PREFIX } from "@/lib/constants";
-import type { AuthSession, LoginPayload, MeResponse, RegisterPayload } from "@/types/api";
+import type { AuthSession, LoginPayload, MeResponse, RegisterPayload, SessionRead } from "@/types/api";
 
 export const authApi = {
   register: (payload: RegisterPayload) =>
@@ -16,6 +16,13 @@ export const authApi = {
     }),
 
   logout: () => apiFetch<void>(`${API_PREFIX}/auth/logout`, { method: "POST" }),
+
+  logoutAll: () => apiFetch<void>(`${API_PREFIX}/auth/logout-all`, { method: "POST" }),
+
+  sessions: () => apiFetch<SessionRead[]>(`${API_PREFIX}/auth/sessions`),
+
+  revokeSession: (familyId: string) =>
+    apiFetch<void>(`${API_PREFIX}/auth/sessions/${familyId}`, { method: "DELETE" }),
 
   me: () => apiFetch<MeResponse>(`${API_PREFIX}/auth/me`),
 

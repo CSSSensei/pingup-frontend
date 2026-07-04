@@ -59,4 +59,14 @@ export const venuesApi = {
       body: form,
     });
   },
+
+  deletePhoto: (venueId: number, photoId: number) =>
+    apiFetch<void>(`${API_PREFIX}/venues/${venueId}/photos/${photoId}`, { method: "DELETE" }),
+
+  // Верификация зала — доступна модератору (не только админке).
+  verify: (venueId: number, isVerified: boolean) =>
+    apiFetch<VenueRead>(`${API_PREFIX}/venues/${venueId}/verify`, {
+      method: "POST",
+      body: JSON.stringify({ is_verified: isVerified }),
+    }),
 };

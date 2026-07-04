@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { bookingsApi } from "@/lib/api/endpoints/bookings";
 import { venuesApi } from "@/lib/api/endpoints/venues";
@@ -13,6 +13,8 @@ export function useVenueLayout(venueId: number, date: string) {
     queryKey: qk.venueLayout(venueId, date),
     queryFn: () => venuesApi.getLayout(venueId, date),
     enabled: !!venueId && !!date,
+    // Смена дня не мигает скелетом — держим прошлую схему до прихода новой.
+    placeholderData: keepPreviousData,
   });
 }
 

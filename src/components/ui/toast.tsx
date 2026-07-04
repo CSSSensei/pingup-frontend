@@ -8,6 +8,7 @@ interface ToastItem {
   id: number;
   message: string;
   variant: ToastVariant;
+  leaving: boolean;
 }
 
 interface ToastState {
@@ -18,15 +19,25 @@ interface ToastState {
 
 let counter = 0;
 
-const useToastStore = create<ToastState>((set) => ({
-  toasts: [],
-  push: (message, variant) => {
-    const id = ++counter;
-    set((s) => ({ toasts: [...s.toasts, { id, message, variant }] }));
-    setTimeout(() => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })), 3200);
-  },
-  dismiss: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
-}));
+// Держим unmount на длину exit-анимации, иначе тост исчезает рывком.
+const LIFETIME_MS = 3200;
+const EXIT_MS = 200;
+
+const useToastStore = create<ToastState>((set) => {
+  const startLeave = (id: number) => {
+    set((s) => ({ toasts: s.toasts.map((t) => (t.id === id ? { ...t, leaving: true } : t)) }));
+    setTimeout(() => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })), EXIT_MS);
+  };
+  return {
+    toasts: [],
+    push: (message, variant) => {
+      const id = ++counter;
+      set((s) => ({ toasts: [...s.toasts, { id, message, variant, leaving: false }] }));
+      setTimeout(() => startLeave(id), LIFETIME_MS);
+    },
+    dismiss: startLeave,
+  };
+});
 
 export const toast = Object.assign(
   (message: string) => useToastStore.getState().push(message, "default"),
@@ -60,7 +71,9 @@ export function Toaster() {
           className={cn(
             "pointer-events-auto flex max-w-[90vw] items-center gap-2.5 rounded px-4 py-3",
             "bg-fg text-sm font-semibold text-white shadow-float",
-            "motion-safe:animate-[pu-toast_0.18s_ease-out]",
+            t.leaving
+              ? "motion-safe:animate-[pu-toast-out_0.2s_ease-in_forwards]"
+              : "motion-safe:animate-[pu-toast_0.2s_cubic-bezier(0.22,1,0.36,1)]",
           )}
         >
           <span className={cn("size-2 flex-none rounded-full", DOT[t.variant])} />

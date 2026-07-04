@@ -1,9 +1,12 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { Logo } from "@/components/brand/logo";
 import { HeroSearch } from "@/components/landing/hero-search";
 import { IconChevronRight, IconPaddle, IconPin, IconTrophy } from "@/components/ui/icons";
+import { SUPPORT_URL } from "@/lib/links";
 
 const FEATURES: {
   href: string;
@@ -31,7 +34,11 @@ const FEATURES: {
   },
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  // Вошедшему лендинг не нужен — сразу в ленту игр (метка has_session ставится при логине).
+  const hasSession = (await cookies()).get("has_session")?.value === "1";
+  if (hasSession) redirect("/games");
+
   return (
     <div className="min-h-screen bg-surface">
       <header className="sticky top-0 z-40 border-b border-border bg-white/85 backdrop-blur-md">
@@ -71,10 +78,6 @@ export default function LandingPage() {
         <div className="pointer-events-none absolute -top-[110px] -right-[90px] size-[340px] rounded-full bg-[radial-gradient(circle_at_35%_30%,#fff,#e2e2e2_52%,#ababab)] opacity-50 blur-[2px]" />
         <div className="pointer-events-none absolute bottom-[8%] left-[6%] size-[130px] rounded-full bg-[radial-gradient(circle_at_35%_30%,#fff,#e2e2e2_52%,#ababab)] opacity-35" />
         <div className="relative mx-auto max-w-[1160px] px-5 py-12 sm:py-20">
-          <span className="inline-flex items-center gap-2 rounded-pill bg-primary-tint px-3 py-1.5 text-[12.5px] font-bold text-primary">
-            <span className="size-[7px] rounded-full bg-primary" />
-            Смоленск · настольный теннис
-          </span>
           <h1 className="mt-4 max-w-[760px] text-[32px] leading-[1.04] font-extrabold tracking-[-0.02em] text-balance sm:text-[54px]">
             Найди игру, спарринг&nbsp;или турнир за пару минут
           </h1>
@@ -146,9 +149,20 @@ export default function LandingPage() {
             <span className="text-[13px] text-muted">© 2026 pingUp · Смоленск</span>
           </div>
           <div className="flex gap-[18px] text-[13px] text-muted">
-            <span>О сервисе</span>
-            <span>Контакты</span>
-            <span>Правила</span>
+            <a
+              href={SUPPORT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary"
+            >
+              Поддержка
+            </a>
+            <Link href="/legal/terms" className="hover:text-primary">
+              Правила
+            </Link>
+            <Link href="/legal/privacy" className="hover:text-primary">
+              Конфиденциальность
+            </Link>
           </div>
         </div>
       </footer>

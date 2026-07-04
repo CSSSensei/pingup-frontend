@@ -1,6 +1,9 @@
 import type { EventType, NotificationType } from "@/lib/enums";
 import type { NotificationItem } from "@/types/api";
 
+// Телеграм-бот поддержки с диплинком (?start=pingup — метка источника для бота).
+export const SUPPORT_URL = "https://t.me/phasalobot?start=pingup";
+
 // "tournament" здесь нет намеренно — это тип только у объявлений напарников, не у событий.
 const SECTION_BY_TYPE: Partial<Record<EventType, string>> = {
   game: "/games",

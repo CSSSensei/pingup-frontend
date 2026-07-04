@@ -10,7 +10,8 @@ import { ReviewsSection } from "@/components/features/reviews-section";
 import { VenueHours } from "@/components/features/schedule/venue-hours";
 import { VenuesMap } from "@/components/maps/venues-map";
 import { Badge } from "@/components/ui/badge";
-import { buttonStyles } from "@/components/ui/button";
+import { Button, buttonStyles } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 import {
   IconClock,
   IconExternalLink,
@@ -23,6 +24,7 @@ import {
 } from "@/components/ui/icons";
 import { useEvents } from "@/hooks/useEvents";
 import { useMe } from "@/hooks/useMe";
+import { useVerifyVenue } from "@/hooks/useVenues";
 import { isModerator } from "@/lib/roles";
 import { mediaUrl } from "@/lib/media";
 import { cn } from "@/lib/utils";
@@ -100,6 +102,7 @@ function VenueEvents({ venueId }: { venueId: number }) {
 export function VenueDetail({ venue }: { venue: VenueRead }) {
   const { data: me } = useMe();
   const canEdit = isModerator(me?.role);
+  const verify = useVerifyVenue();
   const rating = venueRatingLabel(venue);
   const schedule = parseWeekSchedule(venue.working_hours);
   const hours = schedule ? null : workingHoursLabel(venue.working_hours);
@@ -196,6 +199,24 @@ export function VenueDetail({ venue }: { venue: VenueRead }) {
               <IconPencil size={16} />
               Редактировать зал
             </Link>
+          )}
+          {canEdit && (
+            <Button
+              variant={venue.is_verified ? "ghost" : "secondary"}
+              disabled={verify.isPending}
+              onClick={() =>
+                verify.mutate(
+                  { venueId: venue.id, isVerified: !venue.is_verified },
+                  {
+                    onSuccess: () =>
+                      toast.success(venue.is_verified ? "Верификация снята" : "Зал проверен"),
+                  },
+                )
+              }
+            >
+              <IconShieldCheck size={16} />
+              {venue.is_verified ? "Снять проверку" : "Отметить проверенным"}
+            </Button>
           )}
         </div>
       </div>

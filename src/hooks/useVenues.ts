@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { venuesApi } from "@/lib/api/endpoints/venues";
+import { handleApiError } from "@/lib/errors/handle";
 import { qk } from "@/lib/queryKeys";
 import type { VenueCreatePayload, VenueFilterParams, VenueUpdatePayload } from "@/types/api";
 
@@ -64,5 +65,30 @@ export function useAddVenuePhoto() {
       qc.invalidateQueries({ queryKey: ["venues"] });
       qc.invalidateQueries({ queryKey: ["venue"] });
     },
+  });
+}
+
+export function useDeleteVenuePhoto(venueId: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (photoId: number) => venuesApi.deletePhoto(venueId, photoId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["venues"] });
+      qc.invalidateQueries({ queryKey: ["venue"] });
+    },
+    onError: handleApiError,
+  });
+}
+
+export function useVerifyVenue() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ venueId, isVerified }: { venueId: number; isVerified: boolean }) =>
+      venuesApi.verify(venueId, isVerified),
+    onSuccess: (venue) => {
+      qc.setQueryData(qk.venue(venue.slug), venue);
+      qc.invalidateQueries({ queryKey: ["venues"] });
+    },
+    onError: handleApiError,
   });
 }

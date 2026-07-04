@@ -10,10 +10,11 @@ import { PageHeader } from "@/components/common/page-header";
 import { Badge, TournamentStatusBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { LinkButton } from "@/components/ui/link-button";
 import { Select } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
-import { IconExternalLink, IconTrophy } from "@/components/ui/icons";
+import { IconExternalLink, IconPencil, IconTrophy } from "@/components/ui/icons";
 import { useAdminTournamentActions, useAdminTournaments } from "@/hooks/useAdmin";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
 import {
@@ -175,6 +176,14 @@ function TournamentRow({
       <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
         {!deleted && (
           <>
+            <LinkButton
+              href={`/tournaments/${tournament.slug}/edit`}
+              variant="secondary"
+              size="sm"
+            >
+              <IconPencil size={14} />
+              Редактировать
+            </LinkButton>
             <Button
               variant="ghost"
               size="sm"

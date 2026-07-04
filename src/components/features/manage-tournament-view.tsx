@@ -27,6 +27,7 @@ import {
   PARTICIPANT_STATUS_LABELS,
   type TournamentStatus,
 } from "@/lib/enums";
+import { isModerator } from "@/lib/roles";
 import { cn } from "@/lib/utils";
 import { placeLabel } from "@/lib/tournaments";
 import type { TournamentParticipantRead } from "@/types/api";
@@ -82,11 +83,13 @@ export function ManageTournamentView({ slug }: { slug: string }) {
     );
   }
 
-  const isOrganizer = tournament!.organizer_id != null && tournament!.organizer_id === me.id;
-  if (!isOrganizer) {
+  const canManage =
+    (tournament!.organizer_id != null && tournament!.organizer_id === me.id) ||
+    isModerator(me.role);
+  if (!canManage) {
     return (
       <Container backHref={backHref} backLabel="К турниру">
-        <EmptyState title="Нет доступа" description="Управлять турниром может только организатор." />
+        <EmptyState title="Нет доступа" description="Управлять турниром может организатор или модератор." />
       </Container>
     );
   }

@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import { useMe } from "@/hooks/useMe";
 import { useTournament } from "@/hooks/useTournaments";
+import { isModerator } from "@/lib/roles";
 
 export function TournamentEditView({ slug }: { slug: string }) {
   const router = useRouter();
@@ -20,8 +21,11 @@ export function TournamentEditView({ slug }: { slug: string }) {
 
   const tournament = query.data;
   const backHref = `/tournaments/${slug}/manage`;
-  const notOrganizer =
-    tournament != null && me != null && tournament.organizer_id !== me.id;
+  const noAccess =
+    tournament != null &&
+    me != null &&
+    tournament.organizer_id !== me.id &&
+    !isModerator(me.role);
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-6 sm:py-8">
@@ -44,8 +48,8 @@ export function TournamentEditView({ slug }: { slug: string }) {
         ) : (
           <ErrorState onRetry={() => query.refetch()} />
         )
-      ) : notOrganizer ? (
-        <EmptyState title="Нет доступа" description="Редактировать турнир может только организатор." />
+      ) : noAccess ? (
+        <EmptyState title="Нет доступа" description="Редактировать турнир может организатор или модератор." />
       ) : tournament ? (
         <>
           <PageHeader title="Редактирование турнира" description={tournament.title} />

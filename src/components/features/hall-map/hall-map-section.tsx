@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { IconPaddle, IconPencil, IconPlus } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BallSpinner } from "@/components/ui/spinner";
 import { useVenueLayout } from "@/hooks/useHallMap";
 import { useMe } from "@/hooks/useMe";
 import { MIN_BOOKING_MIN, availableStarts, availableStartsForTable, hasFreeSlot } from "@/lib/hallSchedule";
@@ -42,6 +43,8 @@ export function HallMapSection({ venue }: { venue: VenueRead }) {
   const layoutQuery = useVenueLayout(venue.id, date);
   const tables = layoutQuery.data?.tables;
   const hasMap = !!tables && tables.length > 0;
+  // Показываем прошлый день, пока грузится новый (keepPreviousData) — дозагрузку помечаем dim'ом.
+  const switchingDay = layoutQuery.isPlaceholderData && layoutQuery.isFetching;
 
   const dayPills = useMemo(
     () => Array.from({ length: 7 }, (_, i) => addDays(today, i)),
@@ -141,7 +144,12 @@ export function HallMapSection({ venue }: { venue: VenueRead }) {
                   Зал в этот день не работает
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 rounded-pill bg-status-open/10 px-2.5 py-1 text-[13px] font-bold text-status-open">
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-pill bg-status-open/10 px-2.5 py-1 text-[13px] font-bold text-status-open transition-opacity duration-200",
+                    switchingDay && "opacity-40",
+                  )}
+                >
                   <span className="size-2 rounded-full bg-status-open" />
                   Свободно {freeCount} из {tables?.length ?? 0}
                 </span>
@@ -156,14 +164,29 @@ export function HallMapSection({ venue }: { venue: VenueRead }) {
             </p>
           )}
 
-          <HallMap
-            venueId={venue.id}
-            venueSlug={venue.slug}
-            workingHours={venue.working_hours}
-            mode={mode}
-            date={date}
-            onExitEdit={() => setMode("view")}
-          />
+          <div className="relative">
+            <div
+              className={cn(
+                "transition-opacity duration-200",
+                // Блокируем клики по столам прошлого дня, пока грузится выбранный — иначе бронь уйдёт не в ту дату.
+                switchingDay && mode === "view" && "pointer-events-none opacity-40",
+              )}
+            >
+              <HallMap
+                venueId={venue.id}
+                venueSlug={venue.slug}
+                workingHours={venue.working_hours}
+                mode={mode}
+                date={date}
+                onExitEdit={() => setMode("view")}
+              />
+            </div>
+            {switchingDay && mode === "view" && (
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <BallSpinner size={26} />
+              </div>
+            )}
+          </div>
 
           {mode === "view" && (
             <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs font-semibold text-muted">

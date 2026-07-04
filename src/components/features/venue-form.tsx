@@ -13,7 +13,14 @@ import { IconCamera, IconX } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
-import { useAddVenuePhoto, useCreateVenue, useUpdateVenue } from "@/hooks/useVenues";
+import {
+  useAddVenuePhoto,
+  useCreateVenue,
+  useDeleteVenuePhoto,
+  useUpdateVenue,
+} from "@/hooks/useVenues";
+import { mediaUrl } from "@/lib/media";
+import { cn } from "@/lib/utils";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
 import { handleApiError } from "@/lib/errors/handle";
 import { fieldErrors } from "@/lib/errors/messages";
@@ -35,6 +42,67 @@ import type { VenueRead } from "@/types/api";
 
 const clean = (v: string | undefined) => (v && v.trim() ? v.trim() : undefined);
 
+// Валидация выбранных файлов (лимит по количеству + тип/размер) с тостами — общая для create/edit.
+function pickValidPhotos(list: FileList, currentCount: number): File[] {
+  const valid: File[] = [];
+  let count = currentCount;
+  for (const file of Array.from(list)) {
+    if (count >= VENUE_PHOTOS_MAX) {
+      toast.error(`Не больше ${VENUE_PHOTOS_MAX} фото`);
+      break;
+    }
+    const problem = validateVenuePhotoFile(file);
+    if (problem) {
+      toast.error(`${file.name}: ${problem}`);
+      continue;
+    }
+    valid.push(file);
+    count += 1;
+  }
+  return valid;
+}
+
+function PhotoThumb({
+  src,
+  cover,
+  index,
+  removeLabel,
+  onRemove,
+  disabled,
+}: {
+  src: string;
+  cover: boolean;
+  index: number;
+  removeLabel: string;
+  onRemove: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className="relative">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={`Фото ${index + 1}`}
+        className="h-20 w-28 rounded border border-border object-cover"
+      />
+      {cover && (
+        <span className="absolute bottom-1 left-1 rounded-pill bg-surface/90 px-1.5 py-0.5 text-[10px] font-bold text-fg-2">
+          Обложка
+        </span>
+      )}
+      <button
+        type="button"
+        aria-label={removeLabel}
+        disabled={disabled}
+        onClick={onRemove}
+        className="absolute -top-1.5 -right-1.5 rounded-full border border-border bg-surface p-0.5 text-muted shadow-card hover:text-danger disabled:opacity-50"
+      >
+        <IconX size={13} />
+      </button>
+    </div>
+  );
+}
+
 const SERVER_TO_FIELD: Record<string, keyof CreateVenueValues> = {
   name: "name",
   address: "address",
@@ -53,7 +121,10 @@ export function VenueForm({ venue }: { venue?: VenueRead }) {
   const create = useCreateVenue();
   const update = useUpdateVenue(venue?.id ?? 0);
   const addPhoto = useAddVenuePhoto();
+  const deletePhoto = useDeleteVenuePhoto(venue?.id ?? 0);
   const [photos, setPhotos] = useState<File[]>([]);
+  const existingPhotos = venue?.photos ?? [];
+  const photosBusy = addPhoto.isPending || deletePhoto.isPending;
   const [schedule, setSchedule] = useState<WeekSchedule>(
     () => parseWeekSchedule(venue?.working_hours ?? null) ?? defaultWeek(),
   );
@@ -97,20 +168,21 @@ export function VenueForm({ venue }: { venue?: VenueRead }) {
 
   function addFiles(list: FileList | null) {
     if (!list) return;
-    const next = [...photos];
-    for (const file of Array.from(list)) {
-      if (next.length >= VENUE_PHOTOS_MAX) {
-        toast.error(`Не больше ${VENUE_PHOTOS_MAX} фото`);
-        break;
+    const valid = pickValidPhotos(list, photos.length);
+    if (valid.length) setPhotos([...photos, ...valid]);
+  }
+
+  async function uploadToVenue(list: FileList | null) {
+    if (!list || !venue) return;
+    let slot = existingPhotos.length;
+    for (const file of pickValidPhotos(list, slot)) {
+      try {
+        await addPhoto.mutateAsync({ venueId: venue.id, file, sortOrder: slot, isCover: slot === 0 });
+        slot += 1;
+      } catch {
+        toast.error(`Не удалось загрузить ${file.name}`);
       }
-      const problem = validateVenuePhotoFile(file);
-      if (problem) {
-        toast.error(`${file.name}: ${problem}`);
-        continue;
-      }
-      next.push(file);
     }
-    setPhotos(next);
   }
 
   function mapServerErrors(err: unknown): boolean {
@@ -283,54 +355,60 @@ export function VenueForm({ venue }: { venue?: VenueRead }) {
           />
         </Field>
 
-        {!isEdit && (
-          <Field
-            label="Фото"
-            hint={`До ${VENUE_PHOTOS_MAX} фото (JPEG/PNG/WebP, до 8 МБ). Первое станет обложкой.`}
-          >
-            <div className="flex flex-wrap items-center gap-2.5">
-              {previews.map((url, i) => (
-                <div key={url} className="relative">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+        <Field
+          label="Фото"
+          hint={`До ${VENUE_PHOTOS_MAX} фото (JPEG/PNG/WebP, до 8 МБ). Первое — обложка.`}
+        >
+          <div className="flex flex-wrap items-center gap-2.5">
+            {isEdit
+              ? existingPhotos.map((photo, i) => (
+                  <PhotoThumb
+                    key={photo.id}
+                    src={mediaUrl(photo.url) ?? ""}
+                    cover={photo.is_cover}
+                    index={i}
+                    removeLabel={`Удалить фото ${i + 1}`}
+                    disabled={photosBusy}
+                    onRemove={() => deletePhoto.mutate(photo.id)}
+                  />
+                ))
+              : previews.map((url, i) => (
+                  <PhotoThumb
+                    key={url}
                     src={url}
-                    alt={`Фото ${i + 1}`}
-                    className="h-20 w-28 rounded border border-border object-cover"
+                    cover={i === 0}
+                    index={i}
+                    removeLabel={`Убрать фото ${i + 1}`}
+                    onRemove={() => setPhotos(photos.filter((_, j) => j !== i))}
                   />
-                  {i === 0 && (
-                    <span className="absolute bottom-1 left-1 rounded-pill bg-surface/90 px-1.5 py-0.5 text-[10px] font-bold text-fg-2">
-                      Обложка
-                    </span>
-                  )}
-                  <button
-                    type="button"
-                    aria-label={`Убрать фото ${i + 1}`}
-                    onClick={() => setPhotos(photos.filter((_, j) => j !== i))}
-                    className="absolute -top-1.5 -right-1.5 rounded-full border border-border bg-surface p-0.5 text-muted shadow-card hover:text-danger"
-                  >
-                    <IconX size={13} />
-                  </button>
-                </div>
-              ))}
-              {photos.length < VENUE_PHOTOS_MAX && (
-                <label className="flex h-20 w-28 cursor-pointer flex-col items-center justify-center gap-1 rounded border border-dashed border-border text-muted transition-colors hover:border-border-strong hover:text-fg-2">
-                  <IconCamera size={20} />
-                  <span className="text-[11px] font-bold">Добавить</span>
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    multiple
-                    className="sr-only"
-                    onChange={(e) => {
-                      addFiles(e.target.files);
-                      e.target.value = "";
-                    }}
-                  />
-                </label>
-              )}
-            </div>
-          </Field>
-        )}
+                ))}
+            {(isEdit ? existingPhotos.length : photos.length) < VENUE_PHOTOS_MAX && (
+              <label
+                className={cn(
+                  "flex h-20 w-28 cursor-pointer flex-col items-center justify-center gap-1 rounded border border-dashed border-border text-muted transition-colors hover:border-border-strong hover:text-fg-2",
+                  photosBusy && "pointer-events-none opacity-50",
+                )}
+              >
+                <IconCamera size={20} />
+                <span className="text-[11px] font-bold">
+                  {isEdit && addPhoto.isPending ? "Загрузка…" : "Добавить"}
+                </span>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  multiple
+                  disabled={photosBusy}
+                  className="sr-only"
+                  onChange={(e) => {
+                    if (isEdit) uploadToVenue(e.target.files);
+                    else addFiles(e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+            )}
+          </div>
+        </Field>
 
         <Button type="submit" size="lg" loading={isSubmitting} className="mt-1 self-start px-8">
           {isEdit ? "Сохранить" : "Добавить зал"}

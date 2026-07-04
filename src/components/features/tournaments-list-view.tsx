@@ -68,7 +68,7 @@ function TournamentsListInner() {
           description="Под выбранные фильтры турниров нет. Сбросьте фильтры или создайте свой."
         />
       ) : (
-        <div className="space-y-3">
+        <div className="pu-reveal space-y-3">
           {query.data.items.map((tournament) => (
             <TournamentCard key={tournament.id} tournament={tournament} />
           ))}

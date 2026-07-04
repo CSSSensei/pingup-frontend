@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { IconAlertCircle } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SUPPORT_URL } from "@/lib/links";
 import { cn } from "@/lib/utils";
 
 export function EmptyState({
@@ -48,11 +49,21 @@ export function ErrorState({
       title={title}
       description={description}
       action={
-        onRetry ? (
-          <Button variant="secondary" onClick={onRetry}>
-            Повторить
-          </Button>
-        ) : undefined
+        <div className="flex flex-col items-center gap-3">
+          {onRetry && (
+            <Button variant="secondary" onClick={onRetry}>
+              Повторить
+            </Button>
+          )}
+          <a
+            href={SUPPORT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-semibold text-muted underline-offset-2 hover:text-primary hover:underline"
+          >
+            Написать в поддержку
+          </a>
+        </div>
       }
     />
   );

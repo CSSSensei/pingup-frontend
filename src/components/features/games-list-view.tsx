@@ -61,7 +61,7 @@ function GamesListInner() {
           description="Здесь появятся ближайшие игры в Смоленске. Загляните позже или создайте свою."
         />
       ) : (
-        <div className="space-y-3">
+        <div className="pu-reveal space-y-3">
           {query.data.items.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}

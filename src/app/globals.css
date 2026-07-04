@@ -73,12 +73,22 @@
 }
 @keyframes pu-toast {
   from {
-    transform: translate(-50%, 16px);
+    transform: translateY(10px) scale(0.98);
     opacity: 0;
   }
   to {
-    transform: translate(-50%, 0);
+    transform: translateY(0) scale(1);
     opacity: 1;
+  }
+}
+@keyframes pu-toast-out {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(6px) scale(0.98);
+    opacity: 0;
   }
 }
 @keyframes pu-pop {
@@ -96,6 +106,17 @@
     opacity: 0;
   }
   to {
+    opacity: 1;
+  }
+}
+
+@keyframes pu-reveal {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
     opacity: 1;
   }
 }
@@ -131,6 +152,16 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #b8b8bf;
     background-clip: content-box;
+  }
+}
+
+/* Проявление подгруженного контента (списки, детальные карточки). */
+.pu-reveal {
+  animation: pu-reveal 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pu-reveal {
+    animation: none;
   }
 }
 

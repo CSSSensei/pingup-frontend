@@ -72,7 +72,7 @@ function PartnersListInner() {
           description="Под выбранные фильтры объявлений нет. Сбросьте фильтры или создайте своё."
         />
       ) : (
-        <div className="space-y-3">
+        <div className="pu-reveal space-y-3">
           {query.data.items.map((request) => (
             <PartnerRequestCard key={request.id} request={request} />
           ))}

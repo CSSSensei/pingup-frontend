@@ -112,7 +112,7 @@ function VenuesListInner() {
         />
       ) : (
         <>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="pu-reveal grid gap-3 md:grid-cols-2">
             {query.data.items.map((venue) => (
               <VenueCard key={venue.id} venue={venue} />
             ))}

@@ -103,7 +103,7 @@ function TrainingsListInner() {
           description="Здесь появятся групповые тренировки и спарринги в Смоленске. Создайте свою."
         />
       ) : (
-        <div className="space-y-3">
+        <div className="pu-reveal space-y-3">
           {items.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}

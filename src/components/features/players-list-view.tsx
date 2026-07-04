@@ -92,7 +92,7 @@ function PlayersListInner() {
         />
       ) : (
         <>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="pu-reveal grid gap-3 md:grid-cols-2">
             {query.data.items.map((player) => (
               <PlayerCard key={player.slug ?? player.display_name} player={player} />
             ))}

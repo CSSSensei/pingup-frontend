@@ -1,3 +1,4 @@
+import type { WeekScheduleMap } from "@/lib/schedule";
 import { isoToMoscowDate, isoToMoscowTime } from "@/lib/schemas/event";
 import type { TableBooking } from "@/types/api";
 
@@ -75,18 +76,68 @@ export function slotStarts(intervals: DayInterval[], durationMin: number): strin
   return out;
 }
 
+function startsFromIntervals(intervals: DayInterval[], date: string, durationMin: number): string[] {
+  const nowIso = new Date().toISOString();
+  const today = isoToMoscowDate(nowIso);
+  const nowTime = isoToMoscowTime(nowIso);
+  return slotStarts(intervals, durationMin).filter((s) => date !== today || s > nowTime);
+}
+
 export function availableStarts(
   workingHours: Record<string, unknown> | null,
   date: string,
   durationMin: number,
 ): string[] {
   if (!date) return [];
-  const nowIso = new Date().toISOString();
-  const today = isoToMoscowDate(nowIso);
-  const nowTime = isoToMoscowTime(nowIso);
-  return slotStarts(dayIntervals(workingHours, date), durationMin).filter(
-    (s) => date !== today || s > nowTime,
-  );
+  return startsFromIntervals(dayIntervals(workingHours, date), date, durationMin);
+}
+
+function tableDayIntervals(schedule: WeekScheduleMap, date: string): DayInterval[] {
+  const dow = new Date(`${date}T12:00:00Z`).getUTCDay();
+  if (Number.isNaN(dow)) return [];
+  return parseDay(schedule[WEEKDAY_BY_JS_DAY[dow]]) ?? [];
+}
+
+function intersectIntervals(a: DayInterval[], b: DayInterval[]): DayInterval[] {
+  const out: DayInterval[] = [];
+  for (const x of a) {
+    for (const y of b) {
+      const open = Math.max(toMin(x.open), toMin(y.open));
+      const close = Math.min(toMin(x.close), toMin(y.close));
+      if (close > open) out.push({ open: fromMin(open), close: fromMin(close) });
+    }
+  }
+  return out.sort((p, q) => toMin(p.open) - toMin(q.open));
+}
+
+export function availableStartsForTable(
+  workingHours: Record<string, unknown> | null,
+  tableSchedule: WeekScheduleMap | null,
+  date: string,
+  durationMin: number,
+): string[] {
+  if (!date) return [];
+  const hall = dayIntervals(workingHours, date);
+  const eff = tableSchedule
+    ? intersectIntervals(hall, tableDayIntervals(tableSchedule, date))
+    : hall;
+  return startsFromIntervals(eff, date, durationMin);
+}
+
+export function windowWithinHours(
+  workingHours: Record<string, unknown> | null,
+  tableSchedule: WeekScheduleMap | null,
+  date: string,
+  start: string,
+  end: string,
+): boolean {
+  const hall = dayIntervals(workingHours, date);
+  const eff = tableSchedule
+    ? intersectIntervals(hall, tableDayIntervals(tableSchedule, date))
+    : hall;
+  const s = toMin(start);
+  const e = toMin(end);
+  return e > s && eff.some((iv) => toMin(iv.open) <= s && e <= toMin(iv.close));
 }
 
 export function slotEnd(start: string, durationMin: number): string {
@@ -95,4 +146,8 @@ export function slotEnd(start: string, durationMin: number): string {
 
 export function overlaps(bookings: TableBooking[], startMs: number, endMs: number): boolean {
   return bookings.some((b) => Date.parse(b.starts_at) < endMs && Date.parse(b.ends_at) > startMs);
+}
+
+export function hasFreeSlot(bookings: TableBooking[], startMsList: number[]): boolean {
+  return startMsList.some((ms) => !overlaps(bookings, ms, ms + MIN_BOOKING_MIN * 60_000));
 }

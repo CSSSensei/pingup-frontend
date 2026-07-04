@@ -13,12 +13,16 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { BookingModal } from "@/components/features/hall-map/booking-modal";
+import { fitFrame } from "@/components/features/hall-map/frame";
+import { TableScheduleModal } from "@/components/features/hall-map/table-schedule-modal";
 import { TableShape, type TableStatus } from "@/components/features/hall-map/table-shape";
 import { Button } from "@/components/ui/button";
-import { IconBan, IconCheck, IconPlus, IconRefresh, IconTrash, IconX } from "@/components/ui/icons";
+import { IconBan, IconCheck, IconClock, IconPlus, IconRefresh, IconTrash, IconX } from "@/components/ui/icons";
 import { toast } from "@/components/ui/toast";
 import { useCancelBooking, useSaveHallLayout, useVenueLayout } from "@/hooks/useHallMap";
-import { MIN_BOOKING_MIN, availableStarts, overlaps } from "@/lib/hallSchedule";
+import { MIN_BOOKING_MIN, availableStartsForTable, hasFreeSlot } from "@/lib/hallSchedule";
+import { eventHref } from "@/lib/links";
+import Link from "next/link";
 import { moscowIso } from "@/lib/schemas/event";
 import { useHallEditorStore } from "@/stores/hallEditor";
 import type { HallTable, HallTableWritePayload } from "@/types/api";
@@ -57,6 +61,12 @@ export function HallMap({
   const viewW = layout?.viewbox_width ?? 2000;
   const viewH = layout?.viewbox_height ?? 1200;
 
+  // Просмотр — кадрируем по крайним столам (зал «бесконечен»); правка — весь холст.
+  const frame = useMemo(
+    () => fitFrame(mode === "view" ? (layout?.tables ?? []) : [], viewW, viewH),
+    [mode, layout, viewW, viewH],
+  );
+
   const tables = useHallEditorStore((s) => s.tables);
   const selectedKey = useHallEditorStore((s) => s.selectedKey);
   const dirty = useHallEditorStore((s) => s.dirty);
@@ -71,10 +81,19 @@ export function HallMap({
   const [bookingTable, setBookingTable] = useState<HallTable | null>(null);
   const [infoTable, setInfoTable] = useState<HallTable | null>(null);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
+  const [showTableSchedule, setShowTableSchedule] = useState(false);
 
-  const startMsList = useMemo(
+  const hallStartMsList = useMemo(
     () =>
-      availableStarts(workingHours, date, MIN_BOOKING_MIN).map((s) =>
+      availableStartsForTable(workingHours, null, date, MIN_BOOKING_MIN).map((s) =>
+        Date.parse(moscowIso(date, s)),
+      ),
+    [workingHours, date],
+  );
+
+  const tableStartsMs = useCallback(
+    (t: HallTable) =>
+      availableStartsForTable(workingHours, t.schedule, date, MIN_BOOKING_MIN).map((s) =>
         Date.parse(moscowIso(date, s)),
       ),
     [workingHours, date],
@@ -113,11 +132,9 @@ export function HallMap({
 
   function statusFor(t: HallTable): TableStatus {
     if (!t.is_active) return "disabled";
-    if (startMsList.length === 0) return "booked";
-    const hasFree = startMsList.some(
-      (ms) => !overlaps(t.bookings, ms, ms + MIN_BOOKING_MIN * 60_000),
-    );
-    return hasFree ? "free" : "booked";
+    const starts = tableStartsMs(t);
+    if (starts.length === 0) return "booked";
+    return hasFreeSlot(t.bookings, starts) ? "free" : "booked";
   }
 
   const handleViewBodyDown = useCallback((e: ReactPointerEvent<SVGGElement>) => {
@@ -128,20 +145,20 @@ export function HallMap({
     (e: ReactMouseEvent<SVGGElement>, key: string) => {
       const down = downPosRef.current;
       if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) return;
-      if (startMsList.length === 0) {
+      if (hallStartMsList.length === 0) {
         toast("Зал в этот день не работает");
         return;
       }
       const t = layout?.tables.find((x) => String(x.id) === key);
       if (!t) return;
-      if (t.is_active && startMsList.some((ms) => !overlaps(t.bookings, ms, ms + MIN_BOOKING_MIN * 60_000))) {
+      if (t.is_active && hasFreeSlot(t.bookings, tableStartsMs(t))) {
         setInfoTable(null);
         setBookingTable(t);
       } else {
         setInfoTable(t);
       }
     },
-    [startMsList, layout],
+    [hallStartMsList, tableStartsMs, layout],
   );
 
   const captureCtm = () => {
@@ -217,6 +234,7 @@ export function HallMap({
       y: t.y,
       rotation: t.rotation,
       is_active: t.is_active,
+      schedule: t.schedule,
     }));
     try {
       await saveLayout.mutateAsync({ tables: payload });
@@ -230,6 +248,7 @@ export function HallMap({
   const selected = tables.find((t) => t.key === selectedKey) ?? null;
 
   const infoStatus = infoTable ? statusFor(infoTable) : null;
+  const infoEvent = infoTable?.bookings.find((b) => b.event_id != null) ?? null;
   const myBooking =
     infoTable?.bookings.find((b) => b.is_mine && b.id > 0 && Date.parse(b.ends_at) > Date.now()) ??
     null;
@@ -262,6 +281,15 @@ export function HallMap({
           </Button>
           <Button
             size="sm"
+            variant="secondary"
+            disabled={!selected}
+            onClick={() => selected && setShowTableSchedule(true)}
+          >
+            <IconClock size={15} />
+            Часы{selected?.schedule ? " •" : ""}
+          </Button>
+          <Button
+            size="sm"
             variant="ghost"
             disabled={!selected}
             className="text-danger"
@@ -287,7 +315,7 @@ export function HallMap({
 
       <div
         className="relative w-full overflow-hidden rounded-lg border border-border bg-surface-2"
-        style={{ aspectRatio: `${viewW}/${viewH}` }}
+        style={{ aspectRatio: `${frame.w}/${frame.h}` }}
       >
         <TransformWrapper
           minScale={1}
@@ -305,30 +333,33 @@ export function HallMap({
               >
                 <svg
                   ref={svgRef}
-                  viewBox={`0 0 ${viewW} ${viewH}`}
+                  viewBox={`${frame.x} ${frame.y} ${frame.w} ${frame.h}`}
                   className="h-full w-full select-none"
                 >
                   <defs>
-                    <pattern id="hm-grid" width={100} height={100} patternUnits="userSpaceOnUse">
-                      <path
-                        d="M 100 0 L 0 0 0 100"
-                        fill="none"
-                        stroke="var(--color-border)"
-                        strokeWidth={1.5}
-                      />
+                    <pattern id="hm-floor" width={100} height={100} patternUnits="userSpaceOnUse">
+                      <circle cx={50} cy={50} r={2.4} fill="var(--color-border-strong)" />
                     </pattern>
                   </defs>
-                  <rect
-                    width={viewW}
-                    height={viewH}
-                    fill="var(--color-surface)"
-                    stroke="var(--color-border-strong)"
-                    strokeWidth={4}
-                    onClick={() => mode === "edit" && useHallEditorStore.getState().select(null)}
-                  />
                   {mode === "edit" && (
-                    <rect width={viewW} height={viewH} fill="url(#hm-grid)" pointerEvents="none" />
+                    <rect
+                      width={viewW}
+                      height={viewH}
+                      fill="var(--color-surface)"
+                      stroke="var(--color-border-strong)"
+                      strokeWidth={4}
+                      strokeDasharray="20 14"
+                      onClick={() => useHallEditorStore.getState().select(null)}
+                    />
                   )}
+                  <rect
+                    x={frame.x}
+                    y={frame.y}
+                    width={frame.w}
+                    height={frame.h}
+                    fill="url(#hm-floor)"
+                    pointerEvents="none"
+                  />
 
                   {mode === "view" &&
                     layout?.tables.map((t) => (
@@ -382,11 +413,23 @@ export function HallMap({
 
         {infoTable && mode === "view" && (
           <div className="absolute inset-x-2.5 bottom-2.5 flex items-center justify-between gap-3 rounded-lg border border-border bg-surface p-3 shadow-pop">
-            <p className="text-sm font-semibold text-fg">
-              {infoStatus === "disabled"
-                ? `Стол ${infoTable.label} недоступен для бронирования`
-                : `Стол ${infoTable.label} полностью занят в этот день`}
-            </p>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-fg">
+                {infoEvent
+                  ? `Стол ${infoTable.label} занят событием «${infoEvent.event_title}»`
+                  : infoStatus === "disabled"
+                    ? `Стол ${infoTable.label} недоступен для бронирования`
+                    : `Стол ${infoTable.label} полностью занят в этот день`}
+              </p>
+              {infoEvent?.event_type && infoEvent.event_id != null && (
+                <Link
+                  href={eventHref({ id: infoEvent.event_id, event_type: infoEvent.event_type })}
+                  className="text-[13px] font-semibold text-primary hover:underline"
+                >
+                  Открыть событие
+                </Link>
+              )}
+            </div>
             <div className="flex flex-none items-center gap-1.5">
               {myBooking && (
                 <Button
@@ -426,6 +469,15 @@ export function HallMap({
           table={bookingTable}
           initialDate={date}
           onClose={() => setBookingTable(null)}
+        />
+      )}
+
+      {showTableSchedule && selected && (
+        <TableScheduleModal
+          label={selected.label}
+          schedule={selected.schedule}
+          onClose={() => setShowTableSchedule(false)}
+          onSave={(schedule) => useHallEditorStore.getState().setSchedule(selected.key, schedule)}
         />
       )}
 

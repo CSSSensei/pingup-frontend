@@ -10,7 +10,7 @@ import { Modal } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
 import { useCancelBooking, useCreateBooking, useVenueLayout } from "@/hooks/useHallMap";
-import { availableStarts, dayIntervals, overlaps, slotEnd } from "@/lib/hallSchedule";
+import { availableStartsForTable, dayIntervals, overlaps, slotEnd } from "@/lib/hallSchedule";
 import { formatTimeRange } from "@/lib/format";
 import { isoToMoscowDate, moscowIso } from "@/lib/schemas/event";
 import { useAuthStore } from "@/stores/auth";
@@ -64,11 +64,11 @@ export function BookingModal({
   );
 
   const chips = useMemo(() => {
-    return availableStarts(workingHours, date, duration).filter((s) => {
+    return availableStartsForTable(workingHours, table.schedule, date, duration).filter((s) => {
       const startMs = Date.parse(moscowIso(date, s));
       return !overlaps(bookings, startMs, startMs + duration * 60_000);
     });
-  }, [workingHours, date, duration, bookings]);
+  }, [workingHours, table.schedule, date, duration, bookings]);
 
   const selectedStart = chips.includes(start) ? start : "";
 

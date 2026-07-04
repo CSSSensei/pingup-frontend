@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+import type { WeekScheduleMap } from "@/lib/schedule";
 import type { HallTable } from "@/types/api";
 
 export interface DraftTable {
@@ -10,6 +11,7 @@ export interface DraftTable {
   y: number;
   rotation: number;
   is_active: boolean;
+  schedule: WeekScheduleMap | null;
 }
 
 interface HallEditorState {
@@ -23,6 +25,7 @@ interface HallEditorState {
   rotateTable: (key: string, rotation: number) => void;
   rotate90: (key: string) => void;
   toggleActive: (key: string) => void;
+  setSchedule: (key: string, schedule: WeekScheduleMap | null) => void;
   removeTable: (key: string) => void;
 }
 
@@ -58,6 +61,7 @@ export const useHallEditorStore = create<HallEditorState>((set) => ({
         y: t.y,
         rotation: t.rotation,
         is_active: t.is_active,
+        schedule: t.schedule,
       })),
       selectedKey: null,
       dirty: false,
@@ -71,7 +75,7 @@ export const useHallEditorStore = create<HallEditorState>((set) => ({
       return {
         tables: [
           ...s.tables,
-          { key, id: null, label: nextLabel(s.tables), x, y, rotation: 0, is_active: true },
+          { key, id: null, label: nextLabel(s.tables), x, y, rotation: 0, is_active: true, schedule: null },
         ],
         selectedKey: key,
         dirty: true,
@@ -94,6 +98,9 @@ export const useHallEditorStore = create<HallEditorState>((set) => ({
       tables: patch(s.tables, key, (t) => ({ is_active: !t.is_active })),
       dirty: true,
     })),
+
+  setSchedule: (key, schedule) =>
+    set((s) => ({ tables: patch(s.tables, key, () => ({ schedule })), dirty: true })),
 
   removeTable: (key) =>
     set((s) => ({

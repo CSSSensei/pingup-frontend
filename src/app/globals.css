@@ -165,6 +165,50 @@
   }
 }
 
+@keyframes pu-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.rating-line-draw {
+  stroke-dasharray: 1;
+  animation: pu-draw 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.rating-area-in {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: pu-area-wipe 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes pu-area-wipe {
+  from {
+    transform: scaleX(0);
+    opacity: 0.4;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+.rating-dot-in {
+  animation: pu-pop 0.3s ease-out 0.82s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rating-line-draw,
+  .rating-area-in,
+  .rating-dot-in {
+    animation: none;
+  }
+  .rating-line-draw {
+    stroke-dasharray: none;
+  }
+  .rating-area-in {
+    transform: none;
+  }
+}
+
 .hm-table {
   filter: drop-shadow(0 1px 1.5px rgba(10, 10, 10, 0.16));
   transition: filter 0.14s ease;

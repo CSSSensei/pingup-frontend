@@ -80,6 +80,8 @@ export function RatingChart({
   const yTickVals = yTicks(min, max);
   const xTickIdx = xLabelIndices(n);
 
+  const drawKey = `${win}:${n}:${visible[0].recorded_at}:${visible[n - 1].recorded_at}`;
+
   function onMove(e: React.PointerEvent) {
     const rect = wrapRef.current?.getBoundingClientRect();
     if (!rect || rect.width === 0) return;
@@ -205,8 +207,17 @@ export function RatingChart({
             );
           })}
 
-          <path d={area} fill="var(--color-primary-tint)" stroke="none" />
           <path
+            key={`area-${drawKey}`}
+            className="rating-area-in"
+            d={area}
+            fill="var(--color-primary-tint)"
+            stroke="none"
+          />
+          <path
+            key={`line-${drawKey}`}
+            className="rating-line-draw"
+            pathLength={1}
             d={line}
             fill="none"
             stroke="var(--color-primary)"
@@ -238,6 +249,8 @@ export function RatingChart({
           )}
           {!hover && (
             <circle
+              key={`dot-${drawKey}`}
+              className="rating-dot-in"
               cx={xAt(n - 1)}
               cy={yAt(visible[n - 1].rating)}
               r={4.5}

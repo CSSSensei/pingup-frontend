@@ -53,13 +53,11 @@ export const createVenueSchema = z.object({
 
 export type CreateVenueValues = z.infer<typeof createVenueSchema>;
 
-export const VENUE_PHOTO_MAX_BYTES = 8 * 1024 * 1024;
 export const VENUE_PHOTOS_MAX = 6;
 
 export function validateVenuePhotoFile(file: File): string | null {
   if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
     return "Формат не поддерживается — нужен JPEG, PNG или WebP";
   }
-  if (file.size > VENUE_PHOTO_MAX_BYTES) return "Файл больше 8 МБ";
   return null;
 }

@@ -66,8 +66,6 @@ export function validatePhone(value: string): string | null {
 }
 
 export function validateAvatarFile(file: File): string | null {
-  const MAX_BYTES = 4 * 1024 * 1024;
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return "Только JPG, PNG или WebP";
-  if (file.size > MAX_BYTES) return "Файл больше 4 МБ";
   return null;
 }

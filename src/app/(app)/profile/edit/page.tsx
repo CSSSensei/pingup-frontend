@@ -205,7 +205,7 @@ function EditForm({ profile }: { profile: ProfileMe }) {
               />
             </label>
             <div className={avatarError ? "mt-1.5 text-xs font-semibold text-danger" : "mt-1.5 text-xs text-muted"}>
-              {avatarError || "JPG, PNG или WebP, до 4 МБ"}
+              {avatarError || "JPG, PNG или WebP"}
             </div>
           </div>
         </div>

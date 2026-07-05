@@ -357,7 +357,7 @@ export function VenueForm({ venue }: { venue?: VenueRead }) {
 
         <Field
           label="Фото"
-          hint={`До ${VENUE_PHOTOS_MAX} фото (JPEG/PNG/WebP, до 8 МБ). Первое — обложка.`}
+          hint={`До ${VENUE_PHOTOS_MAX} фото (JPEG/PNG/WebP). Первое — обложка.`}
         >
           <div className="flex flex-wrap items-center gap-2.5">
             {isEdit

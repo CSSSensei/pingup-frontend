@@ -474,7 +474,7 @@ export default function OnboardingPage() {
                     />
                   </label>
                   <div className={cn("mt-1.5 text-xs", errors.avatar ? "font-semibold text-danger" : "text-muted")}>
-                    {errors.avatar || "JPG, PNG или WebP, до 4 МБ"}
+                    {errors.avatar || "JPG, PNG или WebP"}
                   </div>
                 </div>
               </div>

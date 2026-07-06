@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import { setAccessToken } from "@/lib/auth/tokens";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
 import { apiErrorMessage, fieldErrors } from "@/lib/errors/messages";
 import { registerSchema, type RegisterValues } from "@/lib/schemas/auth";
+import { formatRuPhone } from "@/lib/schemas/onboarding";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -28,6 +29,7 @@ export default function RegisterPage() {
   const passwordReqId = useId();
   const {
     register,
+    control,
     handleSubmit,
     watch,
     setError,
@@ -41,6 +43,8 @@ export default function RegisterPage() {
       display_name: "",
       email: "",
       password: "",
+      telegram: "",
+      phone: "",
       terms_accept: false,
       privacy_consent: false,
       marketing: false,
@@ -58,6 +62,8 @@ export default function RegisterPage() {
         email: values.email,
         password: values.password,
         city_id: SMOLENSK_CITY_ID,
+        telegram_username: values.telegram?.trim() || null,
+        phone: values.phone?.trim() || null,
         marketing_consent: values.marketing ?? false,
       });
       if (session?.access_token) setAccessToken(session.access_token);
@@ -150,6 +156,42 @@ export default function RegisterPage() {
               showErrors={!!touchedFields.password || submitCount > 0}
             />
           </div>
+
+          <div className="rounded bg-surface-2 px-3.5 py-2.5">
+            <p className="text-[13px] font-bold text-fg">Контакт для связи</p>
+            <p className="mt-0.5 text-xs text-muted">
+              Укажите Telegram или телефон — хотя бы один. Без контакта нельзя участвовать в играх,
+              турнирах и бронировать столы.
+            </p>
+          </div>
+
+          <Field label="Telegram" error={errors.telegram?.message} hint="Например, @ivan_smolensk">
+            <Input
+              autoCapitalize="none"
+              placeholder="@username"
+              invalid={!!errors.telegram}
+              {...register("telegram")}
+            />
+          </Field>
+
+          <Controller
+            control={control}
+            name="phone"
+            render={({ field }) => (
+              <Field label="Телефон" error={errors.phone?.message}>
+                <Input
+                  type="tel"
+                  inputMode="tel"
+                  maxLength={20}
+                  placeholder="+7 (___) ___-__-__"
+                  invalid={!!errors.phone}
+                  value={field.value ?? ""}
+                  onBlur={field.onBlur}
+                  onChange={(e) => field.onChange(formatRuPhone(e.target.value))}
+                />
+              </Field>
+            )}
+          />
 
           <Checkbox error={errors.terms_accept?.message} {...register("terms_accept")}>
             Принимаю{" "}

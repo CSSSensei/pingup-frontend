@@ -61,6 +61,8 @@ export interface RegisterPayload {
   password: string;
   display_name: string;
   city_id: number;
+  telegram_username?: string | null;
+  phone?: string | null;
   marketing_consent?: boolean;
 }
 

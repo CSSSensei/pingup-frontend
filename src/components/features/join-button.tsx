@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 
+import { ContactGateButton } from "@/components/features/contact-gate";
 import { Button } from "@/components/ui/button";
 import { IconCheck } from "@/components/ui/icons";
 import { useJoinEvent, useLeaveEvent } from "@/hooks/useEvents";
+import { useHasContact } from "@/hooks/useHasContact";
 import { useAuthStatus, useMe } from "@/hooks/useMe";
 import { eventHref } from "@/lib/links";
 import type { EventRead } from "@/types/api";
@@ -13,6 +15,7 @@ import type { EventRead } from "@/types/api";
 export function JoinButton({ event }: { event: EventRead }) {
   const status = useAuthStatus();
   const { data: me } = useMe();
+  const hasContact = useHasContact();
   const join = useJoinEvent(event.id);
   const leave = useLeaveEvent(event.id);
 
@@ -85,6 +88,10 @@ export function JoinButton({ event }: { event: EventRead }) {
         Мест нет
       </Button>
     );
+  }
+
+  if (hasContact === false) {
+    return <ContactGateButton />;
   }
 
   return (

@@ -3,14 +3,17 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { ContactGateNotice } from "@/components/features/contact-gate";
 import { EventForm } from "@/components/features/event-form";
 import { PageHeader } from "@/components/common/page-header";
 import { IconArrowLeft } from "@/components/ui/icons";
 import { toast } from "@/components/ui/toast";
+import { useHasContact } from "@/hooks/useHasContact";
 import { eventHref } from "@/lib/links";
 
 export default function NewTrainingPage() {
   const router = useRouter();
+  const hasContact = useHasContact();
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-6 sm:py-8">
@@ -27,13 +30,17 @@ export default function NewTrainingPage() {
         description="Групповая тренировка или личный спарринг — с тренером или без."
       />
 
-      <EventForm
-        kind="training"
-        onSaved={(event) => {
-          toast.success("Тренировка создана");
-          router.push(eventHref(event));
-        }}
-      />
+      {hasContact === false ? (
+        <ContactGateNotice text="Чтобы создать тренировку, добавьте контакт — участники должны иметь возможность с вами связаться." />
+      ) : (
+        <EventForm
+          kind="training"
+          onSaved={(event) => {
+            toast.success("Тренировка создана");
+            router.push(eventHref(event));
+          }}
+        />
+      )}
     </div>
   );
 }

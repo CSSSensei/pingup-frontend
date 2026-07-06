@@ -291,6 +291,13 @@ export default function OnboardingPage() {
         ok = false;
       }
     }
+    // Шаг «Контакты»: хотя бы один из telegram/phone обязателен.
+    if (s === 4 && !values.telegram.trim() && !values.phone.trim()) {
+      const msg = "Укажите хотя бы один контакт — Telegram или телефон";
+      stepErrors.telegram = msg;
+      stepErrors.phone = msg;
+      ok = false;
+    }
     if (!ok) {
       setTouched((t) => ({ ...t, ...Object.fromEntries(fields.map((f) => [f, true])) }));
       setErrors((e) => ({ ...e, ...stepErrors }));

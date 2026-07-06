@@ -12,6 +12,7 @@ const CODE_MESSAGES: Record<string, string> = {
   INVALID_TENNIS67_URL:
     "Ссылка должна вести на теннис67.рф — например https://теннис67.рф/rating/personal.php?sportsman=9292",
   TENNIS67_NOT_LINKED: "Сначала привяжите профиль теннис67.рф.",
+  CONTACT_REQUIRED: "Добавьте контакт (Telegram или телефон) в профиле, чтобы участвовать.",
 };
 
 // Коды дженерик-конвертов: их message бесполезен пользователю → фолбэк по статусу.

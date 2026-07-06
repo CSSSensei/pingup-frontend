@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 
+import { ContactGateButton } from "@/components/features/contact-gate";
 import { Button } from "@/components/ui/button";
 import { IconCheck } from "@/components/ui/icons";
 import {
   useRegisterTournament,
   useUnregisterTournament,
 } from "@/hooks/useTournaments";
+import { useHasContact } from "@/hooks/useHasContact";
 import { useAuthStatus, useMe } from "@/hooks/useMe";
 import { toast } from "@/components/ui/toast";
 import type { TournamentStatus } from "@/lib/enums";
@@ -26,6 +28,7 @@ const CLOSED_REASON: Partial<Record<TournamentStatus, string>> = {
 export function RegisterButton({ tournament }: { tournament: TournamentRead }) {
   const status = useAuthStatus();
   const { data: me } = useMe();
+  const hasContact = useHasContact();
   const register = useRegisterTournament(tournament.id, tournament.slug);
   const unregister = useUnregisterTournament(tournament.id, tournament.slug);
 
@@ -103,6 +106,10 @@ export function RegisterButton({ tournament }: { tournament: TournamentRead }) {
         Мест нет
       </Button>
     );
+  }
+
+  if (hasContact === false) {
+    return <ContactGateButton />;
   }
 
   return (

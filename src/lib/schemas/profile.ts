@@ -47,6 +47,11 @@ export const profileEditSchema = z
       const msg = validate(String(d[field] ?? ""));
       if (msg) ctx.addIssue({ code: z.ZodIssueCode.custom, message: msg, path: [field] });
     }
+    if (!d.telegram_username?.trim() && !d.phone?.trim()) {
+      const msg = "Оставьте хотя бы один контакт — Telegram или телефон";
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: msg, path: ["telegram_username"] });
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: msg, path: ["phone"] });
+    }
   });
 
 export type ProfileEditValues = z.infer<typeof profileEditSchema>;

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 
+import { ContactGateNotice } from "@/components/features/contact-gate";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { Modal } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
 import { useCancelBooking, useCreateBooking, useVenueLayout } from "@/hooks/useHallMap";
+import { useHasContact } from "@/hooks/useHasContact";
 import { availableStartsForTable, dayIntervals, overlaps, slotEnd } from "@/lib/hallSchedule";
 import { formatTimeRange } from "@/lib/format";
 import { isoToMoscowDate, moscowIso } from "@/lib/schemas/event";
@@ -42,6 +44,7 @@ export function BookingModal({
   onClose: () => void;
 }) {
   const authed = useAuthStore((s) => s.status) === "authed";
+  const hasContact = useHasContact();
   const today = isoToMoscowDate(new Date().toISOString());
   const [date, setDate] = useState(initialDate);
   const [duration, setDuration] = useState(60);
@@ -120,6 +123,14 @@ export function BookingModal({
             Войти
           </LinkButton>
         </div>
+      </Modal>
+    );
+  }
+
+  if (hasContact === false) {
+    return (
+      <Modal open onClose={onClose} title={`Бронирование стола ${table.label}`}>
+        <ContactGateNotice text="Бронь привязывается к вам — добавьте контакт (Telegram или телефон), чтобы с вами могли связаться." />
       </Modal>
     );
   }

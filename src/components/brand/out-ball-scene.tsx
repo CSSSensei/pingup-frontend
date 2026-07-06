@@ -2,18 +2,7 @@
 
 import { useState } from "react";
 
-// Парабола: вершина — в мяче (360,150), ветви падают до кромки стола (y≈360).
-const A = 210 / 90000;
-const arcY = (x: number) => 150 + A * (x - 360) ** 2;
-
-// Затухающий след: прилёт слева (растёт к мячу) и уход в аут справа-вниз.
-const TRAIL = [
-  ...[126, 172, 216, 258].map((x, i) => ({ x, y: arcY(x), r: 3.5 + i * 1.6, o: 0.1 + i * 0.05 })),
-  ...[602, 668].map((x, i) => ({ x, y: arcY(x), r: 5 - i * 1.6, o: 0.13 - i * 0.05 })),
-];
-
 export function OutBallScene() {
-  // Только для перезапуска анимации «подачи» по клику (через React key) — не отображается.
   const [taps, setTaps] = useState(0);
 
   return (
@@ -41,19 +30,6 @@ export function OutBallScene() {
           </filter>
         </defs>
 
-        {/* Стол сбоку: кромка + короткая сетка ровно под траекторией мяча. */}
-        <line x1="66" y1="346" x2="654" y2="346" stroke="var(--color-border-strong)" strokeWidth="2" />
-        <line
-          x1="360"
-          y1="314"
-          x2="360"
-          y2="346"
-          stroke="var(--color-border-strong)"
-          strokeWidth="2"
-          strokeDasharray="3 4"
-        />
-
-        {/* Контактная тень на столе — в противофазе к баунсу мяча. */}
         <ellipse
           className="nf-shadow"
           cx="360"
@@ -63,11 +39,6 @@ export function OutBallScene() {
           fill="#0a0a0a"
           filter="url(#nfSoft)"
         />
-
-        {/* Траектория «в аут». */}
-        {TRAIL.map((d) => (
-          <circle key={d.x} cx={d.x} cy={d.y} r={d.r} fill="var(--color-primary)" opacity={d.o} />
-        ))}
 
         {/* 4 _ 4 — цифры фланкируют мяч-«ноль». */}
         <text

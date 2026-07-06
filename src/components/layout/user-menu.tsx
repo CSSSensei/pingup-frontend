@@ -4,9 +4,17 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { Avatar } from "@/components/common/avatar";
-import { IconLogOut, IconSend, IconSettings, IconShieldCheck, IconUser } from "@/components/ui/icons";
+import {
+  IconBuilding,
+  IconLogOut,
+  IconSend,
+  IconSettings,
+  IconShieldCheck,
+  IconUser,
+} from "@/components/ui/icons";
 import { useLogout } from "@/hooks/useAuth";
 import { useMe } from "@/hooks/useMe";
+import { useManagedVenues } from "@/hooks/useMyVenues";
 import { SUPPORT_URL } from "@/lib/links";
 import { isModerator } from "@/lib/roles";
 import { cn } from "@/lib/utils";
@@ -14,6 +22,7 @@ import { cn } from "@/lib/utils";
 export function UserMenu() {
   const { data: me } = useMe();
   const { logout } = useLogout();
+  const { data: managedVenues } = useManagedVenues();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -60,6 +69,11 @@ export function UserMenu() {
           <MenuLink href="/settings" icon={<IconSettings size={17} />} onClick={() => setOpen(false)}>
             Настройки
           </MenuLink>
+          {managedVenues && managedVenues.length > 0 && (
+            <MenuLink href="/my-venues" icon={<IconBuilding size={17} />} onClick={() => setOpen(false)}>
+              Мои залы
+            </MenuLink>
+          )}
           {isModerator(me.role) && (
             <MenuLink href="/admin" icon={<IconShieldCheck size={17} />} onClick={() => setOpen(false)}>
               Модерация

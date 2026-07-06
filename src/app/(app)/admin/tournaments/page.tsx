@@ -5,7 +5,7 @@ export const metadata = { title: "Турниры — админка" };
 
 export default function AdminTournamentsPage() {
   return (
-    <RoleGuard min="admin">
+    <RoleGuard min="moderator">
       <AdminTournamentsView />
     </RoleGuard>
   );

@@ -8,6 +8,7 @@ import { qk } from "@/lib/queryKeys";
 import { useAuthStatus } from "@/hooks/useMe";
 import type {
   AdminEventFilterParams,
+  AuditLogFilterParams,
   AdminReviewFilterParams,
   AdminReviewUpdatePayload,
   AdminTournamentFilterParams,
@@ -20,6 +21,8 @@ import type {
   RatingSyncLogFilterParams,
   SetRolePayload,
   SetSuperuserPayload,
+  VenueStaffCreatePayload,
+  VenueStaffRole,
   VenueUpdatePayload,
 } from "@/types/api";
 
@@ -251,6 +254,42 @@ export function useRatingSyncStale(params: { limit?: number; offset?: number }) 
   return useQuery({
     queryKey: qk.ratingSyncStale(params),
     queryFn: () => adminApi.ratingSync.stale(params),
+    enabled: authed(status),
+  });
+}
+
+export function useVenueStaff(venueId: number, enabled = true) {
+  const status = useAuthStatus();
+  return useQuery({
+    queryKey: qk.venueStaff(venueId),
+    queryFn: () => adminApi.venues.listStaff(venueId),
+    enabled: authed(status) && enabled && venueId > 0,
+  });
+}
+
+export function useVenueStaffActions(venueId: number) {
+  const qc = useQueryClient();
+  const invalidate = () => qc.invalidateQueries({ queryKey: qk.venueStaff(venueId) });
+  return {
+    add: useMutation({
+      mutationFn: (body: VenueStaffCreatePayload) => adminApi.venues.addStaff(venueId, body),
+      onError: handleApiError,
+      onSuccess: invalidate,
+    }),
+    remove: useMutation({
+      mutationFn: (vars: { userId: number; role: VenueStaffRole }) =>
+        adminApi.venues.removeStaff(venueId, vars.userId, vars.role),
+      onError: handleApiError,
+      onSuccess: invalidate,
+    }),
+  };
+}
+
+export function useAuditLog(filter: AuditLogFilterParams) {
+  const status = useAuthStatus();
+  return useQuery({
+    queryKey: qk.auditLog(filter),
+    queryFn: () => adminApi.audit.list(filter),
     enabled: authed(status),
   });
 }

@@ -12,7 +12,7 @@ export default function AdminUserPage({ params }: { params: Promise<{ id: string
   if (!Number.isInteger(userId) || userId <= 0) notFound();
 
   return (
-    <RoleGuard min="admin">
+    <RoleGuard min="moderator">
       <AdminUserDetailView id={userId} />
     </RoleGuard>
   );

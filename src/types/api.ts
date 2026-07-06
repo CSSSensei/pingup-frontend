@@ -897,6 +897,71 @@ export interface RatingSyncLogFilterParams {
   offset?: number;
 }
 
+export interface AuditLogRead {
+  id: number;
+  actor_id: number | null;
+  actor_email: string | null;
+  actor_role: UserRole;
+  action: string;
+  target_type: string | null;
+  target_id: string | null;
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  reason: string | null;
+  ip: string | null;
+  request_id: string | null;
+  created_at: string;
+}
+
+export interface AuditLogFilterParams {
+  actor_id?: number;
+  action?: string;
+  target_type?: string;
+  target_id?: string;
+  date_from?: string;
+  date_to?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export type VenueStaffRole = "caretaker" | "moderator";
+
+export interface VenueStaffRead {
+  id: number;
+  venue_id: number;
+  user_id: number;
+  role: VenueStaffRole;
+  created_at: string;
+  display_name: string | null;
+  email: string | null;
+}
+
+export interface VenueStaffCreatePayload {
+  user_id: number;
+  role: VenueStaffRole;
+}
+
+export interface ManagedVenueRead {
+  venue_id: number;
+  name: string;
+  slug: string;
+  roles: VenueStaffRole[];
+}
+
+export interface VenueBookingRead {
+  id: number;
+  table_id: number;
+  table_label: string | null;
+  user_id: number;
+  starts_at: string;
+  ends_at: string;
+  status: string;
+  created_at: string;
+  booker_name: string | null;
+  booker_telegram: string | null;
+  booker_phone: string | null;
+}
+
 export interface RatingSyncRunResult {
   status: string;
   detail: string;

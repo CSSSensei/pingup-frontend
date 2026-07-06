@@ -1,5 +1,6 @@
 import type {
   AdminEventFilterParams,
+  AuditLogFilterParams,
   AdminReviewFilterParams,
   AdminTournamentFilterParams,
   AdminUserFilterParams,
@@ -61,4 +62,10 @@ export const qk = {
   ratingSyncLog: (filter?: RatingSyncLogFilterParams) => ["ratingSyncLog", filter ?? {}] as const,
   ratingSyncStale: (params?: { limit?: number; offset?: number }) =>
     ["ratingSyncStale", params ?? {}] as const,
+  auditLog: (filter?: AuditLogFilterParams) => ["auditLog", filter ?? {}] as const,
+  venueStaff: (venueId: number) => ["venueStaff", venueId] as const,
+  managedVenues: () => ["managedVenues"] as const,
+  venueBookings: (venueId: number) => ["venueBookings", venueId] as const,
+  venueModEvents: (venueId: number) => ["venueModEvents", venueId] as const,
+  venueModReviews: (venueId: number) => ["venueModReviews", venueId] as const,
 };

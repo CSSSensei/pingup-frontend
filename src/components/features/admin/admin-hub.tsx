@@ -9,6 +9,7 @@ import {
   IconBuilding,
   IconCalendar,
   IconChevronRight,
+  IconClock,
   IconInbox,
   IconStar,
   IconTrophy,
@@ -39,44 +40,50 @@ export function AdminHub() {
           description="Очередь жалоб на игроков, залы, события и объявления"
           badge={openCount || undefined}
         />
+        <SectionCard
+          href="/admin/users"
+          icon={<IconUsers size={22} />}
+          title="Пользователи"
+          description={admin ? "Роли, блокировки, суперпользователь, удаление" : "Поиск и блокировки игроков"}
+        />
+        <SectionCard
+          href="/admin/venues"
+          icon={<IconBuilding size={22} />}
+          title="Залы"
+          description="Верификация, редактирование, удаление и восстановление"
+        />
+        <SectionCard
+          href="/admin/events"
+          icon={<IconCalendar size={22} />}
+          title="События"
+          description="Модерация игр и тренировок, статусы, скрытие"
+        />
+        <SectionCard
+          href="/admin/tournaments"
+          icon={<IconTrophy size={22} />}
+          title="Турниры"
+          description="Официальные турниры, статусы, участники"
+        />
+        <SectionCard
+          href="/admin/reviews"
+          icon={<IconStar size={22} />}
+          title="Отзывы"
+          description="Скрытие и удаление отзывов"
+        />
 
         {admin && (
           <>
-            <SectionCard
-              href="/admin/users"
-              icon={<IconUsers size={22} />}
-              title="Пользователи"
-              description="Роли, блокировки, суперпользователь, удаление"
-            />
-            <SectionCard
-              href="/admin/venues"
-              icon={<IconBuilding size={22} />}
-              title="Залы"
-              description="Верификация, редактирование, удаление и восстановление"
-            />
-            <SectionCard
-              href="/admin/events"
-              icon={<IconCalendar size={22} />}
-              title="События"
-              description="Модерация игр и тренировок, статусы, скрытие"
-            />
-            <SectionCard
-              href="/admin/tournaments"
-              icon={<IconTrophy size={22} />}
-              title="Турниры"
-              description="Официальные турниры, статусы, участники"
-            />
-            <SectionCard
-              href="/admin/reviews"
-              icon={<IconStar size={22} />}
-              title="Отзывы"
-              description="Скрытие и удаление отзывов"
-            />
             <SectionCard
               href="/admin/rating-sync"
               icon={<IconActivity size={22} />}
               title="Синхронизация рейтинга"
               description="Лог синка, устаревшие профили, ручной запуск"
+            />
+            <SectionCard
+              href="/admin/audit"
+              icon={<IconClock size={22} />}
+              title="Аудит-журнал"
+              description="История действий модераторов и админов"
             />
           </>
         )}

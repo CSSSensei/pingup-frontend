@@ -5,7 +5,7 @@ export const metadata = { title: "Пользователи — админка" }
 
 export default function AdminUsersPage() {
   return (
-    <RoleGuard min="admin">
+    <RoleGuard min="moderator">
       <AdminUsersView />
     </RoleGuard>
   );

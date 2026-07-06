@@ -5,7 +5,7 @@ export const metadata = { title: "События — админка" };
 
 export default function AdminEventsPage() {
   return (
-    <RoleGuard min="admin">
+    <RoleGuard min="moderator">
       <AdminEventsView />
     </RoleGuard>
   );

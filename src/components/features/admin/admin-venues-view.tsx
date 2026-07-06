@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { DeleteRestoreControls } from "@/components/features/admin/delete-restore-controls";
+import { VenueStaffModal } from "@/components/features/admin/venue-staff-manager";
 import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/states";
 import { PageHeader } from "@/components/common/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -12,9 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
-import { IconBuilding, IconExternalLink, IconShieldCheck } from "@/components/ui/icons";
+import { IconBuilding, IconExternalLink, IconShieldCheck, IconUsers } from "@/components/ui/icons";
 import { useAdminVenueActions, useAdminVenues } from "@/hooks/useAdmin";
+import { useMe } from "@/hooks/useMe";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
+import { isAdmin } from "@/lib/roles";
 import type { AdminVenueFilterParams, VenueRead } from "@/types/api";
 
 const LIMIT = 30;
@@ -113,6 +116,9 @@ function VenueRow({
   venue: VenueRead;
   actions: ReturnType<typeof useAdminVenueActions>;
 }) {
+  const { data: me } = useMe();
+  const admin = isAdmin(me?.role);
+  const [staffOpen, setStaffOpen] = useState(false);
   const deleted = venue.deleted_at != null;
   const busy =
     (actions.verify.isPending && actions.verify.variables?.id === venue.id) ||
@@ -170,6 +176,11 @@ function VenueRow({
             {venue.is_verified ? "Снять проверку" : "Проверить"}
           </Button>
         )}
+        {admin && !deleted && (
+          <Button variant="ghost" size="sm" onClick={() => setStaffOpen(true)}>
+            <IconUsers size={15} /> Персонал
+          </Button>
+        )}
         <DeleteRestoreControls
           deleted={deleted}
           entity="зал"
@@ -193,6 +204,15 @@ function VenueRow({
           }
         />
       </div>
+
+      {admin && (
+        <VenueStaffModal
+          venueId={venue.id}
+          venueName={venue.name}
+          open={staffOpen}
+          onClose={() => setStaffOpen(false)}
+        />
+      )}
     </div>
   );
 }

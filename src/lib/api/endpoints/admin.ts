@@ -2,6 +2,8 @@ import { apiFetch } from "@/lib/api/client";
 import { API_PREFIX } from "@/lib/constants";
 import type {
   AdminEventFilterParams,
+  AuditLogFilterParams,
+  AuditLogRead,
   AdminReviewFilterParams,
   AdminReviewUpdatePayload,
   AdminTournamentCreatePayload,
@@ -28,6 +30,9 @@ import type {
   TournamentRead,
   VenueCreatePayload,
   VenueRead,
+  VenueStaffCreatePayload,
+  VenueStaffRead,
+  VenueStaffRole,
   VenueUpdatePayload,
 } from "@/types/api";
 
@@ -88,6 +93,18 @@ export const adminApi = {
         method: "POST",
         body: JSON.stringify({ is_verified: isVerified }),
       }),
+    listStaff: (id: number) =>
+      apiFetch<VenueStaffRead[]>(`${A}/venues/${id}/staff`),
+    addStaff: (id: number, body: VenueStaffCreatePayload) =>
+      apiFetch<VenueStaffRead[]>(`${A}/venues/${id}/staff`, {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+    removeStaff: (id: number, userId: number, role: VenueStaffRole) =>
+      apiFetch<VenueStaffRead[]>(
+        `${A}/venues/${id}/staff${toQuery({ user_id: userId, role })}`,
+        { method: "DELETE" },
+      ),
   },
 
   events: {
@@ -153,5 +170,11 @@ export const adminApi = {
         body: JSON.stringify({ profile_id: profileId }),
       }),
     runAll: () => apiFetch<RunAllResult>(`${A}/rating-sync/run-all`, { method: "POST" }),
+  },
+
+  audit: {
+    list: (filter: AuditLogFilterParams = {}) =>
+      apiFetch<Paginated<AuditLogRead>>(`${A}/audit${toQuery(filter)}`),
+    get: (id: number) => apiFetch<AuditLogRead>(`${A}/audit/${id}`),
   },
 };

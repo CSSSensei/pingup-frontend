@@ -27,6 +27,7 @@ import {
   useUnbanUser,
 } from "@/hooks/useAdmin";
 import { useMe } from "@/hooks/useMe";
+import { isAdmin } from "@/lib/roles";
 import { USER_COUNTER_LABELS } from "@/lib/admin";
 import { USER_ROLES, USER_ROLE_LABELS } from "@/lib/enums";
 import { formatDate, formatDateTime } from "@/lib/format";
@@ -170,6 +171,7 @@ function ActionsCard({ user }: { user: AdminUserDetail }) {
   const { data: me } = useMe();
   const isSelf = me?.id === user.id;
   const iAmSuperuser = me?.is_superuser ?? false;
+  const admin = isAdmin(me?.role);
 
   if (user.deleted_at) {
     return (
@@ -192,12 +194,20 @@ function ActionsCard({ user }: { user: AdminUserDetail }) {
         </p>
       )}
 
-      <RoleControl key={user.role} user={user} disabled={isSelf} iAmSuperuser={iAmSuperuser} />
-      {user.role === "admin" && (
-        <SuperuserControl user={user} disabled={isSelf || !iAmSuperuser} iAmSuperuser={iAmSuperuser} />
+      {admin && (
+        <>
+          <RoleControl key={user.role} user={user} disabled={isSelf} iAmSuperuser={iAmSuperuser} />
+          {user.role === "admin" && (
+            <SuperuserControl
+              user={user}
+              disabled={isSelf || !iAmSuperuser}
+              iAmSuperuser={iAmSuperuser}
+            />
+          )}
+        </>
       )}
       <BanControl user={user} disabled={isSelf} />
-      <DeleteControl user={user} disabled={isSelf} />
+      {admin && <DeleteControl user={user} disabled={isSelf} />}
     </section>
   );
 }

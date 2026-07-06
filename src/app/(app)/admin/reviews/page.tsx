@@ -5,7 +5,7 @@ export const metadata = { title: "Отзывы — админка" };
 
 export default function AdminReviewsPage() {
   return (
-    <RoleGuard min="admin">
+    <RoleGuard min="moderator">
       <AdminReviewsView />
     </RoleGuard>
   );

@@ -5,7 +5,7 @@ export const metadata = { title: "Залы — админка" };
 
 export default function AdminVenuesPage() {
   return (
-    <RoleGuard min="admin">
+    <RoleGuard min="moderator">
       <AdminVenuesView />
     </RoleGuard>
   );

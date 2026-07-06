@@ -1,9 +1,17 @@
 import { apiFetch } from "@/lib/api/client";
 import { API_PREFIX } from "@/lib/constants";
 import type {
+  AdminEventFilterParams,
+  AdminReviewFilterParams,
+  AdminReviewUpdatePayload,
+  EventRead,
+  EventUpdatePayload,
   HallLayout,
   HallLayoutUpdatePayload,
+  ManagedVenueRead,
   Paginated,
+  ReviewRead,
+  VenueBookingRead,
   VenueCreatePayload,
   VenueFilterParams,
   VenuePhoto,
@@ -69,4 +77,40 @@ export const venuesApi = {
       method: "POST",
       body: JSON.stringify({ is_verified: isVerified }),
     }),
+
+  managed: () => apiFetch<ManagedVenueRead[]>(`${API_PREFIX}/venues/managed`),
+
+  bookings: (venueId: number) =>
+    apiFetch<VenueBookingRead[]>(`${API_PREFIX}/venues/${venueId}/bookings`),
+
+  moderation: {
+    events: (venueId: number, filter: AdminEventFilterParams = {}) =>
+      apiFetch<Paginated<EventRead>>(
+        `${API_PREFIX}/venues/${venueId}/events${toQuery(filter)}`,
+      ),
+    updateEvent: (venueId: number, eventId: number, body: EventUpdatePayload) =>
+      apiFetch<EventRead>(`${API_PREFIX}/venues/${venueId}/events/${eventId}`, {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      }),
+    deleteEvent: (venueId: number, eventId: number, hard = false) =>
+      apiFetch<void>(
+        `${API_PREFIX}/venues/${venueId}/events/${eventId}${hard ? "?hard=true" : ""}`,
+        { method: "DELETE" },
+      ),
+    reviews: (venueId: number, filter: AdminReviewFilterParams = {}) =>
+      apiFetch<Paginated<ReviewRead>>(
+        `${API_PREFIX}/venues/${venueId}/reviews${toQuery(filter)}`,
+      ),
+    updateReview: (venueId: number, reviewId: number, body: AdminReviewUpdatePayload) =>
+      apiFetch<ReviewRead>(`${API_PREFIX}/venues/${venueId}/reviews/${reviewId}`, {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      }),
+    deleteReview: (venueId: number, reviewId: number, hard = false) =>
+      apiFetch<void>(
+        `${API_PREFIX}/venues/${venueId}/reviews/${reviewId}${hard ? "?hard=true" : ""}`,
+        { method: "DELETE" },
+      ),
+  },
 };

@@ -21,7 +21,7 @@ import { loginSchema, type LoginValues } from "@/lib/schemas/auth";
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
-  const next = safeInternalPath(params.get("next"));
+  const next = safeInternalPath(params.get("next"), "/games");
   const [formError, setFormError] = useState<string | null>(null);
   const alertRef = useRef<HTMLDivElement>(null);
   useEffect(() => {

@@ -31,7 +31,7 @@ export function NavShell({ children }: { children: ReactNode }) {
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar authed={authed} home={home} />
           <EmailVerifyBanner />
-          <main className="flex-1 pb-24 lg:pb-10">{children}</main>
+          <main className="flex-1 pb-[calc(6rem+env(safe-area-inset-bottom))] lg:pb-10">{children}</main>
         </div>
       </div>
       <MobileTabBar pathname={pathname} authed={authed} />
@@ -129,36 +129,40 @@ function MobileTabBar({ pathname, authed }: { pathname: string; authed: boolean 
 
   return (
     <>
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex h-16 items-stretch border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden">
-        {MOBILE_TABS.map((item) => {
-          const active = isActivePath(pathname, item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors",
-                active ? "text-primary" : "text-muted",
-              )}
-            >
-              <item.icon size={22} />
-              {item.label}
-            </Link>
-          );
-        })}
-        <button
-          type="button"
-          onClick={() => setMoreOpen(true)}
-          aria-label="Ещё"
-          className={cn(
-            "flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors",
-            moreActive ? "text-primary" : "text-muted",
-          )}
-        >
-          <IconMore size={22} />
-          Ещё
-        </button>
+      {/* env-паддинг на самом nav (расширяет его вниз под home-indicator),
+          а h-16 — на внутреннем ряду, иначе safe-area съедает высоту иконок. */}
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden">
+        <div className="flex h-16 items-stretch">
+          {MOBILE_TABS.map((item) => {
+            const active = isActivePath(pathname, item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors",
+                  active ? "text-primary" : "text-muted",
+                )}
+              >
+                <item.icon size={22} />
+                {item.label}
+              </Link>
+            );
+          })}
+          <button
+            type="button"
+            onClick={() => setMoreOpen(true)}
+            aria-label="Ещё"
+            className={cn(
+              "flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors",
+              moreActive ? "text-primary" : "text-muted",
+            )}
+          >
+            <IconMore size={22} />
+            Ещё
+          </button>
+        </div>
       </nav>
       <MoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} authed={authed} />
     </>

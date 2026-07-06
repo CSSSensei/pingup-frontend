@@ -38,14 +38,14 @@ export default function MyPage() {
         }
       />
 
-      <div className="mb-5 flex gap-1 rounded-lg border border-border bg-surface p-1">
+      <div className="mb-5 flex gap-1 overflow-x-auto rounded-lg border border-border bg-surface p-1">
         {TABS.map((t) => (
           <button
             key={t.key}
             type="button"
             onClick={() => setTab(t.key)}
             className={cn(
-              "flex-1 rounded-md px-3 py-2 text-sm font-bold transition-colors",
+              "flex-1 rounded-md px-3 py-2 text-sm font-bold whitespace-nowrap transition-colors",
               tab === t.key ? "bg-primary-tint text-primary" : "text-fg-2 hover:bg-surface-2",
             )}
           >

@@ -294,6 +294,37 @@ export function useAuditLog(filter: AuditLogFilterParams) {
   });
 }
 
+export function useUserVenueRoles(userId: number) {
+  const status = useAuthStatus();
+  return useQuery({
+    queryKey: qk.userVenueRoles(userId),
+    queryFn: () => adminApi.users.venueRoles(userId),
+    enabled: authed(status) && userId > 0,
+  });
+}
+
+export function useUserVenueRoleActions(userId: number) {
+  const qc = useQueryClient();
+  const invalidate = (venueId: number) => {
+    qc.invalidateQueries({ queryKey: qk.userVenueRoles(userId) });
+    qc.invalidateQueries({ queryKey: qk.venueStaff(venueId) });
+  };
+  return {
+    add: useMutation({
+      mutationFn: (v: { venueId: number; role: VenueStaffRole }) =>
+        adminApi.venues.addStaff(v.venueId, { user_id: userId, role: v.role }),
+      onError: handleApiError,
+      onSuccess: (_d, v) => invalidate(v.venueId),
+    }),
+    remove: useMutation({
+      mutationFn: (v: { venueId: number; role: VenueStaffRole }) =>
+        adminApi.venues.removeStaff(v.venueId, userId, v.role),
+      onError: handleApiError,
+      onSuccess: (_d, v) => invalidate(v.venueId),
+    }),
+  };
+}
+
 export function useRatingSyncActions() {
   const qc = useQueryClient();
   const invalidate = () => {

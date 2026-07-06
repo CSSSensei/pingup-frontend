@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { UserVenueRolesSection } from "@/components/features/admin/user-venue-roles";
 import { ApiError } from "@/lib/api/client";
 import { Avatar } from "@/components/common/avatar";
 import { EmptyState, ErrorState } from "@/components/common/states";
@@ -35,6 +36,8 @@ import type { AdminUserDetail, UserRole } from "@/types/api";
 
 export function AdminUserDetailView({ id }: { id: number }) {
   const query = useAdminUser(id);
+  const { data: me } = useMe();
+  const canManage = isAdmin(me?.role);
 
   const backLink = (
     <Link
@@ -83,6 +86,7 @@ export function AdminUserDetailView({ id }: { id: number }) {
         <HeaderCard user={query.data} />
         <CountersCard user={query.data} />
         <ActionsCard user={query.data} />
+        {canManage && <UserVenueRolesSection userId={query.data.id} />}
       </div>
     </div>
   );

@@ -948,6 +948,13 @@ export interface ManagedVenueRead {
   roles: VenueStaffRole[];
 }
 
+export interface UserVenueRoleRead {
+  venue_id: number;
+  venue_name: string;
+  venue_slug: string;
+  role: VenueStaffRole;
+}
+
 export interface VenueBookingRead {
   id: number;
   table_id: number;

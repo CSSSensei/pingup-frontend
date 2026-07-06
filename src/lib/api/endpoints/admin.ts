@@ -30,6 +30,7 @@ import type {
   TournamentRead,
   VenueCreatePayload,
   VenueRead,
+  UserVenueRoleRead,
   VenueStaffCreatePayload,
   VenueStaffRead,
   VenueStaffRole,
@@ -71,6 +72,8 @@ export const adminApi = {
         body: JSON.stringify(body),
       }),
     remove: (id: number) => apiFetch<void>(`${A}/users/${id}`, { method: "DELETE" }),
+    venueRoles: (id: number) =>
+      apiFetch<UserVenueRoleRead[]>(`${A}/users/${id}/venue-roles`),
   },
 
   venues: {

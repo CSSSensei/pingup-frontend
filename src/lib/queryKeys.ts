@@ -64,6 +64,7 @@ export const qk = {
     ["ratingSyncStale", params ?? {}] as const,
   auditLog: (filter?: AuditLogFilterParams) => ["auditLog", filter ?? {}] as const,
   venueStaff: (venueId: number) => ["venueStaff", venueId] as const,
+  userVenueRoles: (userId: number) => ["userVenueRoles", userId] as const,
   managedVenues: () => ["managedVenues"] as const,
   venueBookings: (venueId: number) => ["venueBookings", venueId] as const,
   venueModEvents: (venueId: number) => ["venueModEvents", venueId] as const,

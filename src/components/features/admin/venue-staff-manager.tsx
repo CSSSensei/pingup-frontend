@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import { SearchSelect } from "@/components/features/admin/search-select";
 import { ErrorState } from "@/components/common/states";
+import { Avatar } from "@/components/common/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
-import { IconTrash } from "@/components/ui/icons";
-import { useVenueStaff, useVenueStaffActions } from "@/hooks/useAdmin";
-import type { VenueStaffRead, VenueStaffRole } from "@/types/api";
+import { IconTrash, IconX } from "@/components/ui/icons";
+import { useAdminUsers, useVenueStaff, useVenueStaffActions } from "@/hooks/useAdmin";
+import type { AdminUserRead, VenueStaffRead, VenueStaffRole } from "@/types/api";
 
 const ROLE_LABELS: Record<VenueStaffRole, string> = {
   caretaker: "Завхоз",
@@ -34,39 +34,75 @@ export function VenueStaffModal({
   const staff = useVenueStaff(venueId, open);
   const actions = useVenueStaffActions(venueId);
 
-  const [userId, setUserId] = useState("");
+  const [selected, setSelected] = useState<{ id: number; label: string } | null>(null);
   const [role, setRole] = useState<VenueStaffRole>("caretaker");
+  const [search, setSearch] = useState("");
+  const [q, setQ] = useState("");
+  useEffect(() => {
+    const t = setTimeout(() => setQ(search.trim()), 300);
+    return () => clearTimeout(t);
+  }, [search]);
+  const results = useAdminUsers({ ...(q.length >= 2 ? { q } : {}), limit: 8 });
 
   const submit = () => {
-    const id = Number(userId);
-    if (!Number.isInteger(id) || id <= 0) {
-      toast.error("Укажите корректный ID пользователя");
+    if (!selected) {
+      toast.error("Выберите пользователя");
       return;
     }
     actions.add.mutate(
-      { user_id: id, role },
+      { user_id: selected.id, role },
       {
         onSuccess: () => {
           toast.success("Персонал назначен");
-          setUserId("");
+          setSelected(null);
+          setSearch("");
+          setQ("");
         },
       },
     );
   };
 
+  const userLabel = (u: AdminUserRead) => u.profile?.display_name ?? u.email;
+
   return (
     <Modal open={open} onClose={onClose} title={`Персонал · ${venueName}`}>
       <div className="space-y-4">
         <div className="flex flex-wrap items-end gap-2">
-          <Field label="ID пользователя" hint="Из /admin/users" className="flex-1">
-            <Input
-              type="number"
-              inputMode="numeric"
-              placeholder="123"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-            />
-          </Field>
+          <div className="min-w-[200px] flex-1">
+            <p className="mb-1.5 text-sm font-semibold text-fg-2">Пользователь</p>
+            {selected ? (
+              <div className="flex h-10 items-center justify-between gap-2 rounded-lg border border-border bg-surface-2 px-3">
+                <span className="truncate text-sm font-semibold text-fg">{selected.label}</span>
+                <button
+                  type="button"
+                  aria-label="Сбросить"
+                  className="flex-none text-muted hover:text-fg"
+                  onClick={() => setSelected(null)}
+                >
+                  <IconX size={15} />
+                </button>
+              </div>
+            ) : (
+              <SearchSelect<AdminUserRead>
+                query={search}
+                onQueryChange={setSearch}
+                items={results.data?.items ?? []}
+                isLoading={results.isFetching}
+                getKey={(u) => u.id}
+                onPick={(u) => setSelected({ id: u.id, label: userLabel(u) })}
+                placeholder="Имя или email"
+                renderItem={(u) => (
+                  <>
+                    <Avatar src={u.profile?.avatar_url ?? null} name={userLabel(u)} size={26} />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate font-semibold text-fg">{userLabel(u)}</span>
+                      <span className="block truncate text-xs text-muted">{u.email}</span>
+                    </span>
+                  </>
+                )}
+              />
+            )}
+          </div>
           <Select
             aria-label="Роль"
             className="max-w-[170px]"

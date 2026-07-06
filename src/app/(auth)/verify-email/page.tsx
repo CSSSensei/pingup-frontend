@@ -52,7 +52,7 @@ function VerifyEmail() {
             </div>
             <h1 className="text-[23px] font-extrabold tracking-[-0.01em]">Email подтверждён</h1>
             <p className="mt-2 text-sm text-muted">
-              Спасибо! Теперь доступны все возможности pingUp.
+              Спасибо! Теперь доступны все возможности pingup.
             </p>
             <Link
               href="/login"

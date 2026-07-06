@@ -43,7 +43,7 @@ export default async function LandingPage() {
     <div className="min-h-screen bg-surface">
       <header className="sticky top-0 z-40 border-b border-border bg-white/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1160px] items-center justify-between gap-4 px-5">
-          <Link href="/" aria-label="pingUp">
+          <Link href="/" aria-label="pingup">
             <Logo className="h-[26px]" />
           </Link>
           <nav className="hidden items-center gap-1 sm:flex">
@@ -82,7 +82,7 @@ export default async function LandingPage() {
             Найди игру, спарринг&nbsp;или турнир за пару минут
           </h1>
           <p className="mt-4 mb-6 max-w-[560px] text-[15px] leading-relaxed text-fg-2 sm:text-lg">
-            pingUp собирает партнёров по уровню, залы, тренировки и турниры Смоленска в одном месте.
+            pingup собирает партнёров по уровню, залы, тренировки и турниры Смоленска в одном месте.
             Меньше переписок — больше игры.
           </p>
           <HeroSearch />
@@ -146,7 +146,7 @@ export default async function LandingPage() {
         <div className="mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-3.5 px-5 py-[26px]">
           <div className="flex items-center gap-2.5">
             <Logo variant="mark" className="h-6" />
-            <span className="text-[13px] text-muted">© 2026 pingUp · Смоленск</span>
+            <span className="text-[13px] text-muted">© 2026 pingup · Смоленск</span>
           </div>
           <div className="flex gap-[18px] text-[13px] text-muted">
             <a

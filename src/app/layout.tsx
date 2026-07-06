@@ -6,11 +6,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "pingUp — поиск напарника по настольному теннису",
-    template: "%s · pingUp",
+    default: "pingup — поиск напарника по настольному теннису",
+    template: "%s · pingup",
   },
   description:
-    "pingUp — найди напарника, зал, турнир и тренировку по настольному теннису в Смоленске.",
+    "pingup — найди напарника, зал, турнир и тренировку по настольному теннису в Смоленске.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

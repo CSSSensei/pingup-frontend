@@ -52,7 +52,7 @@ function Sidebar({
   return (
     <aside className="sticky top-0 hidden h-screen w-60 flex-none flex-col border-r border-border bg-surface lg:flex">
       <div className="flex h-16 items-center px-5">
-        <Link href={home} aria-label="pingUp">
+        <Link href={home} aria-label="pingup">
           <Logo className="h-6" />
         </Link>
       </div>
@@ -98,7 +98,7 @@ function SidebarLink({
 function TopBar({ authed, home }: { authed: boolean; home: string }) {
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center justify-between gap-3 border-b border-border bg-surface/90 px-4 backdrop-blur-sm lg:px-6">
-      <Link href={home} aria-label="pingUp" className="lg:hidden">
+      <Link href={home} aria-label="pingup" className="lg:hidden">
         <Logo className="h-6" />
       </Link>
       <div className="hidden lg:block" />

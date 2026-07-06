@@ -42,7 +42,7 @@ export default function DesignSystemPage() {
     <div className="mx-auto w-full max-w-[1080px] px-4 py-7 sm:px-8">
       <div className="mb-[18px]">
         <h1 className="text-[26px] font-extrabold tracking-[-0.01em]">Дизайн-система</h1>
-        <p className="text-sm text-muted">Переиспользуемые компоненты pingUp на дизайн-токенах</p>
+        <p className="text-sm text-muted">Переиспользуемые компоненты pingup на дизайн-токенах</p>
       </div>
 
       <div className="flex flex-col gap-4">

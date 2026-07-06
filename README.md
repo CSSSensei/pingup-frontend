@@ -1,6 +1,6 @@
 # pingup-frontend
 
-Frontend сервиса **pingUp** (поиск напарника по настольному теннису). Next.js (App Router,
+Frontend сервиса **pingup** (поиск напарника по настольному теннису). Next.js (App Router,
 TypeScript, TanStack Query, Zustand, Tailwind v4). API — отдельный репозиторий `pingup-backend`
 (FastAPI, `api.pingup.pro`).
 

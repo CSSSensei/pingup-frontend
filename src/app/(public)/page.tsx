@@ -44,7 +44,7 @@ export default async function LandingPage() {
       <header className="sticky top-0 z-40 border-b border-border bg-white/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[1160px] items-center justify-between gap-4 px-5">
           <Link href="/" aria-label="pingup">
-            <Logo className="h-[26px]" />
+            <Logo className="h-9" />
           </Link>
           <nav className="hidden items-center gap-1 sm:flex">
             <Link href="/games" className="rounded px-3 py-2 text-sm font-semibold text-fg-2 hover:bg-surface-2">
@@ -145,7 +145,7 @@ export default async function LandingPage() {
       <footer className="border-t border-border bg-surface">
         <div className="mx-auto flex max-w-[1160px] flex-wrap items-center justify-between gap-3.5 px-5 py-[26px]">
           <div className="flex items-center gap-2.5">
-            <Logo variant="mark" className="h-6" />
+            <Logo variant="mark" className="h-9" />
             <span className="text-[13px] text-muted">© 2026 pingup · Смоленск</span>
           </div>
           <div className="flex gap-[18px] text-[13px] text-muted">

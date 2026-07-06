@@ -18,7 +18,7 @@ export function LegalDocument({
       <header className="sticky top-0 z-40 border-b border-border bg-white/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-[820px] items-center justify-between gap-4 px-5">
           <Link href="/" aria-label="pingup">
-            <Logo className="h-[26px]" />
+            <Logo className="h-9" />
           </Link>
           <Link
             href="/"

@@ -416,7 +416,7 @@ export default function OnboardingPage() {
     <div className="min-h-screen bg-surface-2 px-[18px] pt-6 pb-12">
       <div className="mx-auto max-w-[560px]">
         <div className="mb-[18px] flex items-center justify-between">
-          <Logo className="h-[26px]" />
+          <Logo className="h-9" />
           <button
             type="button"
             onClick={() => router.push(AFTER_ONBOARDING)}

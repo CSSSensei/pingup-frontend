@@ -22,7 +22,7 @@ function Card({ children }: { children: React.ReactNode }) {
     <div className="w-full max-w-[400px]">
       <div className="mb-[22px] text-center">
         <Link href="/" aria-label="На главную" className="inline-block">
-          <Logo className="mx-auto h-[30px]" />
+          <Logo className="mx-auto h-9" />
         </Link>
       </div>
       <div className="rounded-lg border border-border bg-surface p-7 shadow-pop">{children}</div>

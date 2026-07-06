@@ -1,8 +1,7 @@
 import Link from "next/link";
 
 import { Avatar } from "@/components/common/avatar";
-import { Badge, LevelBadge } from "@/components/ui/badge";
-import { PLAYING_HAND_LABELS } from "@/lib/enums";
+import { LevelBadge } from "@/components/ui/badge";
 import type { ProfilePublic } from "@/types/api";
 
 export function PlayerCard({ player }: { player: ProfilePublic }) {
@@ -21,9 +20,7 @@ export function PlayerCard({ player }: { player: ProfilePublic }) {
         </div>
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
           {player.skill_level && <LevelBadge level={player.skill_level} />}
-          {player.playing_hand && <Badge>{PLAYING_HAND_LABELS[player.playing_hand]}</Badge>}
         </div>
-        {player.blade && <p className="mt-1.5 truncate text-xs text-muted">{player.blade}</p>}
       </div>
 
       {player.current_rating != null && (

@@ -12,13 +12,13 @@ export interface ProfileHeaderData {
   skillLevel: SkillLevel | null;
   gender: Gender | null;
   playingHand: PlayingHand | null;
-  birthYear?: number | null;
+  birthDate?: string | null;
   currentRating: number | null;
   ratingStale: boolean;
 }
 
 export function ProfileHeaderCard({ data, actions }: { data: ProfileHeaderData; actions?: ReactNode }) {
-  const age = ageLabel(data.birthYear);
+  const age = ageLabel(data.birthDate);
 
   return (
     <div className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">

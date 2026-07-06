@@ -26,7 +26,7 @@ import { apiErrorMessage, fieldErrors } from "@/lib/errors/messages";
 import {
   formatRuPhone,
   validateAvatarFile,
-  validateBirthYear,
+  validateBirthDate,
   validatePhone,
   validateTelegram,
   validateTennis67Url,
@@ -42,19 +42,19 @@ const STEPS = [
   { label: "Шаг 5 из 5", title: "Официальный рейтинг", sub: "Подтянем рейтинг с теннис67.рф и будем держать его актуальным." },
 ];
 
-type VField = "birthYear" | "telegram" | "phone" | "tennis67";
+type VField = "birthDate" | "telegram" | "phone" | "tennis67";
 const STEP_FIELDS: Partial<Record<number, VField[]>> = {
-  2: ["birthYear"],
+  2: ["birthDate"],
   4: ["telegram", "phone"],
   5: ["tennis67"],
 };
 const SERVER_TO_FIELD: Record<string, { field: VField; step: number }> = {
-  birth_year: { field: "birthYear", step: 2 },
+  birth_date: { field: "birthDate", step: 2 },
   telegram_username: { field: "telegram", step: 4 },
   phone: { field: "phone", step: 4 },
 };
 const FIELD_IDS: Record<VField, string> = {
-  birthYear: "ob-birthYear",
+  birthDate: "ob-birthDate",
   telegram: "ob-telegram",
   phone: "ob-phone",
   tennis67: "ob-tennis67",
@@ -62,8 +62,8 @@ const FIELD_IDS: Record<VField, string> = {
 
 function validateField(name: VField, value: string): string | null {
   switch (name) {
-    case "birthYear":
-      return validateBirthYear(value);
+    case "birthDate":
+      return validateBirthDate(value);
     case "telegram":
       return validateTelegram(value);
     case "phone":
@@ -157,7 +157,7 @@ const AFTER_ONBOARDING = "/profile";
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const yearErrId = useId();
+  const dobErrId = useId();
   const tgErrId = useId();
   const phoneErrId = useId();
   const tnErrId = useId();
@@ -173,7 +173,7 @@ export default function OnboardingPage() {
   const [level, setLevel] = useState<SkillLevel | null>(null);
   const [gender, setGender] = useState<Gender | null>(null);
   const [hand, setHand] = useState<PlayingHand | null>(null);
-  const [birthYear, setBirthYear] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [avatar, setAvatar] = useState<{ file: File; url: string } | null>(null);
   const [blade, setBlade] = useState("");
   const [rubberFh, setRubberFh] = useState("");
@@ -184,6 +184,7 @@ export default function OnboardingPage() {
   const [tennis67, setTennis67] = useState("");
 
   const meta = STEPS[step - 1];
+  const todayIso = new Date().toISOString().slice(0, 10);
   useEffect(() => {
     headingRef.current?.focus();
   }, [step]);
@@ -205,7 +206,7 @@ export default function OnboardingPage() {
         setLevel(p.skill_level);
         setGender(p.gender);
         setHand(p.playing_hand);
-        setBirthYear(p.birth_year ? String(p.birth_year) : "");
+        setBirthDate(p.birth_date ?? "");
         setBlade(p.blade ?? "");
         setRubberFh(p.rubber_forehand ?? "");
         setRubberBh(p.rubber_backhand ?? "");
@@ -224,12 +225,12 @@ export default function OnboardingPage() {
   }, []);
 
   const setters: Record<VField, (v: string) => void> = {
-    birthYear: setBirthYear,
+    birthDate: setBirthDate,
     telegram: setTelegram,
     phone: setPhone,
     tennis67: setTennis67,
   };
-  const values: Record<VField, string> = { birthYear, telegram, phone, tennis67 };
+  const values: Record<VField, string> = { birthDate, telegram, phone, tennis67 };
 
   function handleChange(name: VField, value: string) {
     setters[name](value);
@@ -342,7 +343,7 @@ export default function OnboardingPage() {
       skill_level: level,
       gender,
       playing_hand: hand,
-      birth_year: birthYear ? Number(birthYear) : null,
+      birth_date: birthDate || null,
       blade: blade.trim() || null,
       rubber_forehand: rubberFh.trim() || null,
       rubber_backhand: rubberBh.trim() || null,
@@ -490,24 +491,23 @@ export default function OnboardingPage() {
                 </div>
                 <div className="min-w-[160px] flex-1">
                   <label
-                    htmlFor="ob-birthYear"
+                    htmlFor="ob-birthDate"
                     className="mb-2.5 block text-[13px] font-bold text-fg-2"
                   >
-                    Год рождения
+                    Дата рождения
                   </label>
                   <Input
-                    id="ob-birthYear"
-                    type="number"
-                    inputMode="numeric"
-                    min={1920}
-                    placeholder="1998"
-                    value={birthYear}
-                    invalid={!!errors.birthYear}
-                    aria-describedby={errors.birthYear ? yearErrId : undefined}
-                    onChange={(e) => handleChange("birthYear", e.target.value)}
-                    onBlur={(e) => handleBlur("birthYear", e.target.value)}
+                    id="ob-birthDate"
+                    type="date"
+                    min="1920-01-01"
+                    max={todayIso}
+                    value={birthDate}
+                    invalid={!!errors.birthDate}
+                    aria-describedby={errors.birthDate ? dobErrId : undefined}
+                    onChange={(e) => handleChange("birthDate", e.target.value)}
+                    onBlur={(e) => handleBlur("birthDate", e.target.value)}
                   />
-                  <ErrorText id={yearErrId} msg={errors.birthYear} />
+                  <ErrorText id={dobErrId} msg={errors.birthDate} />
                 </div>
               </div>
               <div>

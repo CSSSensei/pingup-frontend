@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { GENDERS, PLAYING_HANDS, SKILL_LEVELS } from "@/lib/enums";
 import {
-  validateBirthYear,
+  validateBirthDate,
   validatePhone,
   validateTelegram,
   validateTennis67Url,
@@ -26,7 +26,7 @@ export const profileEditSchema = z
     gender: optionalEnum(GENDERS),
     skill_level: optionalEnum(SKILL_LEVELS),
     playing_hand: optionalEnum(PLAYING_HANDS),
-    birth_year: z.string().trim().optional(),
+    birth_date: z.string().trim().optional(),
     blade: z.string().trim().max(120, "Слишком длинно — до 120 символов").optional(),
     rubber_forehand: z.string().trim().max(120, "Слишком длинно — до 120 символов").optional(),
     rubber_backhand: z.string().trim().max(120, "Слишком длинно — до 120 символов").optional(),
@@ -38,7 +38,7 @@ export const profileEditSchema = z
   })
   .superRefine((d, ctx) => {
     const checks: [keyof typeof d, (v: string) => string | null][] = [
-      ["birth_year", validateBirthYear],
+      ["birth_date", validateBirthDate],
       ["telegram_username", validateTelegram],
       ["phone", validatePhone],
       ["tennis67_url", validateTennis67Url],

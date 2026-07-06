@@ -76,7 +76,7 @@ export interface ProfileMe {
   bio: string | null;
   gender: Gender | null;
   skill_level: SkillLevel | null;
-  birth_year: number | null;
+  birth_date: string | null;
   avatar_url: string | null;
   is_coach: boolean;
   current_rating: number | null;
@@ -97,7 +97,7 @@ export interface ProfileUpdate {
   bio?: string | null;
   gender?: Gender | null;
   skill_level?: SkillLevel | null;
-  birth_year?: number | null;
+  birth_date?: string | null;
   is_coach?: boolean | null;
   playing_hand?: PlayingHand | null;
   blade?: string | null;

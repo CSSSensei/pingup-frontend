@@ -39,7 +39,7 @@ function toDefaults(p: ProfileMe): ProfileEditValues {
     gender: p.gender ?? "",
     skill_level: p.skill_level ?? "",
     playing_hand: p.playing_hand ?? "",
-    birth_year: p.birth_year ? String(p.birth_year) : "",
+    birth_date: p.birth_date ?? "",
     blade: p.blade ?? "",
     rubber_forehand: p.rubber_forehand ?? "",
     rubber_backhand: p.rubber_backhand ?? "",
@@ -128,7 +128,7 @@ function EditForm({ profile }: { profile: ProfileMe }) {
       gender: (v.gender || null) as ProfileUpdate["gender"],
       skill_level: (v.skill_level || null) as ProfileUpdate["skill_level"],
       playing_hand: (v.playing_hand || null) as ProfileUpdate["playing_hand"],
-      birth_year: v.birth_year ? Number(v.birth_year) : null,
+      birth_date: v.birth_date?.trim() || null,
       blade: v.blade?.trim() || null,
       rubber_forehand: v.rubber_forehand?.trim() || null,
       rubber_backhand: v.rubber_backhand?.trim() || null,
@@ -178,6 +178,7 @@ function EditForm({ profile }: { profile: ProfileMe }) {
   };
 
   const currentAvatar = avatar?.url ?? mediaUrl(profile.avatar_url);
+  const todayIso = new Date().toISOString().slice(0, 10);
 
   return (
     <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -235,14 +236,13 @@ function EditForm({ profile }: { profile: ProfileMe }) {
               ))}
             </Select>
           </Field>
-          <Field label="Год рождения" error={errors.birth_year?.message}>
+          <Field label="Дата рождения" error={errors.birth_date?.message}>
             <Input
-              type="number"
-              inputMode="numeric"
-              min={1920}
-              placeholder="1998"
-              invalid={!!errors.birth_year}
-              {...register("birth_year")}
+              type="date"
+              min="1920-01-01"
+              max={todayIso}
+              invalid={!!errors.birth_date}
+              {...register("birth_date")}
             />
           </Field>
           <Field label="Ведущая рука" error={errors.playing_hand?.message}>

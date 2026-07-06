@@ -57,7 +57,7 @@ export function MyProfileView() {
           skillLevel: profile.skill_level,
           gender: profile.gender,
           playingHand: profile.playing_hand,
-          birthYear: profile.birth_year,
+          birthDate: profile.birth_date,
           currentRating: profile.current_rating,
           ratingStale: profile.rating_is_stale,
         }}

@@ -2,12 +2,22 @@
 const TELEGRAM_RE = /^[A-Za-z][A-Za-z0-9_]{4,31}$/;
 const TENNIS67_HOSTS = ["теннис67.рф", "xn--67-mlcmya3ad.xn--p1ai"];
 
-export function validateBirthYear(value: string): string | null {
+export function validateBirthDate(value: string): string | null {
   const v = value.trim();
   if (!v) return null;
-  const n = Number(v);
-  const max = new Date().getFullYear(); // динамический потолок — не протухает
-  if (!Number.isInteger(n) || n < 1920 || n > max) return `Год рождения — между 1920 и ${max}`;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+  if (!m) return "Некорректная дата";
+  const year = Number(m[1]);
+  const month = Number(m[2]);
+  const day = Number(m[3]);
+  const d = new Date(year, month - 1, day);
+  if (d.getFullYear() !== year || d.getMonth() !== month - 1 || d.getDate() !== day) {
+    return "Некорректная дата";
+  }
+  if (year < 1920) return "Дата рождения — не раньше 1920 года";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (d.getTime() > today.getTime()) return "Дата рождения не может быть в будущем";
   return null;
 }
 

@@ -1,0 +1,20 @@
+name: pingup-frontend
+
+services:
+  frontend:
+    image: pingup-frontend:latest
+    container_name: pingup_frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_YANDEX_MAPS_API_KEY: ${NEXT_PUBLIC_YANDEX_MAPS_API_KEY}
+    ports:
+      - "172.20.0.1:3100:3000"
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"

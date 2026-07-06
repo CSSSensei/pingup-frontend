@@ -126,7 +126,18 @@ function BookingRow({ booking, venueId }: { booking: VenueBookingRead; venueId: 
       </div>
 
       <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-        <span className="font-semibold text-fg-2">{booking.booker_name ?? `#${booking.user_id}`}</span>
+        {booking.booker_slug ? (
+          <Link
+            href={`/players/${booking.booker_slug}`}
+            className="font-semibold text-fg-2 hover:text-primary hover:underline"
+          >
+            {booking.booker_name ?? `#${booking.user_id}`}
+          </Link>
+        ) : (
+          <span className="font-semibold text-fg-2">
+            {booking.booker_name ?? `#${booking.user_id}`}
+          </span>
+        )}
         {booking.booker_telegram && (
           <a
             href={`https://t.me/${booking.booker_telegram}`}

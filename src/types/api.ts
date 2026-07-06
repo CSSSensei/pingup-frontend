@@ -967,6 +967,7 @@ export interface VenueBookingRead {
   booker_name: string | null;
   booker_telegram: string | null;
   booker_phone: string | null;
+  booker_slug: string | null;
 }
 
 export interface RatingSyncRunResult {

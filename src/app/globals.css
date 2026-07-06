@@ -177,20 +177,9 @@
   stroke-dasharray: 1;
   animation: pu-draw 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
+/* Заливка проявляется ПОСЛЕ того, как линия дорисовалась до правого края (0.9s). */
 .rating-area-in {
-  transform-box: fill-box;
-  transform-origin: left center;
-  animation: pu-area-wipe 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-@keyframes pu-area-wipe {
-  from {
-    transform: scaleX(0);
-    opacity: 0.4;
-  }
-  to {
-    transform: scaleX(1);
-    opacity: 1;
-  }
+  animation: pu-fade 0.4s ease-out 0.9s both;
 }
 .rating-dot-in {
   animation: pu-pop 0.3s ease-out 0.82s both;
@@ -203,9 +192,6 @@
   }
   .rating-line-draw {
     stroke-dasharray: none;
-  }
-  .rating-area-in {
-    transform: none;
   }
 }
 

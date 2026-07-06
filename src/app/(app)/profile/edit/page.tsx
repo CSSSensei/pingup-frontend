@@ -9,6 +9,7 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { ErrorState } from "@/components/common/states";
 import { PageHeader } from "@/components/common/page-header";
 import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 import { Field } from "@/components/ui/field";
 import { IconArrowLeft, IconCamera } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { useMyProfile, useSetTennis67, useUpdateProfile, useUploadAvatar } from "@/hooks/useProfiles";
+import { useBlades, useRubbers } from "@/lib/data/equipment";
 import {
   GENDERS,
   GENDER_LABELS,
@@ -82,6 +84,8 @@ function EditForm({ profile }: { profile: ProfileMe }) {
   const updateProfile = useUpdateProfile();
   const uploadAvatar = useUploadAvatar();
   const setTennis67 = useSetTennis67();
+  const rubbers = useRubbers();
+  const blades = useBlades();
 
   const [avatar, setAvatar] = useState<{ file: File; url: string } | null>(null);
   const [avatarError, setAvatarError] = useState("");
@@ -288,14 +292,57 @@ function EditForm({ profile }: { profile: ProfileMe }) {
       <section className="space-y-3 rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
         <h2 className="text-sm font-bold text-fg-2">Экипировка</h2>
         <Field label="Основа ракетки" error={errors.blade?.message}>
-          <Input maxLength={120} placeholder="напр. Butterfly Viscaria" invalid={!!errors.blade} {...register("blade")} />
+          <Controller
+            control={control}
+            name="blade"
+            render={({ field }) => (
+              <Combobox
+                maxLength={120}
+                placeholder="напр. Butterfly Viscaria"
+                aria-label="Основа ракетки"
+                options={blades}
+                invalid={!!errors.blade}
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
+            )}
+          />
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Накладка форхенд" error={errors.rubber_forehand?.message}>
-            <Input maxLength={120} invalid={!!errors.rubber_forehand} {...register("rubber_forehand")} />
+            <Controller
+              control={control}
+              name="rubber_forehand"
+              render={({ field }) => (
+                <Combobox
+                  maxLength={120}
+                  aria-label="Накладка форхенд"
+                  options={rubbers}
+                  invalid={!!errors.rubber_forehand}
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              )}
+            />
           </Field>
           <Field label="Накладка бекхенд" error={errors.rubber_backhand?.message}>
-            <Input maxLength={120} invalid={!!errors.rubber_backhand} {...register("rubber_backhand")} />
+            <Controller
+              control={control}
+              name="rubber_backhand"
+              render={({ field }) => (
+                <Combobox
+                  maxLength={120}
+                  aria-label="Накладка бекхенд"
+                  options={rubbers}
+                  invalid={!!errors.rubber_backhand}
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              )}
+            />
           </Field>
         </div>
       </section>

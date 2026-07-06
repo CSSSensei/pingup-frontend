@@ -5,12 +5,14 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 import { IconAlertCircle, IconCamera, IconChevronLeft } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
 import { BallSpinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
 import { profilesApi } from "@/lib/api/endpoints/profiles";
+import { useBlades, useRubbers } from "@/lib/data/equipment";
 import {
   GENDERS,
   GENDER_LABELS,
@@ -183,6 +185,8 @@ export default function OnboardingPage() {
   const [phoneVisible, setPhoneVisible] = useState(true);
   const [tennis67, setTennis67] = useState("");
 
+  const rubbers = useRubbers();
+  const blades = useBlades();
   const meta = STEPS[step - 1];
   const todayIso = new Date().toISOString().slice(0, 10);
   useEffect(() => {
@@ -531,26 +535,32 @@ export default function OnboardingPage() {
 
           {step === 3 && (
             <div className="flex flex-col gap-3">
-              <Input
+              <Combobox
                 maxLength={120}
                 placeholder="Основа ракетки (напр. Butterfly Viscaria)"
+                aria-label="Основа ракетки"
+                options={blades}
                 value={blade}
-                onChange={(e) => setBlade(e.target.value)}
+                onChange={setBlade}
               />
               <div className="flex flex-wrap gap-3">
-                <Input
+                <Combobox
                   className="min-w-[150px] flex-1"
                   maxLength={120}
                   placeholder="Накладка форхенд"
+                  aria-label="Накладка форхенд"
+                  options={rubbers}
                   value={rubberFh}
-                  onChange={(e) => setRubberFh(e.target.value)}
+                  onChange={setRubberFh}
                 />
-                <Input
+                <Combobox
                   className="min-w-[150px] flex-1"
                   maxLength={120}
                   placeholder="Накладка бекхенд"
+                  aria-label="Накладка бекхенд"
+                  options={rubbers}
                   value={rubberBh}
-                  onChange={(e) => setRubberBh(e.target.value)}
+                  onChange={setRubberBh}
                 />
               </div>
             </div>

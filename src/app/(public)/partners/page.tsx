@@ -3,7 +3,6 @@ import { PageHeader } from "@/components/common/page-header";
 import { PublicShell } from "@/components/layout/public-shell";
 import { LinkButton } from "@/components/ui/link-button";
 import { IconPlus } from "@/components/ui/icons";
-import { CITY_NAME } from "@/lib/constants";
 
 export const metadata = {
   title: "Поиск напарника по настольному теннису — Смоленск",
@@ -16,7 +15,7 @@ export default function PartnersPage() {
     <PublicShell>
       <PageHeader
         title="Напарники"
-        description={`Объявления о поиске партнёров по игре · ${CITY_NAME}`}
+        description={`Объявления о поиске партнёров по игре`}
         actions={
           <LinkButton href="/partners/new" size="sm">
             <IconPlus size={16} />

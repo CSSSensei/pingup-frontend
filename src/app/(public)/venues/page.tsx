@@ -16,7 +16,7 @@ export default function VenuesPage() {
     <PublicShell>
       <PageHeader
         title="Залы"
-        description={`Клубы и площадки настольного тенниса · ${CITY_NAME}`}
+        description={`Клубы и площадки настольного тенниса`}
         actions={
           <LinkButton href="/venues/new" size="sm">
             <IconPlus size={16} />

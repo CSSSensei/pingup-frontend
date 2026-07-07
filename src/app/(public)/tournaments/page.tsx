@@ -16,7 +16,7 @@ export default function TournamentsPage() {
     <PublicShell>
       <PageHeader
         title="Турниры"
-        description={`Официальные и любительские турниры · ${CITY_NAME}`}
+        description={`Официальные и любительские турниры`}
         actions={
           <LinkButton href="/tournaments/new" size="sm">
             <IconPlus size={16} />

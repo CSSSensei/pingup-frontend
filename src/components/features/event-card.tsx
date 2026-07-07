@@ -5,7 +5,7 @@ import { Badge, GenderBadge, LevelRangeBadge, StatusBadge } from "@/components/u
 import { IconCheck, IconClock, IconPin, IconUsers } from "@/components/ui/icons";
 import { EVENT_FORMAT_LABELS, EVENT_TYPE_LABELS } from "@/lib/enums";
 import { formatDistance, formatEventWhen, formatPrice } from "@/lib/format";
-import { eventHref } from "@/lib/links";
+import { eventHref, eventSection } from "@/lib/links";
 import type { EventRead } from "@/types/api";
 
 export function EventCard({ event }: { event: EventRead }) {
@@ -14,6 +14,7 @@ export function EventCard({ event }: { event: EventRead }) {
       ? `${event.participants_count} из ${event.max_participants}`
       : `${event.participants_count}`;
   const price = formatPrice(event.price);
+  const isTraining = eventSection(event.event_type) === "trainings";
 
   return (
     <Link
@@ -55,7 +56,7 @@ export function EventCard({ event }: { event: EventRead }) {
           <IconUsers size={16} className="flex-none text-muted" />
           {slots}
         </div>
-        {event.organizer && (
+        {!isTraining && event.organizer && (
           <div className="flex min-w-0 items-center gap-2">
             <Avatar
               src={event.organizer.avatar_url}

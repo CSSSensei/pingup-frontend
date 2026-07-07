@@ -10,13 +10,15 @@ import { Badge, GenderBadge, LevelBadge, RatingBadge, StatusBadge } from "@/comp
 import { IconCalendar, IconClock, IconPaddle, IconPin, IconUsers } from "@/components/ui/icons";
 import { EVENT_FORMAT_LABELS, EVENT_TYPE_LABELS } from "@/lib/enums";
 import { formatDate, formatDistance, formatPrice, formatTimeRange } from "@/lib/format";
-import { eventHref } from "@/lib/links";
+import { eventHref, eventSection } from "@/lib/links";
 import type { EventRead, ProfilePublic } from "@/types/api";
 
 export function EventDetail({ event }: { event: EventRead }) {
-  const organizer = event.participants?.find((p) => p.is_organizer) ?? null;
+  const organizerParticipant = event.participants?.find((p) => p.is_organizer) ?? null;
+  const organizerProfile = event.organizer ?? organizerParticipant?.profile ?? null;
   const confirmed = event.participants?.filter((p) => p.status === "confirmed" && !p.is_organizer) ?? [];
   const price = formatPrice(event.price);
+  const isTraining = eventSection(event.event_type) === "trainings";
 
   return (
     <div className="space-y-6">
@@ -92,13 +94,13 @@ export function EventDetail({ event }: { event: EventRead }) {
         </section>
       )}
 
-      {organizer && (
+      {!isTraining && organizerProfile && (
         <section className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
           <h2 className="mb-3 text-sm font-bold text-fg-2">Организатор</h2>
           <PlayerRow
-            profile={organizer.profile}
-            telegram={organizer.telegram_username}
-            phone={organizer.phone}
+            profile={organizerProfile}
+            telegram={organizerParticipant?.telegram_username}
+            phone={organizerParticipant?.phone}
           />
         </section>
       )}

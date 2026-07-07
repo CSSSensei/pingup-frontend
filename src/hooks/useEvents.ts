@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { toast } from "@/components/ui/toast";
 import { eventsApi } from "@/lib/api/endpoints/events";
 import { handleApiError } from "@/lib/errors/handle";
 import { qk } from "@/lib/queryKeys";
@@ -14,13 +15,14 @@ import type {
   EventUpdatePayload,
 } from "@/types/api";
 
-export function useEvents(filter: EventFilterParams) {
+export function useEvents(filter: EventFilterParams, options?: { enabled?: boolean }) {
   const status = useAuthStore((s) => s.status);
+  const authReady = status !== "idle" && status !== "authenticating";
   return useQuery({
     queryKey: qk.events(filter),
     queryFn: () => eventsApi.list(filter),
     // До окончания silent-refresh запрос ушёл бы без Bearer и is_joined = null.
-    enabled: status !== "idle" && status !== "authenticating",
+    enabled: authReady && (options?.enabled ?? true),
   });
 }
 
@@ -98,6 +100,7 @@ export function useJoinEvent(id: number) {
       if (ctx?.prev) qc.setQueryData(qk.event(id), ctx.prev);
       handleApiError(err);
     },
+    onSuccess: () => toast.success("Заявка отправлена"),
     onSettled: () => {
       qc.invalidateQueries({ queryKey: qk.event(id) });
       qc.invalidateQueries({ queryKey: ["events"] });
@@ -120,6 +123,7 @@ export function useLeaveEvent(id: number) {
       if (ctx?.prev) qc.setQueryData(qk.event(id), ctx.prev);
       handleApiError(err);
     },
+    onSuccess: () => toast.success("Участие отменено"),
     onSettled: () => {
       qc.invalidateQueries({ queryKey: qk.event(id) });
       qc.invalidateQueries({ queryKey: ["events"] });

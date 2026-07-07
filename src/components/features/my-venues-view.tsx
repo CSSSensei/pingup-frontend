@@ -38,7 +38,7 @@ export function MyVenuesView() {
         <ErrorState onRetry={() => query.refetch()} />
       ) : venues.length === 0 ? (
         <EmptyState
-          icon={<IconBuilding size={30} />}
+          icon={<IconBuilding size={32} />}
           title="Залов нет"
           description="Вас пока не назначили ответственным ни за один зал."
         />
@@ -150,7 +150,7 @@ function BookingRow({ booking, venueId }: { booking: VenueBookingRead; venueId: 
         )}
         {booking.booker_phone && (
           <a
-            href={`tel:${booking.booker_phone}`}
+            href={`tel:${booking.booker_phone.replace(/[^\d+]/g, "")}`}
             className="inline-flex items-center gap-1 text-primary hover:underline"
           >
             <IconPhone size={13} /> {booking.booker_phone}

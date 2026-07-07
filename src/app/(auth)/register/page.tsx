@@ -22,6 +22,13 @@ import { SMOLENSK_CITY_ID } from "@/lib/constants";
 import { apiErrorMessage, fieldErrors } from "@/lib/errors/messages";
 import { registerSchema, type RegisterValues } from "@/lib/schemas/auth";
 
+const API_FIELD_MAP: Record<string, keyof RegisterValues> = {
+  display_name: "display_name",
+  email: "email",
+  password: "password",
+  marketing_consent: "marketing",
+};
+
 export default function RegisterPage() {
   const router = useRouter();
   const passwordId = useId();
@@ -69,10 +76,16 @@ export default function RegisterPage() {
         setError("email", { type: "server", message: "Этот email уже занят" });
         setFocus("email");
       } else if (Object.keys(fe).length) {
+        const mapped: [keyof RegisterValues, string][] = [];
+        const unmapped: string[] = [];
         for (const [field, message] of Object.entries(fe)) {
-          setError(field as keyof RegisterValues, { message });
+          const rhfField = API_FIELD_MAP[field];
+          if (rhfField) mapped.push([rhfField, message]);
+          else unmapped.push(message);
         }
-        setFocus(Object.keys(fe)[0] as keyof RegisterValues);
+        for (const [field, message] of mapped) setError(field, { message });
+        if (mapped.length) setFocus(mapped[0][0]);
+        if (!mapped.length && unmapped.length) toast.error(unmapped[0]);
       } else {
         toast.error(apiErrorMessage(err));
       }

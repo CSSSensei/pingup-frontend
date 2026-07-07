@@ -10,7 +10,13 @@ import { EmailVerifyBanner } from "@/components/layout/email-verify-banner";
 import { GuestAuthButtons } from "@/components/layout/guest-auth-buttons";
 import { MoreSheet } from "@/components/layout/more-sheet";
 import { NotificationBell } from "@/components/layout/notification-bell";
-import { MOBILE_TABS, PERSONAL_NAV, PRIMARY_NAV, isActivePath } from "@/components/layout/nav-config";
+import {
+  MOBILE_TABS,
+  MORE_SHEET,
+  PERSONAL_NAV,
+  PRIMARY_NAV,
+  isActivePath,
+} from "@/components/layout/nav-config";
 import { UserMenu } from "@/components/layout/user-menu";
 import { IconMore } from "@/components/ui/icons";
 import { useAuthStatus } from "@/hooks/useMe";
@@ -112,7 +118,7 @@ function TopBar({ authed, home }: { authed: boolean; home: string }) {
 
 function MobileTabBar({ pathname, authed }: { pathname: string; authed: boolean }) {
   const [moreOpen, setMoreOpen] = useState(false);
-  const moreActive = !MOBILE_TABS.some((t) => isActivePath(pathname, t.href));
+  const moreActive = MORE_SHEET.some((t) => isActivePath(pathname, t.href));
 
   return (
     <>

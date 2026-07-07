@@ -94,7 +94,7 @@ export default async function LandingPage() {
         <div className="flex flex-wrap items-center justify-between gap-5 rounded-lg bg-fg p-[34px]">
           <div>
             <h2 className="mb-1.5 text-[22px] font-extrabold text-white">Готов выйти к столу?</h2>
-            <div className="text-[14.5px] text-zinc-300">
+            <div className="text-[14.5px] text-white/70">
               Зарегистрируйся, заполни профиль — и найди игру рядом
             </div>
           </div>

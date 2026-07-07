@@ -59,7 +59,7 @@ export function ManageEventView({ id, section }: { id: number; section: EventSec
         {forbidden ? (
           <EmptyState
             title="Нет доступа"
-            description="Управлять событием может только организатор."
+            description="Управлять событием может организатор или модератор."
           />
         ) : (
           <ErrorState onRetry={() => participantsQuery.refetch()} />

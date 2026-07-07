@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Badge, GenderBadge, LevelRangeBadge, TournamentStatusBadge } from "@/components/ui/badge";
 import { IconCalendar, IconCheck, IconClock, IconShieldCheck, IconUsers } from "@/components/ui/icons";
-import { formatDate, formatPrice } from "@/lib/format";
+import { formatDateTime, formatEventWhen, formatPrice } from "@/lib/format";
 import { ratingRangeLabel } from "@/lib/partners";
 import { slotsLabel } from "@/lib/tournaments";
 import type { TournamentRead } from "@/types/api";
@@ -48,12 +48,12 @@ export function TournamentCard({ tournament }: { tournament: TournamentRead }) {
       <div className="flex flex-col gap-1.5 text-[13.5px] font-medium text-fg-2">
         <div className="flex items-center gap-2">
           <IconCalendar size={16} className="flex-none text-muted" />
-          {formatDate(t.starts_at)}
+          {formatEventWhen(t.starts_at)}
         </div>
         {t.registration_deadline && (
           <div className="flex items-center gap-2">
             <IconClock size={16} className="flex-none text-muted" />
-            Регистрация до {formatDate(t.registration_deadline)}
+            Регистрация до {formatDateTime(t.registration_deadline)}
           </div>
         )}
         <div className="flex items-center gap-2">

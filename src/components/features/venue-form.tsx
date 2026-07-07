@@ -2,9 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { WeekScheduleEditor } from "@/components/features/schedule/week-schedule-editor";
 import { MapPicker } from "@/components/maps/map-picker";
 import { Button } from "@/components/ui/button";
@@ -125,6 +126,8 @@ export function VenueForm({ venue }: { venue?: VenueRead }) {
   const [photos, setPhotos] = useState<File[]>([]);
   const existingPhotos = venue?.photos ?? [];
   const photosBusy = addPhoto.isPending || deletePhoto.isPending;
+  const [deletePhotoId, setDeletePhotoId] = useState<number | null>(null);
+  const scheduleRef = useRef<HTMLDivElement>(null);
   const [schedule, setSchedule] = useState<WeekSchedule>(
     () => parseWeekSchedule(venue?.working_hours ?? null) ?? defaultWeek(),
   );
@@ -196,7 +199,11 @@ export function VenueForm({ venue }: { venue?: VenueRead }) {
   }
 
   const onSubmit: SubmitHandler<CreateVenueValues> = async (values) => {
-    if (scheduleErrors.length > 0) return;
+    if (scheduleErrors.length > 0) {
+      toast.error("Проверьте график работы — есть ошибки в интервалах");
+      scheduleRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
     const working_hours = serializeWeekSchedule(schedule);
     const base = {
       name: values.name,
@@ -338,12 +345,11 @@ export function VenueForm({ venue }: { venue?: VenueRead }) {
           </Field>
         </div>
 
-        <Field
-          label="График работы"
-          hint="Часы задают доступное время для брони столов."
-        >
-          <WeekScheduleEditor value={schedule} onChange={setSchedule} errors={scheduleErrors} />
-        </Field>
+        <div ref={scheduleRef}>
+          <Field label="График работы" hint="Часы задают доступное время для брони столов.">
+            <WeekScheduleEditor value={schedule} onChange={setSchedule} errors={scheduleErrors} />
+          </Field>
+        </div>
 
         <Field label="Цены" error={errors.price_info?.message}>
           <Textarea
@@ -369,7 +375,7 @@ export function VenueForm({ venue }: { venue?: VenueRead }) {
                     index={i}
                     removeLabel={`Удалить фото ${i + 1}`}
                     disabled={photosBusy}
-                    onRemove={() => deletePhoto.mutate(photo.id)}
+                    onRemove={() => setDeletePhotoId(photo.id)}
                   />
                 ))
               : previews.map((url, i) => (
@@ -414,6 +420,20 @@ export function VenueForm({ venue }: { venue?: VenueRead }) {
           {isEdit ? "Сохранить" : "Добавить зал"}
         </Button>
       </div>
+
+      <ConfirmDialog
+        open={deletePhotoId !== null}
+        title="Удалить фото?"
+        message="Фото будет удалено из зала безвозвратно."
+        confirmLabel="Удалить"
+        destructive
+        loading={deletePhoto.isPending}
+        onConfirm={() =>
+          deletePhotoId != null &&
+          deletePhoto.mutate(deletePhotoId, { onSuccess: () => setDeletePhotoId(null) })
+        }
+        onClose={() => setDeletePhotoId(null)}
+      />
     </form>
   );
 }

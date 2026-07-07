@@ -50,7 +50,7 @@ export function VenueCard({ venue }: { venue: VenueRead }) {
           </>
         )}
         {venue.is_verified && (
-          <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 rounded-pill bg-surface/95 px-2 py-1 text-[11.5px] font-extrabold text-skill-beginner shadow-card">
+          <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 rounded-pill bg-surface/95 px-2 py-1 text-[11.5px] font-extrabold text-status-confirmed shadow-card">
             <IconShieldCheck size={13} />
             Проверен
           </span>

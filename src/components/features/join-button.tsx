@@ -89,6 +89,20 @@ export function JoinButton({ event }: { event: EventRead }) {
       </Button>
     );
   }
+  if (event.status === "in_progress") {
+    return (
+      <Button size="lg" fullWidth disabled className="sm:w-auto sm:px-10">
+        Событие уже идёт
+      </Button>
+    );
+  }
+  if (event.status !== "open") {
+    return (
+      <Button size="lg" fullWidth disabled className="sm:w-auto sm:px-10">
+        Запись недоступна
+      </Button>
+    );
+  }
 
   if (hasContact === false) {
     return <ContactGateButton />;

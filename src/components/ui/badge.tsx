@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { IconStar } from "@/components/ui/icons";
 import {
   EVENT_STATUS_BADGE,
   EVENT_STATUS_LABELS,
@@ -97,24 +98,26 @@ export function UserRoleBadge({ role }: { role: string }) {
   );
 }
 
-const StarIcon = () => (
-  <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" stroke="none" aria-hidden="true">
-    <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z" />
-  </svg>
-);
+export function CoachBadge() {
+  return (
+    <span className={cn(base, "px-1.5 py-[2px] text-[10px] font-extrabold tracking-wide", "bg-fg text-primary-fg")}>
+      ТРЕНЕР
+    </span>
+  );
+}
 
 export function RatingBadge({ rating, stale = false }: { rating: number; stale?: boolean }) {
   if (stale) {
     return (
       <Badge>
-        <StarIcon />
+        <IconStar size={12} stroke="none" />
         {rating} · неактуально
       </Badge>
     );
   }
   return (
     <span className={cn(base, "bg-skill-pro/12 text-skill-pro")}>
-      <StarIcon />
+      <IconStar size={12} stroke="none" />
       {rating}
     </span>
   );

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { Avatar } from "@/components/common/avatar";
 import { EmptyState, ErrorState } from "@/components/common/states";
-import { LevelBadge } from "@/components/ui/badge";
+import { CoachBadge, LevelBadge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMe } from "@/hooks/useMe";
 import { useProfiles } from "@/hooks/useProfiles";
@@ -109,11 +109,7 @@ function LeaderboardRow({
               ВЫ
             </span>
           )}
-          {player.is_coach && (
-            <span className="flex-none rounded-pill bg-fg px-1.5 text-[10px] font-extrabold text-white">
-              ТРЕНЕР
-            </span>
-          )}
+          {player.is_coach && <CoachBadge />}
         </div>
         {player.skill_level && (
           <div className="mt-0.5">

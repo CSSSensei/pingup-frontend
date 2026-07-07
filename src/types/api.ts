@@ -258,11 +258,9 @@ export interface EventRead {
   is_joined: boolean | null;
   distance_km: number | null;
   participants: EventParticipant[] | null;
-  // Заполнен только в детальном ответе (в списках всегда null).
+  organizer: ProfilePublic | null;
   coach: ProfilePublic | null;
-  // Столы, забронированные за событием (только детальный ответ с venue_id).
   tables: EventTableRef[] | null;
-  // Зал из БД (только детальный ответ) — для ссылки на карточку зала.
   venue: EventVenueRef | null;
   series_id: number | null;
   is_recurring: boolean;

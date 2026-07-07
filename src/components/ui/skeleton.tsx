@@ -1,13 +1,13 @@
 import { cn } from "@/lib/utils";
 
+const SHIMMER_GRADIENT =
+  "linear-gradient(90deg, var(--color-surface-3) 25%, var(--color-surface-2) 37%, var(--color-surface-3) 63%)";
+
 export function Skeleton({ className }: { className?: string }) {
   return (
     <div
-      className={cn(
-        "rounded bg-[length:400px_100%] motion-safe:animate-shimmer",
-        "bg-[linear-gradient(90deg,#ececee_25%,#f6f6f7_37%,#ececee_63%)]",
-        className,
-      )}
+      style={{ backgroundImage: SHIMMER_GRADIENT }}
+      className={cn("rounded bg-[length:400px_100%] motion-safe:animate-shimmer", className)}
     />
   );
 }

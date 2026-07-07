@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { TournamentCard } from "@/components/features/tournament-card";
 import { TournamentFilters } from "@/components/features/tournament-filters";
 import { CardGridSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { Button } from "@/components/ui/button";
 import { IconTrophy } from "@/components/ui/icons";
 import { useTournaments } from "@/hooks/useTournaments";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
@@ -42,6 +43,8 @@ function TournamentsListInner() {
   };
 
   const query = useTournaments(filter);
+  const hasActiveFilters = status != null || gender != null || official != null;
+  const resetFilters = () => router.replace(pathname, { scroll: false });
 
   const patch = (p: Partial<TournamentFilterParams>) => {
     const next = new URLSearchParams(params.toString());
@@ -66,6 +69,13 @@ function TournamentsListInner() {
           icon={<IconTrophy size={34} />}
           title="Турниров не нашлось"
           description="Под выбранные фильтры турниров нет. Сбросьте фильтры или создайте свой."
+          action={
+            hasActiveFilters ? (
+              <Button variant="secondary" onClick={resetFilters}>
+                Сбросить фильтры
+              </Button>
+            ) : undefined
+          }
         />
       ) : (
         <div className="pu-reveal grid gap-3 md:grid-cols-2">

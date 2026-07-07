@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useId, type ReactNode } from "react";
 
 import { IconX } from "@/components/ui/icons";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
@@ -20,6 +20,7 @@ export function Modal({
   className?: string;
 }) {
   const dialogRef = useFocusTrap<HTMLDivElement>(open);
+  const titleId = useId();
 
   useEffect(() => {
     if (!open) return;
@@ -46,6 +47,8 @@ export function Modal({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
+        aria-labelledby={title != null ? titleId : undefined}
+        aria-label={title == null ? "Диалог" : undefined}
         tabIndex={-1}
         className={cn(
           "outline-none",
@@ -56,7 +59,9 @@ export function Modal({
       >
         {title != null && (
           <div className="mb-3 flex items-start justify-between gap-4">
-            <h2 className="text-lg font-extrabold tracking-[-0.01em] text-fg">{title}</h2>
+            <h2 id={titleId} className="text-lg font-extrabold tracking-[-0.01em] text-fg">
+              {title}
+            </h2>
             <button
               type="button"
               onClick={onClose}

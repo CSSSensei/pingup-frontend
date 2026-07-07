@@ -5,6 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { WEEKDAYS, type Interval, type Weekday, type WeekSchedule } from "@/lib/schedule";
 
+function addHour(time: string): string {
+  const [h, m] = time.split(":").map(Number);
+  const total = Math.min(h * 60 + m + 60, 23 * 60 + 59);
+  return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
+}
+
 export function WeekScheduleEditor({
   value,
   onChange,
@@ -27,7 +33,13 @@ export function WeekScheduleEditor({
 
   function addInterval(day: Weekday) {
     const last = value[day][value[day].length - 1];
-    setDay(day, [...value[day], { open: last?.close ?? "09:00", close: "22:00" }]);
+    if (!last) {
+      setDay(day, [{ open: "09:00", close: "22:00" }]);
+      return;
+    }
+    // Новый слот начинается после предыдущего; закрытие = открытие + 1ч (не даём open == close).
+    const open = last.close;
+    setDay(day, [...value[day], { open, close: addHour(open) }]);
   }
 
   function copyMondayToAll() {

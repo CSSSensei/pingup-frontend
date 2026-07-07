@@ -17,7 +17,15 @@ export interface ProfileHeaderData {
   ratingStale: boolean;
 }
 
-export function ProfileHeaderCard({ data, actions }: { data: ProfileHeaderData; actions?: ReactNode }) {
+export function ProfileHeaderCard({
+  data,
+  actions,
+  as: Heading = "h1",
+}: {
+  data: ProfileHeaderData;
+  actions?: ReactNode;
+  as?: "h1" | "h2";
+}) {
   const age = ageLabel(data.birthDate);
 
   return (
@@ -27,7 +35,9 @@ export function ProfileHeaderCard({ data, actions }: { data: ProfileHeaderData; 
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-extrabold tracking-[-0.01em] text-fg">{data.displayName}</h1>
+            <Heading className="text-2xl font-extrabold tracking-[-0.02em] text-fg">
+              {data.displayName}
+            </Heading>
             {data.isCoach && (
               <span className="rounded-pill bg-fg px-2.5 py-[3px] text-[11px] font-extrabold tracking-wide text-white">
                 ТРЕНЕР

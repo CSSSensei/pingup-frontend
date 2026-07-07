@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { PageHeader } from "@/components/common/page-header";
 import { ErrorState } from "@/components/common/states";
 import { Badge } from "@/components/ui/badge";
@@ -346,6 +347,7 @@ function MarketingSection({ me }: { me: MeResponse }) {
   const onToggle = async (next: boolean) => {
     try {
       await setConsent.mutateAsync(next);
+      toast.success(next ? "Подписка на рассылку включена" : "Подписка на рассылку отключена");
     } catch (err) {
       toast.error(apiErrorMessage(err));
     }
@@ -375,6 +377,8 @@ function SessionsSection({ onSessionEnd }: { onSessionEnd: (to: string) => void 
   const sessions = useSessions();
   const revoke = useRevokeSession();
   const logoutAll = useLogoutAll();
+  const [confirmAll, setConfirmAll] = useState(false);
+  const [revokeTarget, setRevokeTarget] = useState<string | null>(null);
 
   const onLogoutAll = async () => {
     try {
@@ -383,6 +387,7 @@ function SessionsSection({ onSessionEnd }: { onSessionEnd: (to: string) => void 
       toast.error(apiErrorMessage(err));
       return;
     }
+    setConfirmAll(false);
     toast.success("Вышли на всех устройствах");
     onSessionEnd("/login");
   };
@@ -390,6 +395,7 @@ function SessionsSection({ onSessionEnd }: { onSessionEnd: (to: string) => void 
   const onRevoke = async (familyId: string) => {
     try {
       await revoke.mutateAsync(familyId);
+      setRevokeTarget(null);
       toast.success("Сеанс завершён");
     } catch (err) {
       toast.error(apiErrorMessage(err));
@@ -416,7 +422,7 @@ function SessionsSection({ onSessionEnd }: { onSessionEnd: (to: string) => void 
             <SessionItem
               key={s.family_id}
               session={s}
-              onRevoke={() => onRevoke(s.family_id)}
+              onRevoke={() => setRevokeTarget(s.family_id)}
               revoking={revoke.isPending && revoke.variables === s.family_id}
             />
           ))}
@@ -424,11 +430,32 @@ function SessionsSection({ onSessionEnd }: { onSessionEnd: (to: string) => void 
       )}
 
       {hasOthers && (
-        <Button variant="secondary" size="sm" onClick={onLogoutAll} loading={logoutAll.isPending}>
+        <Button variant="secondary" size="sm" onClick={() => setConfirmAll(true)} loading={logoutAll.isPending}>
           <IconLogOut size={16} />
           Выйти на всех устройствах
         </Button>
       )}
+
+      <ConfirmDialog
+        open={confirmAll}
+        title="Выйти на всех устройствах?"
+        message="Все сеансы, включая текущий, завершатся — потребуется снова войти."
+        confirmLabel="Выйти везде"
+        destructive
+        loading={logoutAll.isPending}
+        onConfirm={onLogoutAll}
+        onClose={() => setConfirmAll(false)}
+      />
+      <ConfirmDialog
+        open={revokeTarget !== null}
+        title="Завершить сеанс?"
+        message="На этом устройстве потребуется войти заново."
+        confirmLabel="Завершить"
+        destructive
+        loading={revoke.isPending}
+        onConfirm={() => revokeTarget && onRevoke(revokeTarget)}
+        onClose={() => setRevokeTarget(null)}
+      />
     </Section>
   );
 }

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ReportCard } from "@/components/features/admin/report-card";
 import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/states";
 import { PageHeader } from "@/components/common/page-header";
-import { Button } from "@/components/ui/button";
+import { Pager } from "@/components/features/admin/admin-venues-view";
 import { Select } from "@/components/ui/select";
 import { IconInbox } from "@/components/ui/icons";
 import { useReportQueue } from "@/hooks/useReports";
@@ -98,29 +98,7 @@ export function ReportsQueueView() {
             ))}
           </div>
 
-          {total > LIMIT && (
-            <div className="mt-5 flex items-center justify-between gap-3">
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={offset === 0}
-                onClick={() => setOffset(Math.max(0, offset - LIMIT))}
-              >
-                Назад
-              </Button>
-              <span className="text-xs text-muted">
-                {offset + 1}–{Math.min(offset + LIMIT, total)} из {total}
-              </span>
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={offset + LIMIT >= total}
-                onClick={() => setOffset(offset + LIMIT)}
-              >
-                Вперёд
-              </Button>
-            </div>
-          )}
+          <Pager offset={offset} total={total} onChange={setOffset} limit={LIMIT} />
         </>
       )}
     </div>

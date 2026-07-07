@@ -6,13 +6,13 @@ export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export const BUTTON_BASE =
-  "inline-flex items-center justify-center gap-2 rounded font-bold whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-2 focus-visible:outline-offset-2";
+  "inline-flex items-center justify-center gap-2 rounded font-bold whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2";
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: "bg-primary text-white hover:bg-primary-600 shadow-card",
+  primary: "bg-primary text-primary-fg hover:bg-primary-600 shadow-card",
   secondary: "border border-border bg-surface text-fg hover:bg-surface-2",
   ghost: "bg-transparent text-fg-2 hover:bg-surface-2",
-  danger: "bg-danger text-white hover:bg-danger-600",
+  danger: "bg-danger text-danger-fg hover:bg-danger-600",
 };
 
 const SIZES: Record<ButtonSize, string> = {
@@ -51,6 +51,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <button
       ref={ref}
       disabled={disabled || loading}
+      aria-busy={loading || undefined}
       className={cn(buttonStyles({ variant, size, fullWidth }), className)}
       {...props}
     >

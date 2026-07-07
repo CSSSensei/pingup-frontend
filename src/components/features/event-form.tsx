@@ -579,7 +579,11 @@ export function EventForm({
         </div>
 
         <label className="flex cursor-pointer items-start gap-3 rounded border border-border bg-surface-2 p-3.5">
-          <Switch checked={isPublic} onCheckedChange={(v) => setValue("is_public", v)} />
+          <Switch
+            checked={isPublic}
+            onCheckedChange={(v) => setValue("is_public", v)}
+            label="Публичное событие"
+          />
           <span className="min-w-0">
             <span className="block text-sm font-bold text-fg">Публичное событие</span>
             <span className="block text-[13px] font-medium text-muted">

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { IconAlertCircle } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
+import { LinkButton } from "@/components/ui/link-button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { authApi } from "@/lib/api/endpoints/auth";
 import { setAccessToken } from "@/lib/auth/tokens";
@@ -115,9 +116,9 @@ function LoginForm() {
           или
           <div className="h-px flex-1 bg-border" />
         </div>
-        <Button variant="secondary" size="lg" fullWidth onClick={() => router.push("/")}>
+        <LinkButton href="/" variant="secondary" size="lg" fullWidth>
           Продолжить как гость
-        </Button>
+        </LinkButton>
       </div>
       <p className="mt-[18px] text-center text-sm text-muted">
         Нет аккаунта?{" "}

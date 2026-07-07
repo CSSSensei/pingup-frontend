@@ -28,6 +28,7 @@ import {
   useUnbanUser,
 } from "@/hooks/useAdmin";
 import { useMe } from "@/hooks/useMe";
+import { CITY_NAME, SMOLENSK_CITY_ID } from "@/lib/constants";
 import { isAdmin } from "@/lib/roles";
 import { USER_COUNTER_LABELS } from "@/lib/admin";
 import { USER_ROLES, USER_ROLE_LABELS } from "@/lib/enums";
@@ -124,7 +125,10 @@ function HeaderCard({ user }: { user: AdminUserDetail }) {
 
       <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-border pt-4 text-sm">
         <Row label="ID" value={`#${user.id}`} />
-        <Row label="Город" value={`#${user.city_id}`} />
+        <Row
+          label="Город"
+          value={user.city_id === SMOLENSK_CITY_ID ? CITY_NAME : `#${user.city_id}`}
+        />
         <Row label="Регистрация" value={formatDate(user.created_at)} />
         <Row
           label="Последний вход"

@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from "react";
 import { PlayerCard } from "@/components/features/player-card";
 import { PlayerFilters } from "@/components/features/player-filters";
 import { PlayerCardSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { Button } from "@/components/ui/button";
 import { IconUser } from "@/components/ui/icons";
 import { useProfiles } from "@/hooks/useProfiles";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
@@ -52,6 +53,7 @@ function PlayersListInner() {
 
   const filter: ProfileFilterParams = {
     city_id: SMOLENSK_CITY_ID,
+    limit: 100,
     ...(qParam ? { q: qParam } : {}),
     ...(skill ? { skill_level: skill } : {}),
     ...(gender ? { gender } : {}),
@@ -62,6 +64,8 @@ function PlayersListInner() {
   };
 
   const query = useProfiles(filter);
+  const hasActiveFilters = params.toString().length > 0;
+  const resetFilters = () => router.replace(pathname, { scroll: false });
 
   function patch(p: Partial<ProfileFilterParams>) {
     const next = new URLSearchParams(params.toString());
@@ -89,12 +93,19 @@ function PlayersListInner() {
           icon={<IconUser size={34} />}
           title="Игроков не нашлось"
           description="Под выбранные фильтры никого нет. Попробуйте сбросить фильтры."
+          action={
+            hasActiveFilters ? (
+              <Button variant="secondary" onClick={resetFilters}>
+                Сбросить фильтры
+              </Button>
+            ) : undefined
+          }
         />
       ) : (
         <>
           <div className="pu-reveal grid gap-3 md:grid-cols-2">
-            {query.data.items.map((player) => (
-              <PlayerCard key={player.slug ?? player.display_name} player={player} />
+            {query.data.items.map((player, i) => (
+              <PlayerCard key={player.slug ?? `${player.display_name}-${i}`} player={player} />
             ))}
           </div>
           {query.data.total > query.data.items.length && (

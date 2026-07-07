@@ -48,6 +48,9 @@ export const profilesApi = {
       body: JSON.stringify({ tennis67_url }),
     }),
 
+  unlinkTennis67: () =>
+    apiFetch<ProfileMe>(`${API_PREFIX}/profiles/me/tennis67`, { method: "DELETE" }),
+
   // Ручной ре-синк рейтинга — 202, результат приходит позже уведомлением rating_updated.
   syncRating: () =>
     apiFetch<RatingSyncAccepted>(`${API_PREFIX}/profiles/me/rating-sync`, { method: "POST" }),

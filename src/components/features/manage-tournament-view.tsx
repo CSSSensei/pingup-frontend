@@ -163,6 +163,8 @@ export function ManageTournamentView({ slug }: { slug: string }) {
             <Skeleton className="h-16 w-full" />
             <Skeleton className="h-16 w-full" />
           </div>
+        ) : participantsQuery.isError ? (
+          <ErrorState onRetry={() => participantsQuery.refetch()} />
         ) : items.length === 0 ? (
           <EmptyState
             title="Пока никто не зарегистрировался"
@@ -223,7 +225,7 @@ function ParticipantRow({ participant: p }: { participant: TournamentParticipant
   );
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface p-4">
+    <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface p-3">
       {profile?.slug ? (
         <Link href={`/players/${profile.slug}`} className="min-w-0 flex-1 hover:opacity-80">
           {identity}

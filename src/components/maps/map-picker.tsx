@@ -28,6 +28,7 @@ export function MapPicker({
   const markerRef = useRef<object | null>(null);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
+  const lastClickRef = useRef<{ lat: number; lng: number } | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "unavailable">(
     MAPS_API_KEY ? "loading" : "unavailable",
   );
@@ -52,6 +53,7 @@ export function MapPicker({
           layer: "any",
           onFastClick: (_obj, event) => {
             const [lng, lat] = event.coordinates;
+            lastClickRef.current = { lat, lng };
             onChangeRef.current(lat, lng);
           },
         }),
@@ -84,6 +86,14 @@ export function MapPicker({
       );
       map.addChild(marker);
       markerRef.current = marker;
+
+      const fromClick =
+        lastClickRef.current != null &&
+        Math.abs(lastClickRef.current.lat - value.lat) < 1e-6 &&
+        Math.abs(lastClickRef.current.lng - value.lng) < 1e-6;
+      if (!fromClick) {
+        map.setLocation({ center: [value.lng, value.lat], duration: 200 });
+      }
     }
   }, [status, value]);
 

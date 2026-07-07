@@ -28,10 +28,11 @@ export function ConfirmDialog({
     <Modal open={open} onClose={onClose} title={title}>
       {message && <p className="text-sm text-fg-2">{message}</p>}
       <div className="mt-5 flex gap-2">
-        <Button variant="ghost" fullWidth onClick={onClose} disabled={loading}>
+        <Button type="button" variant="ghost" fullWidth onClick={onClose} disabled={loading}>
           {cancelLabel}
         </Button>
         <Button
+          type="button"
           variant={destructive ? "danger" : "primary"}
           fullWidth
           loading={loading}

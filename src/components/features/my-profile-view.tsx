@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { ContactLinks } from "@/components/features/contact-links";
 import { EquipmentCard } from "@/components/features/equipment-card";
 import { ProfileHeaderCard } from "@/components/features/profile-header-card";
@@ -14,7 +17,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import { BallSpinner } from "@/components/ui/spinner";
 import { useMe } from "@/hooks/useMe";
-import { useMyProfile, useMyRatingHistory, useSyncRating } from "@/hooks/useProfiles";
+import {
+  useMyProfile,
+  useMyRatingHistory,
+  useSyncRating,
+  useUnlinkTennis67,
+} from "@/hooks/useProfiles";
 import { formatRelative } from "@/lib/format";
 import type { ProfileMe } from "@/types/api";
 
@@ -61,6 +69,7 @@ export function MyProfileView() {
           currentRating: profile.current_rating,
           ratingStale: profile.rating_is_stale,
         }}
+        as="h2"
       />
 
       <RatingSection profile={profile} />
@@ -111,6 +120,8 @@ export function MyProfileView() {
 function RatingSection({ profile }: { profile: ProfileMe }) {
   const history = useMyRatingHistory();
   const sync = useSyncRating();
+  const unlink = useUnlinkTennis67();
+  const [confirmUnlink, setConfirmUnlink] = useState(false);
   const linked = !!profile.tennis67_url;
 
   function onSync() {
@@ -120,17 +131,43 @@ function RatingSection({ profile }: { profile: ProfileMe }) {
     });
   }
 
+  function onUnlink() {
+    unlink.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Профиль теннис67 отвязан");
+        setConfirmUnlink(false);
+      },
+    });
+  }
+
   return (
     <section className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-sm font-bold text-fg-2">Рейтинг теннис67</h2>
         {linked && (
-          <Button size="sm" variant="secondary" loading={sync.isPending} onClick={onSync}>
-            <IconRefresh size={15} />
-            Обновить
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="secondary" loading={sync.isPending} onClick={onSync}>
+              <IconRefresh size={15} />
+              Обновить
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setConfirmUnlink(true)}>
+              Отвязать
+            </Button>
+          </div>
         )}
       </div>
+
+      <ConfirmDialog
+        open={confirmUnlink}
+        title="Отвязать теннис67?"
+        message="Рейтинг и история сбросятся. Позже профиль можно привязать заново."
+        confirmLabel="Отвязать"
+        destructive
+        loading={unlink.isPending}
+        onConfirm={onUnlink}
+        onClose={() => setConfirmUnlink(false)}
+      />
+
 
       {!linked ? (
         <div className="flex flex-col items-start gap-3">

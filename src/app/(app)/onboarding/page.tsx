@@ -586,7 +586,7 @@ export default function OnboardingPage() {
                       aria-describedby={errors.telegram ? tgErrId : undefined}
                       onChange={(e) => handleChange("telegram", e.target.value.replace(/^@+/, ""))}
                       onBlur={(e) => handleBlur("telegram", e.target.value)}
-                      className="flex-1 border-0 bg-transparent pl-1 text-base font-medium text-fg outline-none placeholder:text-zinc-400 sm:text-[15px]"
+                      className="flex-1 border-0 bg-transparent pl-1 text-base font-medium text-fg outline-none sm:text-[15px]"
                     />
                   </div>
                   <ErrorText id={tgErrId} msg={errors.telegram} />

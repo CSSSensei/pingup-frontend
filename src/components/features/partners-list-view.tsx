@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { PartnerFilters } from "@/components/features/partner-filters";
 import { PartnerRequestCard } from "@/components/features/partner-request-card";
 import { CardGridSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { Button } from "@/components/ui/button";
 import { IconUsers } from "@/components/ui/icons";
 import { usePartnerRequests } from "@/hooks/usePartners";
 import { useAuthStatus } from "@/hooks/useMe";
@@ -45,6 +46,9 @@ function PartnersListInner() {
   };
 
   const query = usePartnerRequests(filter);
+  const hasActiveFilters =
+    eventType != null || gender != null || ratingMin != null || ratingMax != null || suitable;
+  const resetFilters = () => router.replace(pathname, { scroll: false });
 
   const patch = (p: Partial<PartnerRequestFilterParams>) => {
     const next = new URLSearchParams(params.toString());
@@ -70,6 +74,13 @@ function PartnersListInner() {
           icon={<IconUsers size={34} />}
           title="Ничего не нашлось"
           description="Под выбранные фильтры объявлений нет. Сбросьте фильтры или создайте своё."
+          action={
+            hasActiveFilters ? (
+              <Button variant="secondary" onClick={resetFilters}>
+                Сбросить фильтры
+              </Button>
+            ) : undefined
+          }
         />
       ) : (
         <div className="pu-reveal grid gap-3 md:grid-cols-2">

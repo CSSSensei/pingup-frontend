@@ -7,6 +7,7 @@ import { VenueCard } from "@/components/features/venue-card";
 import { VenueFilters, VENUE_SORT_OPTIONS } from "@/components/features/venue-filters";
 import { VenuesMap } from "@/components/maps/venues-map";
 import { VenueCardSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { Button } from "@/components/ui/button";
 import { IconPin } from "@/components/ui/icons";
 import { useVenues } from "@/hooks/useVenues";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
@@ -53,6 +54,8 @@ function VenuesListInner() {
   };
 
   const query = useVenues(filter);
+  const hasActiveFilters = !!qParam || tablesMin != null || verified || !!sort;
+  const resetFilters = () => router.replace(pathname, { scroll: false });
 
   function patch(p: Partial<VenueFilterParams> & { view?: string }) {
     const next = new URLSearchParams(params.toString());
@@ -97,6 +100,13 @@ function VenuesListInner() {
           icon={<IconPin size={34} />}
           title="Залов не нашлось"
           description="Под выбранные фильтры залов нет. Сбросьте фильтры или добавьте зал, которого не хватает."
+          action={
+            hasActiveFilters ? (
+              <Button variant="secondary" onClick={resetFilters}>
+                Сбросить фильтры
+              </Button>
+            ) : undefined
+          }
         />
       ) : view === "map" ? (
         <VenuesMap

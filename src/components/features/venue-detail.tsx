@@ -116,7 +116,7 @@ export function VenueDetail({ venue }: { venue: VenueRead }) {
       <div className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
         <div className="flex flex-wrap items-center gap-1.5">
           {venue.is_verified && (
-            <span className="inline-flex items-center gap-1 rounded-pill bg-skill-beginner/12 px-[9px] py-[3px] text-xs font-bold text-skill-beginner">
+            <span className="inline-flex items-center gap-1 rounded-pill bg-status-confirmed/12 px-[9px] py-[3px] text-xs font-bold text-status-confirmed">
               <IconShieldCheck size={13} />
               Проверен
             </span>
@@ -125,7 +125,7 @@ export function VenueDetail({ venue }: { venue: VenueRead }) {
         </div>
 
         <div className="mt-2 flex flex-wrap items-start justify-between gap-3">
-          <h1 className="text-2xl font-extrabold tracking-tight text-fg">{venue.name}</h1>
+          <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-fg">{venue.name}</h1>
           {rating && (
             <span className="inline-flex items-center gap-1.5 text-base font-extrabold text-skill-pro">
               <IconStar size={18} />

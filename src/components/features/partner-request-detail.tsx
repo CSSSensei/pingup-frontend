@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Avatar } from "@/components/common/avatar";
 import { ReportButton } from "@/components/features/report-button";
 import { RespondButton } from "@/components/features/respond-button";
-import { Badge, LevelBadge, RatingBadge } from "@/components/ui/badge";
+import { Badge, LevelBadge, PartnerStatusBadge, RatingBadge } from "@/components/ui/badge";
 import { IconUser, IconUsers } from "@/components/ui/icons";
 import { EVENT_TYPE_LABELS, GENDER_LABELS } from "@/lib/enums";
 import { formatRelative } from "@/lib/format";
@@ -19,6 +19,7 @@ export function PartnerRequestDetail({ request }: { request: PartnerRequestRead 
     <div className="space-y-6">
       <div className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
         <div className="mb-2 flex flex-wrap items-center gap-1.5">
+          <PartnerStatusBadge status={request.status} />
           <Badge tone="soft">{responsesLabel(request.responses_count)}</Badge>
         </div>
         <h1 className="text-2xl font-extrabold tracking-[-0.02em] text-fg">{request.title}</h1>

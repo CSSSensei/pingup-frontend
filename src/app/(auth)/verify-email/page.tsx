@@ -6,6 +6,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 
 import { Logo } from "@/components/brand/logo";
 import { IconAlertCircle, IconCheck } from "@/components/ui/icons";
+import { LinkButton } from "@/components/ui/link-button";
 import { BallSpinner } from "@/components/ui/spinner";
 import { authApi } from "@/lib/api/endpoints/auth";
 import { apiErrorMessage } from "@/lib/errors/messages";
@@ -37,9 +38,12 @@ function VerifyEmail() {
           <Logo className="mx-auto h-9" />
         </Link>
       </div>
-      <div className="rounded-lg border border-border bg-surface p-7 text-center shadow-pop">
+      <div
+        className="rounded-lg border border-border bg-surface p-7 text-center shadow-pop"
+        aria-live="polite"
+      >
         {state === "verifying" && (
-          <div className="flex flex-col items-center gap-4 py-4" aria-live="polite">
+          <div className="flex flex-col items-center gap-4 py-4">
             <BallSpinner size={32} />
             <p className="text-sm font-semibold text-fg-2">Подтверждаем email…</p>
           </div>
@@ -54,12 +58,9 @@ function VerifyEmail() {
             <p className="mt-2 text-sm text-muted">
               Спасибо! Теперь доступны все возможности pingup.
             </p>
-            <Link
-              href="/login"
-              className="mt-6 flex h-12 w-full items-center justify-center rounded bg-primary text-[15px] font-bold text-white hover:bg-primary-600"
-            >
+            <LinkButton href="/login" variant="primary" size="lg" fullWidth className="mt-6">
               Войти
-            </Link>
+            </LinkButton>
           </>
         )}
 
@@ -75,12 +76,9 @@ function VerifyEmail() {
             <p className="mt-1 text-sm text-muted">
               Войдите в аккаунт и запросите новое письмо для подтверждения.
             </p>
-            <Link
-              href="/login"
-              className="mt-6 flex h-12 w-full items-center justify-center rounded border border-border bg-surface text-[15px] font-bold text-fg hover:bg-surface-2"
-            >
+            <LinkButton href="/login" variant="secondary" size="lg" fullWidth className="mt-6">
               Войти
-            </Link>
+            </LinkButton>
           </>
         )}
       </div>

@@ -10,6 +10,7 @@ import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { IconAlertCircle } from "@/components/ui/icons";
+import { LinkButton } from "@/components/ui/link-button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { PasswordRequirements } from "@/components/ui/password-requirements";
 import { toast } from "@/components/ui/toast";
@@ -58,12 +59,9 @@ function ConfirmForm() {
         <p className="mt-2 mb-6 text-center text-sm text-muted">
           Ссылка для сброса пароля устарела или неполна. Запросите новую.
         </p>
-        <Link
-          href="/password-reset"
-          className="flex h-12 w-full items-center justify-center rounded bg-primary text-[15px] font-bold text-white hover:bg-primary-600"
-        >
+        <LinkButton href="/password-reset" variant="primary" size="lg" fullWidth>
           Запросить ссылку заново
-        </Link>
+        </LinkButton>
       </Card>
     );
   }

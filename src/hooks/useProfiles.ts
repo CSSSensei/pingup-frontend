@@ -99,6 +99,14 @@ export function useSetTennis67() {
   });
 }
 
+export function useUnlinkTennis67() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => profilesApi.unlinkTennis67(),
+    onSuccess: (profile) => syncCaches(qc, profile),
+  });
+}
+
 export function useSyncRating() {
   return useMutation({
     mutationFn: () => profilesApi.syncRating(),

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Avatar } from "@/components/common/avatar";
 import { Badge, GenderBadge, LevelRangeBadge, StatusBadge } from "@/components/ui/badge";
 import { IconCheck, IconClock, IconPin, IconUsers } from "@/components/ui/icons";
 import { EVENT_FORMAT_LABELS, EVENT_TYPE_LABELS } from "@/lib/enums";
@@ -54,6 +55,16 @@ export function EventCard({ event }: { event: EventRead }) {
           <IconUsers size={16} className="flex-none text-muted" />
           {slots}
         </div>
+        {event.organizer && (
+          <div className="flex min-w-0 items-center gap-2">
+            <Avatar
+              src={event.organizer.avatar_url}
+              name={event.organizer.display_name}
+              size={18}
+            />
+            <span className="min-w-0 truncate">{event.organizer.display_name}</span>
+          </div>
+        )}
       </div>
 
       <div className="mt-auto flex flex-wrap items-center gap-1.5">

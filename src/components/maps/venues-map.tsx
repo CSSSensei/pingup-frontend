@@ -75,9 +75,9 @@ export function VenuesMap({
       mapRef.current?.destroy();
       mapRef.current = null;
     };
-    // Карта создаётся один раз; points/zoom подхватывает эффект маркеров ниже.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const pointsKey = points.map((p) => p.id).join(",");
 
   useEffect(() => {
     const api = apiRef.current;
@@ -96,7 +96,8 @@ export function VenuesMap({
 
     const c = centerOf(points);
     map.setLocation({ center: [c.lng, c.lat], zoom, duration: 200 });
-  }, [status, points, zoom, showCard]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, pointsKey, zoom, showCard]);
 
   return (
     <div className={cn("relative overflow-hidden rounded-lg border border-border", className)}>

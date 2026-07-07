@@ -18,7 +18,13 @@ import { BallSpinner } from "@/components/ui/spinner";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
-import { useMyProfile, useSetTennis67, useUpdateProfile, useUploadAvatar } from "@/hooks/useProfiles";
+import {
+  useMyProfile,
+  useSetTennis67,
+  useUnlinkTennis67,
+  useUpdateProfile,
+  useUploadAvatar,
+} from "@/hooks/useProfiles";
 import { useBlades, useRubbers } from "@/lib/data/equipment";
 import {
   GENDERS,
@@ -84,6 +90,7 @@ function EditForm({ profile }: { profile: ProfileMe }) {
   const updateProfile = useUpdateProfile();
   const uploadAvatar = useUploadAvatar();
   const setTennis67 = useSetTennis67();
+  const unlinkTennis67 = useUnlinkTennis67();
   const rubbers = useRubbers();
   const blades = useBlades();
 
@@ -165,14 +172,19 @@ function EditForm({ profile }: { profile: ProfileMe }) {
       }
     }
 
-    // tennis67 — отдельный эндпоинт; шлём только если ссылка изменилась и непустая.
     const tennis = v.tennis67_url?.trim() ?? "";
-    if (tennis && tennis !== (profile.tennis67_url ?? "")) {
+    const prevTennis = profile.tennis67_url ?? "";
+    if (tennis !== prevTennis) {
       try {
-        await setTennis67.mutateAsync(tennis);
+        if (tennis) await setTennis67.mutateAsync(tennis);
+        else await unlinkTennis67.mutateAsync();
       } catch (err) {
         setError("tennis67_url", { message: apiErrorMessage(err) });
-        toast.error("Профиль сохранён, но ссылку теннис67 привязать не вышло");
+        toast.error(
+          tennis
+            ? "Профиль сохранён, но ссылку теннис67 привязать не вышло"
+            : "Профиль сохранён, но ссылку теннис67 отвязать не вышло",
+        );
         return;
       }
     }

@@ -178,7 +178,7 @@ function ResolvePanel({ report }: { report: ReportDetail }) {
             key={s}
             variant={s === "resolved" ? "primary" : s === "rejected" ? "danger" : "secondary"}
             size="sm"
-            loading={resolve.isPending}
+            loading={resolve.isPending && resolve.variables?.status === s}
             disabled={resolve.isPending || report.status === s}
             onClick={() => act(s)}
           >

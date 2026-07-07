@@ -6,7 +6,7 @@ import type { ReportRead } from "@/types/api";
 // Read-only карточка жалобы для её автора (в отличие от модераторской — без ссылки в админку).
 export function MyReportCard({ report }: { report: ReportRead }) {
   return (
-    <article className="rounded-lg border border-border bg-surface p-4">
+    <article className="rounded-lg border border-border bg-surface p-4 shadow-card">
       <div className="flex items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge>{targetLabel(report.target_type, report.target_id)}</Badge>

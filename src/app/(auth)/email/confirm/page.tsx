@@ -6,7 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 
 import { Logo } from "@/components/brand/logo";
-import { IconAlertCircle, IconCheck } from "@/components/ui/icons";
+import { IconAlertCircle, IconCheck, IconUser } from "@/components/ui/icons";
+import { LinkButton } from "@/components/ui/link-button";
 import { BallSpinner } from "@/components/ui/spinner";
 import { usersApi } from "@/lib/api/endpoints/users";
 import { apiErrorMessage } from "@/lib/errors/messages";
@@ -58,9 +59,12 @@ function ConfirmEmailChange() {
           <Logo className="mx-auto h-9" />
         </Link>
       </div>
-      <div className="rounded-lg border border-border bg-surface p-7 text-center shadow-pop">
+      <div
+        className="rounded-lg border border-border bg-surface p-7 text-center shadow-pop"
+        aria-live="polite"
+      >
         {state === "verifying" && (
-          <div className="flex flex-col items-center gap-4 py-4" aria-live="polite">
+          <div className="flex flex-col items-center gap-4 py-4">
             <BallSpinner size={32} />
             <p className="text-sm font-semibold text-fg-2">Подтверждаем новый email…</p>
           </div>
@@ -68,16 +72,16 @@ function ConfirmEmailChange() {
 
         {state === "need-login" && (
           <>
+            <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-surface-3 text-fg-2">
+              <IconUser size={24} />
+            </div>
             <h1 className="text-[23px] font-extrabold tracking-[-0.01em]">Нужен вход</h1>
             <p className="mt-2 text-sm text-muted">
               Войдите в тот же аккаунт, чтобы подтвердить смену email.
             </p>
-            <Link
-              href={loginHref}
-              className="mt-6 flex h-12 w-full items-center justify-center rounded bg-primary text-[15px] font-bold text-white hover:bg-primary-600"
-            >
+            <LinkButton href={loginHref} variant="primary" size="lg" fullWidth className="mt-6">
               Войти
-            </Link>
+            </LinkButton>
           </>
         )}
 
@@ -90,12 +94,9 @@ function ConfirmEmailChange() {
             <p className="mt-2 text-sm text-muted">
               Новый адрес подтверждён — теперь вход выполняется по нему.
             </p>
-            <Link
-              href="/settings"
-              className="mt-6 flex h-12 w-full items-center justify-center rounded bg-primary text-[15px] font-bold text-white hover:bg-primary-600"
-            >
+            <LinkButton href="/settings" variant="primary" size="lg" fullWidth className="mt-6">
               К настройкам
-            </Link>
+            </LinkButton>
           </>
         )}
 
@@ -111,12 +112,9 @@ function ConfirmEmailChange() {
             <p className="mt-1 text-sm text-muted">
               Ссылка действует 24 часа — при необходимости запросите смену email заново.
             </p>
-            <Link
-              href="/settings"
-              className="mt-6 flex h-12 w-full items-center justify-center rounded border border-border bg-surface text-[15px] font-bold text-fg hover:bg-surface-2"
-            >
+            <LinkButton href="/settings" variant="secondary" size="lg" fullWidth className="mt-6">
               К настройкам
-            </Link>
+            </LinkButton>
           </>
         )}
       </div>

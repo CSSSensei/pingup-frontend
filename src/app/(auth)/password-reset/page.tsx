@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { IconAlertCircle, IconCheck } from "@/components/ui/icons";
 import { Input } from "@/components/ui/input";
+import { LinkButton } from "@/components/ui/link-button";
 import { authApi } from "@/lib/api/endpoints/auth";
 import { apiErrorMessage } from "@/lib/errors/messages";
 import { passwordResetRequestSchema, type PasswordResetRequestValues } from "@/lib/schemas/auth";
@@ -56,12 +57,9 @@ export default function PasswordResetRequestPage() {
               Если аккаунт с этим email существует, мы отправили ссылку для сброса пароля. Ссылка
               действует ограниченное время.
             </p>
-            <Link
-              href="/login"
-              className="mt-6 flex h-12 w-full items-center justify-center rounded border border-border bg-surface text-[15px] font-bold text-fg hover:bg-surface-2"
-            >
+            <LinkButton href="/login" variant="secondary" size="lg" fullWidth className="mt-6">
               Вернуться ко входу
-            </Link>
+            </LinkButton>
           </div>
         ) : (
           <>

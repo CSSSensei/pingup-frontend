@@ -14,6 +14,7 @@ import { toast } from "@/components/ui/toast";
 import { useEvent } from "@/hooks/useEvents";
 import { useMe } from "@/hooks/useMe";
 import { eventHref, eventSection, type EventSection } from "@/lib/links";
+import { isModerator } from "@/lib/roles";
 
 export function EventEditView({ id, section }: { id: number; section: EventSection }) {
   const router = useRouter();
@@ -28,7 +29,8 @@ export function EventEditView({ id, section }: { id: number; section: EventSecti
   }, [event, wrongSection, router]);
 
   const backHref = `/${section}/${id}/manage`;
-  const notOrganizer = event != null && me != null && event.organizer_id !== me.id;
+  const noAccess =
+    event != null && me != null && event.organizer_id !== me.id && !isModerator(me.role);
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-6 sm:py-8">
@@ -51,10 +53,10 @@ export function EventEditView({ id, section }: { id: number; section: EventSecti
         ) : (
           <ErrorState onRetry={() => query.refetch()} />
         )
-      ) : notOrganizer ? (
+      ) : noAccess ? (
         <EmptyState
           title="Нет доступа"
-          description="Редактировать событие может только организатор."
+          description="Редактировать событие может организатор или модератор."
         />
       ) : event ? (
         <>

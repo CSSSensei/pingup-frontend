@@ -127,6 +127,10 @@ export function EventTablePicker({
             <span className="size-2.5 rounded-full bg-status-full" />
             Занят
           </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-2.5 rounded-full border border-border-strong bg-surface-3" />
+            Недоступен
+          </span>
         </span>
       </div>
     </div>

@@ -42,7 +42,7 @@ export function ReviewCard({
   );
 
   return (
-    <article className="rounded-lg border border-border bg-surface p-4">
+    <article className="rounded-lg border border-border bg-surface p-4 shadow-card">
       <div className="flex items-start justify-between gap-3">
         {author?.slug ? (
           <Link href={`/players/${author.slug}`} className="min-w-0 hover:opacity-80">

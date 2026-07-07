@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Avatar } from "@/components/common/avatar";
-import { LevelBadge } from "@/components/ui/badge";
+import { CoachBadge, LevelBadge } from "@/components/ui/badge";
 import type { ProfilePublic } from "@/types/api";
 
 export function PlayerCard({ player }: { player: ProfilePublic }) {
@@ -12,11 +12,7 @@ export function PlayerCard({ player }: { player: ProfilePublic }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <span className="truncate text-[15px] font-bold text-fg">{player.display_name}</span>
-          {player.is_coach && (
-            <span className="flex-none rounded-pill bg-fg px-2 py-[2px] text-[10px] font-extrabold tracking-wide text-white">
-              ТРЕНЕР
-            </span>
-          )}
+          {player.is_coach && <CoachBadge />}
         </div>
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
           {player.skill_level && <LevelBadge level={player.skill_level} />}

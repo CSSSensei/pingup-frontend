@@ -30,6 +30,7 @@ function GamesListInner() {
   const filter: EventFilterParams = {
     event_type: "game",
     city_id: SMOLENSK_CITY_ID,
+    limit: 100,
     ...(skill ? { skill_level: skill } : {}),
     ...(gender ? { gender } : {}),
     ...(hasSlots ? { has_slots: true } : {}),
@@ -61,11 +62,18 @@ function GamesListInner() {
           description="Здесь появятся ближайшие игры в Смоленске. Загляните позже или создайте свою."
         />
       ) : (
-        <div className="pu-reveal grid gap-3 md:grid-cols-2">
-          {query.data.items.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </div>
+        <>
+          <div className="pu-reveal grid gap-3 md:grid-cols-2">
+            {query.data.items.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+          {query.data.total > query.data.items.length && (
+            <p className="text-center text-xs text-muted">
+              Показано {query.data.items.length} из {query.data.total}
+            </p>
+          )}
+        </>
       )}
     </div>
   );

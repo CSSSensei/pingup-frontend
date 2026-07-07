@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { SearchSelect } from "@/components/features/admin/search-select";
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { ErrorState } from "@/components/common/states";
 import { Avatar } from "@/components/common/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,11 @@ export function VenueStaffModal({
 
   const [selected, setSelected] = useState<{ id: number; label: string } | null>(null);
   const [role, setRole] = useState<VenueStaffRole>("caretaker");
+  const [removeTarget, setRemoveTarget] = useState<{
+    userId: number;
+    role: VenueStaffRole;
+    name: string;
+  } | null>(null);
   const [search, setSearch] = useState("");
   const [q, setQ] = useState("");
   useEffect(() => {
@@ -136,10 +142,11 @@ export function VenueStaffModal({
                     actions.remove.variables?.role === s.role
                   }
                   onRemove={() =>
-                    actions.remove.mutate(
-                      { userId: s.user_id, role: s.role },
-                      { onSuccess: () => toast.success("Снят с зала") },
-                    )
+                    setRemoveTarget({
+                      userId: s.user_id,
+                      role: s.role,
+                      name: s.display_name ?? s.email ?? `#${s.user_id}`,
+                    })
                   }
                 />
               ))}
@@ -147,6 +154,30 @@ export function VenueStaffModal({
           )}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={removeTarget !== null}
+        title="Снять с зала?"
+        message={
+          removeTarget ? `${removeTarget.name} · ${ROLE_LABELS[removeTarget.role]}` : undefined
+        }
+        confirmLabel="Снять"
+        destructive
+        loading={actions.remove.isPending}
+        onConfirm={() =>
+          removeTarget &&
+          actions.remove.mutate(
+            { userId: removeTarget.userId, role: removeTarget.role },
+            {
+              onSuccess: () => {
+                toast.success("Снят с зала");
+                setRemoveTarget(null);
+              },
+            },
+          )
+        }
+        onClose={() => setRemoveTarget(null)}
+      />
     </Modal>
   );
 }
@@ -173,7 +204,7 @@ function StaffRow({
           {staff.email ?? ""} · #{staff.user_id}
         </p>
       </div>
-      <Button variant="ghost" size="sm" loading={busy} onClick={onRemove} aria-label="Снять">
+      <Button variant="ghost" size="sm" loading={busy} onClick={onRemove} aria-label="Снять роль">
         <IconTrash size={15} />
       </Button>
     </div>

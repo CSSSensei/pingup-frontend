@@ -242,7 +242,7 @@ export function RatingChart({
                 cy={yAt(hi.rating)}
                 r={5}
                 fill="var(--color-primary)"
-                stroke="#fff"
+                stroke="var(--color-surface)"
                 strokeWidth={2}
               />
             </g>
@@ -255,7 +255,7 @@ export function RatingChart({
               cy={yAt(visible[n - 1].rating)}
               r={4.5}
               fill="var(--color-primary)"
-              stroke="#fff"
+              stroke="var(--color-surface)"
               strokeWidth={2}
             />
           )}

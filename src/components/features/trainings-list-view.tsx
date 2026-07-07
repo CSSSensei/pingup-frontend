@@ -7,6 +7,7 @@ import { EventCard } from "@/components/features/event-card";
 import { EventFilters } from "@/components/features/event-filters";
 import { ChipSelect, FilterRow } from "@/components/features/filters/filter-bar";
 import { CardGridSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { Button } from "@/components/ui/button";
 import { IconDumbbell } from "@/components/ui/icons";
 import { useEvents } from "@/hooks/useEvents";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
@@ -48,8 +49,14 @@ function TrainingsListInner() {
 
   // Бэк фильтрует по одному event_type за запрос — «Все» собираем из двух
   // запросов на клиенте (объёмы городского каталога это позволяют).
-  const groupQuery = useEvents({ ...common, event_type: "group_training" });
-  const sparringQuery = useEvents({ ...common, event_type: "personal_sparring" });
+  // Неактивную выборку не грузим (enabled), чтобы не слать лишний запрос при выбранном типе.
+  const showGroup = type == null || type === "group_training";
+  const showSparring = type == null || type === "personal_sparring";
+  const groupQuery = useEvents({ ...common, event_type: "group_training" }, { enabled: showGroup });
+  const sparringQuery = useEvents(
+    { ...common, event_type: "personal_sparring" },
+    { enabled: showSparring },
+  );
   const active =
     type === "group_training"
       ? [groupQuery]
@@ -57,11 +64,14 @@ function TrainingsListInner() {
         ? [sparringQuery]
         : [groupQuery, sparringQuery];
 
-  const isPending = active.some((q) => q.isPending);
-  const isError = active.some((q) => q.isError);
+  const isPending = active.some((q) => q.isPending && q.fetchStatus !== "idle");
+  const someError = active.some((q) => q.isError);
   const items = active
     .flatMap((q) => q.data?.items ?? [])
     .sort((a, b) => a.starts_at.localeCompare(b.starts_at));
+
+  const hasActiveFilters = type != null || !!skill || !!gender || hasSlots;
+  const resetFilters = () => router.replace(pathname, { scroll: false });
 
   const patch = (p: Partial<EventFilterParams>) => {
     const next = new URLSearchParams(params.toString());
@@ -94,20 +104,43 @@ function TrainingsListInner() {
 
       {isPending ? (
         <CardGridSkeleton />
-      ) : isError ? (
-        <ErrorState onRetry={() => active.forEach((q) => q.refetch())} />
       ) : items.length === 0 ? (
-        <EmptyState
-          icon={<IconDumbbell size={34} />}
-          title="Пока нет тренировок"
-          description="Здесь появятся групповые тренировки и спарринги в Смоленске. Создайте свою."
-        />
+        someError ? (
+          <ErrorState onRetry={() => active.forEach((q) => q.refetch())} />
+        ) : (
+          <EmptyState
+            icon={<IconDumbbell size={34} />}
+            title="Пока нет тренировок"
+            description="Здесь появятся групповые тренировки и спарринги в Смоленске. Создайте свою."
+            action={
+              hasActiveFilters ? (
+                <Button variant="secondary" onClick={resetFilters}>
+                  Сбросить фильтры
+                </Button>
+              ) : undefined
+            }
+          />
+        )
       ) : (
-        <div className="pu-reveal grid gap-3 md:grid-cols-2">
-          {items.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </div>
+        <>
+          <div className="pu-reveal grid gap-3 md:grid-cols-2">
+            {items.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+          {someError && (
+            <p className="text-center text-xs text-muted">
+              Часть тренировок не загрузилась.{" "}
+              <button
+                type="button"
+                onClick={() => active.forEach((q) => q.refetch())}
+                className="font-semibold text-primary hover:underline"
+              >
+                Обновить
+              </button>
+            </p>
+          )}
+        </>
       )}
     </div>
   );

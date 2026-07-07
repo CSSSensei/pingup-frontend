@@ -34,6 +34,7 @@ export interface ComboboxProps {
   autoCapitalize?: string;
   "aria-label"?: string;
   "aria-describedby"?: string;
+  "aria-invalid"?: boolean | "true" | "false";
 }
 
 export function Combobox({
@@ -49,7 +50,9 @@ export function Combobox({
   autoCapitalize,
   "aria-label": ariaLabel,
   "aria-describedby": ariaDescribedby,
+  "aria-invalid": ariaInvalid,
 }: ComboboxProps) {
+  const isInvalid = invalid || ariaInvalid === true || ariaInvalid === "true";
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const listId = useId();
@@ -105,13 +108,13 @@ export function Combobox({
         aria-autocomplete="list"
         aria-label={ariaLabel}
         aria-describedby={ariaDescribedby}
-        aria-invalid={invalid || undefined}
+        aria-invalid={isInvalid || undefined}
         autoComplete="off"
         autoCapitalize={autoCapitalize}
         maxLength={maxLength}
         placeholder={placeholder}
         value={value}
-        className={cn(inputClass, invalid && "border-danger focus:border-danger")}
+        className={cn(inputClass, isInvalid && "border-danger focus:border-danger")}
         onChange={(e) => {
           onChange(e.target.value);
           setOpen(true);

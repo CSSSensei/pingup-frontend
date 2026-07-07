@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Avatar } from "@/components/common/avatar";
+import { ContactChips } from "@/components/features/contact-chips";
 import { LevelBadge, RatingBadge } from "@/components/ui/badge";
 import { PARTICIPANT_STATUS_BADGE, PARTICIPANT_STATUS_LABELS } from "@/lib/enums";
 import { cn } from "@/lib/utils";
@@ -47,15 +48,22 @@ export function ParticipantRow({
   );
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface p-3">
-      {p?.slug ? (
-        <Link href={`/players/${p.slug}`} className="min-w-0 flex-1 hover:opacity-80">
-          {identity}
-        </Link>
-      ) : (
-        <div className="min-w-0 flex-1">{identity}</div>
-      )}
-      {actions && <div className="flex flex-none items-center gap-2">{actions}</div>}
+    <div className="rounded-lg border border-border bg-surface p-3">
+      <div className="flex items-center justify-between gap-3">
+        {p?.slug ? (
+          <Link href={`/players/${p.slug}`} className="min-w-0 flex-1 hover:opacity-80">
+            {identity}
+          </Link>
+        ) : (
+          <div className="min-w-0 flex-1">{identity}</div>
+        )}
+        {actions && <div className="flex flex-none items-center gap-2">{actions}</div>}
+      </div>
+      <ContactChips
+        telegram={participant.telegram_username}
+        phone={participant.phone}
+        className="mt-2.5 pl-[54px]"
+      />
     </div>
   );
 }

@@ -228,6 +228,8 @@ export interface EventParticipant {
   is_organizer: boolean;
   joined_at: string;
   profile: ProfilePublic | null;
+  telegram_username?: string | null;
+  phone?: string | null;
 }
 
 export interface EventRead {

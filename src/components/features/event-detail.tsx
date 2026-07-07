@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { Avatar } from "@/components/common/avatar";
+import { ContactChips } from "@/components/features/contact-chips";
 import { JoinButton } from "@/components/features/join-button";
 import { ReportButton } from "@/components/features/report-button";
 import { Badge, GenderBadge, LevelBadge, RatingBadge, StatusBadge } from "@/components/ui/badge";
@@ -94,7 +95,11 @@ export function EventDetail({ event }: { event: EventRead }) {
       {organizer && (
         <section className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
           <h2 className="mb-3 text-sm font-bold text-fg-2">Организатор</h2>
-          <PlayerRow profile={organizer.profile} />
+          <PlayerRow
+            profile={organizer.profile}
+            telegram={organizer.telegram_username}
+            phone={organizer.phone}
+          />
         </section>
       )}
 
@@ -105,7 +110,12 @@ export function EventDetail({ event }: { event: EventRead }) {
           </h2>
           <div className="space-y-3">
             {confirmed.map((p) => (
-              <PlayerRow key={p.user_id} profile={p.profile} />
+              <PlayerRow
+                key={p.user_id}
+                profile={p.profile}
+                telegram={p.telegram_username}
+                phone={p.phone}
+              />
             ))}
           </div>
         </section>
@@ -143,7 +153,15 @@ function Meta({
   );
 }
 
-function PlayerRow({ profile: p }: { profile: ProfilePublic | null }) {
+function PlayerRow({
+  profile: p,
+  telegram,
+  phone,
+}: {
+  profile: ProfilePublic | null;
+  telegram?: string | null;
+  phone?: string | null;
+}) {
   const name = p?.display_name ?? "Игрок";
   const body = (
     <div className="flex items-center gap-3">
@@ -159,11 +177,16 @@ function PlayerRow({ profile: p }: { profile: ProfilePublic | null }) {
       </div>
     </div>
   );
-  return p?.slug ? (
-    <Link href={`/players/${p.slug}`} className="block hover:opacity-80">
-      {body}
-    </Link>
-  ) : (
-    body
+  return (
+    <div>
+      {p?.slug ? (
+        <Link href={`/players/${p.slug}`} className="block hover:opacity-80">
+          {body}
+        </Link>
+      ) : (
+        body
+      )}
+      <ContactChips telegram={telegram} phone={phone} className="mt-2.5 pl-[52px]" />
+    </div>
   );
 }

@@ -11,7 +11,6 @@ import { MoreSheet } from "@/components/layout/more-sheet";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { MOBILE_TABS, PERSONAL_NAV, PRIMARY_NAV, isActivePath } from "@/components/layout/nav-config";
 import { UserMenu } from "@/components/layout/user-menu";
-import { LinkButton } from "@/components/ui/link-button";
 import { IconMore } from "@/components/ui/icons";
 import { useAuthStatus } from "@/hooks/useMe";
 import { cn } from "@/lib/utils";
@@ -26,10 +25,10 @@ export function NavShell({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <div className="min-h-screen lg:flex">
-        <Sidebar pathname={pathname} authed={authed} home={home} />
+      <TopBar authed={authed} home={home} />
+      <div className="mx-auto min-h-[calc(100vh-4rem)] max-w-[1160px] lg:flex">
+        <Sidebar pathname={pathname} authed={authed} />
         <div className="flex min-w-0 flex-1 flex-col">
-          <TopBar authed={authed} home={home} />
           <EmailVerifyBanner />
           <main className="flex-1 pb-[calc(6rem+env(safe-area-inset-bottom))] lg:pb-10">{children}</main>
         </div>
@@ -43,20 +42,13 @@ export function NavShell({ children }: { children: ReactNode }) {
 function Sidebar({
   pathname,
   authed,
-  home,
 }: {
   pathname: string;
   authed: boolean;
-  home: string;
 }) {
   return (
-    <aside className="sticky top-0 hidden h-screen w-60 flex-none flex-col border-r border-border bg-surface lg:flex">
-      <div className="flex h-16 items-center px-5">
-        <Link href={home} aria-label="pingup">
-          <Logo className="h-9" />
-        </Link>
-      </div>
-      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-2">
+    <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-60 flex-none flex-col border-r border-border bg-surface lg:flex">
+      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
         {PRIMARY_NAV.map((item) => (
           <SidebarLink key={item.href} item={item} active={isActivePath(pathname, item.href)} />
         ))}
@@ -97,27 +89,34 @@ function SidebarLink({
 
 function TopBar({ authed, home }: { authed: boolean; home: string }) {
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center justify-between gap-3 border-b border-border bg-surface/90 px-4 backdrop-blur-sm lg:px-6">
-      <Link href={home} aria-label="pingup" className="lg:hidden">
-        <Logo className="h-9" />
-      </Link>
-      <div className="hidden lg:block" />
-      <div className="flex items-center gap-1.5">
-        {authed ? (
-          <>
-            <NotificationBell />
-            <UserMenu />
-          </>
-        ) : (
-          <>
-            <Link href="/login" className="text-sm font-bold text-fg-2 hover:text-fg">
-              Войти
-            </Link>
-            <LinkButton href="/register" size="sm">
-              Регистрация
-            </LinkButton>
-          </>
-        )}
+    <header className="sticky top-0 z-40 border-b border-border bg-surface/85 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-[1160px] items-center justify-between gap-4 px-5">
+        <Link href={home} aria-label="pingup">
+          <Logo className="h-9" />
+        </Link>
+        <div className="flex items-center gap-2">
+          {authed ? (
+            <>
+              <NotificationBell />
+              <UserMenu />
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="flex h-10 items-center rounded border border-border bg-surface px-4 text-sm font-bold text-fg hover:bg-surface-2"
+              >
+                Войти
+              </Link>
+              <Link
+                href="/register"
+                className="flex h-10 items-center rounded bg-primary px-4 text-sm font-bold text-white shadow-card hover:bg-primary-600"
+              >
+                Регистрация
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

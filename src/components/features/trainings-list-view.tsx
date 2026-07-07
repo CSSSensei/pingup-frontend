@@ -110,7 +110,7 @@ function TrainingsListInner() {
         ) : (
           <EmptyState
             icon={<IconDumbbell size={34} />}
-            title="Пока нет тренировок"
+            title="Тренировок не нашлось"
             description="Здесь появятся групповые тренировки и спарринги в Смоленске. Создайте свою."
             action={
               hasActiveFilters ? (

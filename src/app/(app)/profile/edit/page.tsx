@@ -189,7 +189,7 @@ function EditForm({ profile }: { profile: ProfileMe }) {
       }
     }
 
-    toast.success("Профиль сохранён");
+    toast.success("Изменения сохранены");
     router.push("/profile");
   };
 

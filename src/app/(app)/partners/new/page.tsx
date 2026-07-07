@@ -110,7 +110,7 @@ export default function NewPartnerRequestPage() {
           <Field label="Заголовок" error={errors.title?.message}>
             <Input
               type="text"
-              placeholder="Например: Ищу спарринг-партнёра 2–3 раза в неделю"
+              placeholder="Например: Ищу напарника для спарринга 2–3 раза в неделю"
               invalid={!!errors.title}
               {...register("title")}
             />
@@ -182,7 +182,7 @@ export default function NewPartnerRequestPage() {
               </Select>
             </Field>
 
-            <Field label="Формат игры" error={errors.event_type?.message}>
+            <Field label="Тип" error={errors.event_type?.message}>
               <Select {...register("event_type")}>
                 <option value="">Любой</option>
                 {EVENT_TYPES.map((t) => (

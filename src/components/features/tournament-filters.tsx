@@ -15,7 +15,7 @@ import {
 import type { TournamentFilterParams } from "@/types/api";
 
 const STATUS_OPTIONS: FilterOption[] = [
-  { value: "", label: "Все" },
+  { value: "", label: "Любой" },
   ...TOURNAMENT_STATUSES.filter((s) => s !== "cancelled").map((s) => ({
     value: s,
     label: TOURNAMENT_STATUS_LABELS[s],
@@ -23,7 +23,7 @@ const STATUS_OPTIONS: FilterOption[] = [
 ];
 
 const OFFICIAL_OPTIONS: FilterOption[] = [
-  { value: "", label: "Все" },
+  { value: "", label: "Любой" },
   { value: "true", label: "Официальные" },
   { value: "false", label: "Любительские" },
 ];

@@ -58,7 +58,7 @@ function GamesListInner() {
       ) : query.data.items.length === 0 ? (
         <EmptyState
           icon={<IconPaddle size={34} />}
-          title="Пока нет игр"
+          title="Игр не нашлось"
           description="Здесь появятся ближайшие игры в Смоленске. Загляните позже или создайте свою."
         />
       ) : (

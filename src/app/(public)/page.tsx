@@ -31,7 +31,7 @@ const FEATURES: {
     href: "/tournaments",
     icon: <IconTrophy size={24} />,
     title: "Турниры",
-    desc: "Регистрация и регламент онлайн.",
+    desc: "Регистрация и регламент онлайн",
   },
 ];
 
@@ -56,10 +56,10 @@ export default async function LandingPage() {
       <section className="relative">
         <div className="relative mx-auto max-w-[1160px] px-5 pt-12 sm:pt-20">
           <h1 className="mt-4 max-w-[760px] text-[32px] leading-[1.04] font-extrabold tracking-[-0.02em] text-balance sm:text-[54px]">
-            Найди матч за пару минут
+            Найди игру за пару минут
           </h1>
           <p className="mt-4 mb-7 max-w-[560px] text-[15px] leading-relaxed text-fg-2 sm:text-lg">
-            Pingup собирает партнёров, залы, тренировки и турниры Смоленска в одном месте
+            Собираем напарников, залы, тренировки и турниры Смоленска в одном месте
           </p>
           <Link
             href="/games"
@@ -102,7 +102,7 @@ export default async function LandingPage() {
             href="/register"
             className="flex h-12 items-center rounded bg-primary px-[22px] text-[15px] font-bold text-white hover:bg-primary-600"
           >
-            Создать профиль
+            Создать аккаунт
           </Link>
         </div>
       </section>
@@ -123,7 +123,7 @@ export default async function LandingPage() {
               Поддержка
             </a>
             <Link href="/legal/terms" className="hover:text-primary">
-              Правила
+              Пользовательское соглашение
             </Link>
             <Link href="/legal/privacy" className="hover:text-primary">
               Конфиденциальность

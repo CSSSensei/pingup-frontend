@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const EMAIL_INVALID = "Проверьте email — нужен формат you@example.com";
+
 // Порядок .min-проверок важен: первый провалившийся чек — показанное сообщение.
 export const strongPassword = z
   .string()
@@ -20,7 +22,7 @@ export const registerSchema = z.object({
     .string()
     .trim()
     .min(1, "Введите email")
-    .email("Проверьте email — кажется, есть опечатка. Нужен формат you@example.com"),
+    .email(EMAIL_INVALID),
   password: strongPassword,
   terms_accept: z.boolean().refine((v) => v === true, {
     message: "Нужно принять пользовательское соглашение",
@@ -34,14 +36,14 @@ export const registerSchema = z.object({
 export type RegisterValues = z.infer<typeof registerSchema>;
 
 export const loginSchema = z.object({
-  email: z.string().trim().min(1, "Введите email").email("Проверьте email — нужен формат you@example.com"),
+  email: z.string().trim().min(1, "Введите email").email(EMAIL_INVALID),
   password: z.string().min(1, "Введите пароль"),
 });
 
 export type LoginValues = z.infer<typeof loginSchema>;
 
 export const passwordResetRequestSchema = z.object({
-  email: z.string().trim().min(1, "Введите email").email("Проверьте email — нужен формат you@example.com"),
+  email: z.string().trim().min(1, "Введите email").email(EMAIL_INVALID),
 });
 
 export type PasswordResetRequestValues = z.infer<typeof passwordResetRequestSchema>;

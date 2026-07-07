@@ -221,7 +221,7 @@ export function VenueForm({ venue }: { venue?: VenueRead }) {
     try {
       if (isEdit) {
         const saved = await update.mutateAsync(base);
-        toast.success("Зал обновлён");
+        toast.success("Изменения сохранены");
         router.push(`/venues/${saved.slug}`);
         return;
       }

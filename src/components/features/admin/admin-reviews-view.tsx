@@ -88,7 +88,7 @@ export function AdminReviewsView() {
               reset();
             }}
           />
-          Удалённые
+          Показывать удалённые
         </label>
       </div>
 

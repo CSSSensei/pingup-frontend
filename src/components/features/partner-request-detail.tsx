@@ -38,7 +38,7 @@ export function PartnerRequestDetail({ request }: { request: PartnerRequestRead 
             </Meta>
           )}
           {request.event_type && (
-            <Meta icon={<IconUsers size={17} />} label="Формат">
+            <Meta icon={<IconUsers size={17} />} label="Тип">
               {EVENT_TYPE_LABELS[request.event_type]}
             </Meta>
           )}

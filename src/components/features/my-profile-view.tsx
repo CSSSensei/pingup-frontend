@@ -187,7 +187,7 @@ function RatingSection({ profile }: { profile: ProfileMe }) {
                 : "Ещё не синхронизирован — обновится в ближайшее время."}
             </span>
             {profile.rating_is_stale && profile.rating_synced_at && (
-              <span className="text-xs font-bold text-status-pending">рейтинг устарел</span>
+              <span className="text-xs font-bold text-status-pending">неактуально</span>
             )}
             {profile.tennis67_url && (
               <a

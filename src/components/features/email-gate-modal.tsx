@@ -35,13 +35,13 @@ export function EmailGateModal() {
           <IconAlert size={24} />
         </span>
         <p className="text-sm text-fg-2">
-          Чтобы записываться на игры и создавать события, подтвердите почту — мы отправили ссылку на
+          Чтобы записываться на игры и создавать свои, подтвердите почту — мы отправили ссылку на
           указанный адрес.
         </p>
       </div>
       <div className="mt-5 flex flex-col gap-2">
         <Button fullWidth size="lg" loading={loading} onClick={resend}>
-          Отправить письмо ещё раз
+          Отправить письмо повторно
         </Button>
         <Button fullWidth size="lg" variant="ghost" onClick={hide}>
           Позже

@@ -30,7 +30,7 @@ export default function MyPage() {
     <div className="mx-auto w-full max-w-2xl px-4 py-6 sm:py-8">
       <PageHeader
         title="Мои"
-        description="События и объявления, где вы участвуете или которые создали"
+        description="Игры, тренировки, турниры и объявления, где вы участвуете или которые создали"
         actions={
           <LinkButton href="/me/reports" variant="ghost" size="sm">
             Мои жалобы
@@ -74,11 +74,13 @@ function MyEvents({ role }: { role: "participant" | "organizer" }) {
     return (
       <EmptyState
         icon={<IconCalendar size={32} />}
-        title={role === "participant" ? "Вы пока никуда не записаны" : "Вы ещё не создавали игр"}
-        description="Найдите ближайшую игру или создайте свою."
+        title={
+          role === "participant" ? "Вы пока никуда не записаны" : "Вы ещё не создавали игр и тренировок"
+        }
+        description="Записывайтесь на игры и тренировки или создавайте свои."
         action={
           <LinkButton href="/games" size="sm">
-            К списку игр
+            Все игры
           </LinkButton>
         }
       />

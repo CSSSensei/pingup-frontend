@@ -11,7 +11,7 @@ import type { EventRead } from "@/types/api";
 export function EventCard({ event }: { event: EventRead }) {
   const slots =
     event.max_participants != null
-      ? `${event.participants_count} / ${event.max_participants}`
+      ? `${event.participants_count} из ${event.max_participants}`
       : `${event.participants_count}`;
   const price = formatPrice(event.price);
 

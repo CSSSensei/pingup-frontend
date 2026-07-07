@@ -7,7 +7,7 @@ import { IconPlus } from "@/components/ui/icons";
 export const metadata = {
   title: "Поиск напарника по настольному теннису — Смоленск",
   description:
-    "Объявления о поиске напарника для игры в настольный теннис в Смоленске: находите партнёров близкого уровня и договаривайтесь о встрече.",
+    "Объявления о поиске напарника для игры в настольный теннис в Смоленске: находите напарников близкого уровня и договаривайтесь о встрече.",
 };
 
 export default function PartnersPage() {
@@ -15,11 +15,11 @@ export default function PartnersPage() {
     <PublicShell>
       <PageHeader
         title="Напарники"
-        description={`Объявления о поиске партнёров по игре`}
+        description={`Объявления о поиске напарников по игре`}
         actions={
           <LinkButton href="/partners/new" size="sm">
             <IconPlus size={16} />
-            Объявление
+            Создать объявление
           </LinkButton>
         }
       />

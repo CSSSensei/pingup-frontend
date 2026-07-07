@@ -30,7 +30,7 @@ export function PlayerReviews({ profile, slug }: { profile: ProfileDetail; slug:
               tab === key ? "bg-surface text-fg shadow-card" : "text-muted hover:text-fg",
             )}
           >
-            {key === "coach" ? "О тренере" : "Как об игроке"}
+            {key === "coach" ? "О тренере" : "Об игроке"}
           </button>
         ))}
       </div>

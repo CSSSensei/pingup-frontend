@@ -13,8 +13,8 @@ import { useEvent } from "@/hooks/useEvents";
 import { eventHref, eventSection, type EventSection } from "@/lib/links";
 
 const SECTION_TEXT: Record<EventSection, { back: string; notFound: string }> = {
-  games: { back: "К списку игр", notFound: "Игра не найдена" },
-  trainings: { back: "К списку тренировок", notFound: "Тренировка не найдена" },
+  games: { back: "Все игры", notFound: "Игра не найдена" },
+  trainings: { back: "Все тренировки", notFound: "Тренировка не найдена" },
 };
 
 export function EventDetailView({ id, section }: { id: number; section: EventSection }) {
@@ -44,7 +44,7 @@ export function EventDetailView({ id, section }: { id: number; section: EventSec
         <DetailSkeleton />
       ) : query.isError ? (
         query.error instanceof ApiError && query.error.status === 404 ? (
-          <EmptyState title={text.notFound} description="Возможно, событие удалили или отменили." />
+          <EmptyState title={text.notFound} description="Возможно, её удалили или отменили." />
         ) : (
           <ErrorState onRetry={() => query.refetch()} />
         )

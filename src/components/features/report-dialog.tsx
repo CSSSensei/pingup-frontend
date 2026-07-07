@@ -44,7 +44,7 @@ export function ReportDialog({
       { target_type: targetType, target_id: targetId, reason: values.reason.trim() },
       {
         onSuccess: () => {
-          toast.success("Жалоба отправлена — модераторы рассмотрят её.");
+          toast.success("Жалоба отправлена — модераторы рассмотрят её");
           onClose();
         },
         onError: (err) => {

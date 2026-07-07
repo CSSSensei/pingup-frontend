@@ -73,7 +73,7 @@ export function RatingChart({
     }
   } else {
     refRating = visible[0].rating;
-    winLabel = n >= win ? `за последние ${win}` : "за всё время";
+    winLabel = n >= win ? `за последние ${win} замеров` : "за всё время";
   }
   const delta = cur - refRating;
 

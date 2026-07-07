@@ -58,7 +58,7 @@ export default function PasswordResetRequestPage() {
               действует ограниченное время.
             </p>
             <LinkButton href="/login" variant="secondary" size="lg" fullWidth className="mt-6">
-              Вернуться ко входу
+              Войти
             </LinkButton>
           </div>
         ) : (

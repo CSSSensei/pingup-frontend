@@ -17,6 +17,7 @@ import { toast } from "@/components/ui/toast";
 import { IconExternalLink, IconPencil, IconTrophy } from "@/components/ui/icons";
 import { useAdminTournamentActions, useAdminTournaments } from "@/hooks/useAdmin";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
+import { participantsLabel } from "@/lib/tournaments";
 import {
   TOURNAMENT_STATUSES,
   TOURNAMENT_STATUS_LABELS,
@@ -108,7 +109,7 @@ export function AdminTournamentsView() {
                 reset();
               }}
             />
-            Удалённые
+            Показывать удалённые
           </label>
         </div>
       </div>
@@ -160,8 +161,8 @@ function TournamentRow({
             )}
           </div>
           <p className="mt-0.5 text-xs text-muted">
-            {formatDate(tournament.starts_at)} · {tournament.participants_count} участников · #
-            {tournament.id}
+            {formatDate(tournament.starts_at)} · {participantsLabel(tournament.participants_count)} ·
+            #{tournament.id}
           </p>
         </div>
         <Link

@@ -31,7 +31,7 @@ export function TournamentCard({ tournament }: { tournament: TournamentRead }) {
         )}
         {t.is_registered && (
           <span className="inline-flex items-center gap-1 rounded-pill bg-status-confirmed/12 px-[9px] py-[3px] text-xs font-bold text-status-confirmed">
-            <IconCheck size={12} /> Вы записаны
+            <IconCheck size={12} /> Вы зарегистрированы
           </span>
         )}
         {fee && <span className="ml-auto text-sm font-extrabold text-fg">{fee}</span>}

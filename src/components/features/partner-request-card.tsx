@@ -42,7 +42,7 @@ export function PartnerRequestCard({ request }: { request: PartnerRequestRead })
         </div>
         {request.desired_gender && (
           <div>
-            <span className="text-muted">Пол:</span> {GENDER_LABELS[request.desired_gender]}
+            <span className="text-muted">Кого ищут:</span> {GENDER_LABELS[request.desired_gender]}
           </div>
         )}
         {ratingRangeLabel(request.desired_rating_min, request.desired_rating_max) && (
@@ -53,7 +53,7 @@ export function PartnerRequestCard({ request }: { request: PartnerRequestRead })
         )}
         {request.event_type && (
           <div>
-            <span className="text-muted">Формат:</span> {EVENT_TYPE_LABELS[request.event_type]}
+            <span className="text-muted">Тип:</span> {EVENT_TYPE_LABELS[request.event_type]}
           </div>
         )}
       </div>

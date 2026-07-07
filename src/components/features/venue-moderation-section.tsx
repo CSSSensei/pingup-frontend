@@ -89,7 +89,7 @@ function EventRow({
                   { id: event.id, body: { is_public: !event.is_public } },
                   {
                     onSuccess: () =>
-                      toast.success(event.is_public ? "Скрыто" : "Опубликовано"),
+                      toast.success(event.is_public ? "Скрыто" : "Показано"),
                   },
                 )
               }

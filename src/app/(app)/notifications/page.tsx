@@ -38,7 +38,7 @@ export default function NotificationsPage() {
         <EmptyState
           icon={<IconBell size={32} />}
           title="Уведомлений нет"
-          description="Здесь появятся отклики на игры, подтверждения и другие события."
+          description="Здесь появятся отклики на игры, подтверждения и напоминания."
         />
       ) : (
         <div className="space-y-2.5">

@@ -19,7 +19,7 @@ export default function TrainingsPage() {
         actions={
           <LinkButton href="/trainings/new" size="sm">
             <IconPlus size={16} />
-            Создать
+            Создать тренировку
           </LinkButton>
         }
       />

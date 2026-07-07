@@ -5,7 +5,7 @@ import { PublicShell } from "@/components/layout/public-shell";
 export const metadata = {
   title: "Игроки в настольный теннис — Смоленск",
   description:
-    "Каталог игроков в настольный теннис в Смоленске. Найдите соперника или тренера.",
+    "Каталог игроков в настольный теннис в Смоленске. Найдите напарника или тренера.",
 };
 
 export default function PlayersPage() {

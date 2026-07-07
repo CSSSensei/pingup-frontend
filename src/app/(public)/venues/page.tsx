@@ -3,12 +3,11 @@ import { PageHeader } from "@/components/common/page-header";
 import { PublicShell } from "@/components/layout/public-shell";
 import { LinkButton } from "@/components/ui/link-button";
 import { IconPlus } from "@/components/ui/icons";
-import { CITY_NAME } from "@/lib/constants";
 
 export const metadata = {
   title: "Залы для настольного тенниса — Смоленск",
   description:
-    "Каталог залов и клубов настольного тенниса в Смоленске: адреса на карте, столы, график работы, цены и фото.",
+    "Каталог залов настольного тенниса в Смоленске: адреса на карте, столы, график работы, цены и фото.",
 };
 
 export default function VenuesPage() {
@@ -16,11 +15,11 @@ export default function VenuesPage() {
     <PublicShell>
       <PageHeader
         title="Залы"
-        description={`Клубы и площадки настольного тенниса`}
+        description={`Клубы и площадки для настольного тенниса`}
         actions={
           <LinkButton href="/venues/new" size="sm">
             <IconPlus size={16} />
-            Добавить зал
+            Создать зал
           </LinkButton>
         }
       />

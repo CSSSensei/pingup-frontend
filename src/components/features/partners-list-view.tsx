@@ -72,7 +72,7 @@ function PartnersListInner() {
       ) : query.data.items.length === 0 ? (
         <EmptyState
           icon={<IconUsers size={34} />}
-          title="Ничего не нашлось"
+          title="Объявлений не нашлось"
           description="Под выбранные фильтры объявлений нет. Сбросьте фильтры или создайте своё."
           action={
             hasActiveFilters ? (

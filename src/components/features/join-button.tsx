@@ -38,6 +38,8 @@ export function JoinButton({ event }: { event: EventRead }) {
     );
   }
 
+  const kindLabel = event.event_type === "game" ? "Игра" : "Тренировка";
+
   const isOrganizer = me?.id === event.organizer_id;
   if (isOrganizer) {
     return (
@@ -71,14 +73,14 @@ export function JoinButton({ event }: { event: EventRead }) {
   if (event.status === "cancelled") {
     return (
       <Button size="lg" fullWidth disabled className="sm:w-auto sm:px-10">
-        Событие отменено
+        {kindLabel} отменена
       </Button>
     );
   }
   if (event.status === "completed") {
     return (
       <Button size="lg" fullWidth disabled className="sm:w-auto sm:px-10">
-        Событие завершено
+        {kindLabel} завершена
       </Button>
     );
   }
@@ -92,7 +94,7 @@ export function JoinButton({ event }: { event: EventRead }) {
   if (event.status === "in_progress") {
     return (
       <Button size="lg" fullWidth disabled className="sm:w-auto sm:px-10">
-        Событие уже идёт
+        {kindLabel} уже идёт
       </Button>
     );
   }

@@ -89,7 +89,7 @@ function VenueEvents({ venueId }: { venueId: number }) {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-lg font-extrabold text-fg">Ближайшие события в зале</h2>
+      <h2 className="text-lg font-extrabold text-fg">Ближайшие игры и тренировки</h2>
       <div className="space-y-3">
         {query.data.items.map((event) => (
           <EventCard key={event.id} event={event} />

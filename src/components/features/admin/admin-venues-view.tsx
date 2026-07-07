@@ -18,6 +18,7 @@ import { useAdminVenueActions, useAdminVenues } from "@/hooks/useAdmin";
 import { useMe } from "@/hooks/useMe";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
 import { isAdmin } from "@/lib/roles";
+import { reviewsLabel, tablesLabel } from "@/lib/venues";
 import type { AdminVenueFilterParams, VenueRead } from "@/types/api";
 
 const LIMIT = 30;
@@ -144,8 +145,8 @@ function VenueRow({
           </div>
           <p className="mt-0.5 truncate text-xs text-muted">{venue.address}</p>
           <p className="mt-0.5 text-xs text-muted">
-            {venue.tables_count ? `${venue.tables_count} столов · ` : ""}
-            {venue.reviews_count} отзывов · #{venue.id}
+            {venue.tables_count ? `${tablesLabel(venue.tables_count)} · ` : ""}
+            {reviewsLabel(venue.reviews_count)} · #{venue.id}
           </p>
         </div>
         <Link

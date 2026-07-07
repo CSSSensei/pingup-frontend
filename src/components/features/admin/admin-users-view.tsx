@@ -86,7 +86,7 @@ export function AdminUsersView() {
               resetOffset();
             }}
           >
-            <option value="">Любой статус</option>
+            <option value="">Все статусы</option>
             <option value="active">Активные</option>
             <option value="banned">Заблокированные</option>
             <option value="unverified">Email не подтверждён</option>
@@ -100,7 +100,7 @@ export function AdminUsersView() {
               resetOffset();
             }}
           />
-          Показывать удалённых
+          Показывать удалённые
         </label>
       </div>
 

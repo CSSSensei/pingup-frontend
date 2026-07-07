@@ -130,7 +130,7 @@ export function AdminEventsView() {
                 reset();
               }}
             />
-            Удалённые
+            Показывать удалённые
           </label>
         </div>
       </div>

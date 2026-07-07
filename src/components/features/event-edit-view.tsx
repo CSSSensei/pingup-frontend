@@ -31,6 +31,10 @@ export function EventEditView({ id, section }: { id: number; section: EventSecti
   const backHref = `/${section}/${id}/manage`;
   const noAccess =
     event != null && me != null && event.organizer_id !== me.id && !isModerator(me.role);
+  const kind =
+    section === "games"
+      ? { one: "Игра", acc: "игру", gen: "игры" }
+      : { one: "Тренировка", acc: "тренировку", gen: "тренировки" };
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-6 sm:py-8">
@@ -49,21 +53,18 @@ export function EventEditView({ id, section }: { id: number; section: EventSecti
         </div>
       ) : query.isError ? (
         query.error instanceof ApiError && query.error.status === 404 ? (
-          <EmptyState title="Событие не найдено" description="Возможно, его удалили или отменили." />
+          <EmptyState title={`${kind.one} не найдена`} description="Возможно, её удалили или отменили." />
         ) : (
           <ErrorState onRetry={() => query.refetch()} />
         )
       ) : noAccess ? (
         <EmptyState
           title="Нет доступа"
-          description="Редактировать событие может организатор или модератор."
+          description={`Редактировать ${kind.acc} может организатор или модератор.`}
         />
       ) : event ? (
         <>
-          <PageHeader
-            title="Редактирование"
-            description={event.title}
-          />
+          <PageHeader title={`Редактирование ${kind.gen}`} description={event.title} />
           <EventForm
             kind={event.event_type === "game" ? "game" : "training"}
             initial={event}

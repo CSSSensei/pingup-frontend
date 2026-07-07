@@ -311,7 +311,7 @@ export function EventForm({
           <Input
             type="text"
             placeholder={
-              kind === "game" ? "Например: Вечерняя игра, ищу соперника" : "Например: Тренировка для начинающих"
+              kind === "game" ? "Например: Вечерняя игра, ищу напарника" : "Например: Тренировка для начинающих"
             }
             aria-invalid={!!errors.title}
             {...register("title")}

@@ -7,7 +7,7 @@ import { IconPlus } from "@/components/ui/icons";
 export const metadata = {
   title: "Игры в настольный теннис",
   description:
-    "Ближайшие игры в настольный теннис в Смоленске: находите соперников, записывайтесь и играйте.",
+    "Ближайшие игры в настольный теннис в Смоленске: находите напарников, записывайтесь и играйте.",
 };
 
 export default function GamesPage() {

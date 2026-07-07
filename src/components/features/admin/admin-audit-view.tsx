@@ -48,6 +48,20 @@ const ACTION_LABELS: Record<string, string> = {
 
 const actionLabel = (action: string) => ACTION_LABELS[action] ?? action;
 
+const TARGET_LABELS: Record<string, string> = {
+  user: "Пользователь",
+  profile: "Профиль",
+  venue: "Зал",
+  event: "Событие",
+  tournament: "Турнир",
+  review: "Отзыв",
+  report: "Жалоба",
+  booking: "Бронь",
+  partner_request: "Объявление",
+};
+
+const targetLabel = (t: string) => TARGET_LABELS[t] ?? t;
+
 export function AdminAuditView() {
   const [action, setAction] = useState("");
   const [offset, setOffset] = useState(0);
@@ -104,8 +118,10 @@ export function AdminAuditView() {
 function AuditRow({ log }: { log: AuditLogRead }) {
   const target =
     log.target_type && log.target_id
-      ? `${log.target_type} #${log.target_id}`
-      : log.target_type || null;
+      ? `${targetLabel(log.target_type)} #${log.target_id}`
+      : log.target_type
+        ? targetLabel(log.target_type)
+        : null;
 
   return (
     <div className="py-2.5">

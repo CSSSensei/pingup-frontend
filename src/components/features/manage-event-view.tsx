@@ -24,9 +24,28 @@ import {
 import { eventHref, eventSection, type EventSection } from "@/lib/links";
 import type { EventParticipant } from "@/types/api";
 
-const SECTION_TEXT: Record<EventSection, { back: string; title: string; list: string }> = {
-  games: { back: "К игре", title: "Управление игрой", list: "/games" },
-  trainings: { back: "К тренировке", title: "Управление тренировкой", list: "/trainings" },
+const SECTION_TEXT: Record<
+  EventSection,
+  { back: string; title: string; list: string; one: string; oneLower: string; acc: string; gen: string }
+> = {
+  games: {
+    back: "К игре",
+    title: "Управление игрой",
+    list: "/games",
+    one: "Игра",
+    oneLower: "игра",
+    acc: "игру",
+    gen: "игры",
+  },
+  trainings: {
+    back: "К тренировке",
+    title: "Управление тренировкой",
+    list: "/trainings",
+    one: "Тренировка",
+    oneLower: "тренировка",
+    acc: "тренировку",
+    gen: "тренировки",
+  },
 };
 
 export function ManageEventView({ id, section }: { id: number; section: EventSection }) {
@@ -188,8 +207,8 @@ export function ManageEventView({ id, section }: { id: number; section: EventSec
         title="Убрать участника?"
         message={
           kickTarget?.profile?.display_name
-            ? `${kickTarget.profile.display_name} будет удалён из события.`
-            : "Участник будет удалён из события."
+            ? `${kickTarget.profile.display_name} будет удалён из ${text.gen}.`
+            : `Участник будет удалён из ${text.gen}.`
         }
         confirmLabel="Убрать"
         destructive
@@ -203,19 +222,19 @@ export function ManageEventView({ id, section }: { id: number; section: EventSec
 
       <ConfirmDialog
         open={cancelOpen}
-        title="Отменить событие?"
+        title={`Отменить ${text.acc}?`}
         message={
           event?.is_recurring
-            ? "Это повторяющееся событие — отменятся все его брони столов. Действие необратимо."
+            ? `Это повторяющаяся ${text.oneLower} — отменятся все её брони столов. Действие необратимо.`
             : "Подтверждённые участники получат уведомление об отмене. Действие необратимо."
         }
-        confirmLabel="Отменить событие"
+        confirmLabel={`Отменить ${text.acc}`}
         destructive
         loading={remove.isPending}
         onConfirm={() =>
           remove.mutate(undefined, {
             onSuccess: () => {
-              toast.success("Событие отменено");
+              toast.success(`${text.one} отменена`);
               router.push(text.list);
             },
           })

@@ -27,7 +27,7 @@ export function AdminUserCard({ user }: { user: AdminUserRead }) {
         {user.deleted_at ? (
           <Badge className="bg-status-cancelled/12 text-status-cancelled">Удалён</Badge>
         ) : !user.is_active ? (
-          <Badge className="bg-status-declined/12 text-status-declined">Бан</Badge>
+          <Badge className="bg-status-declined/12 text-status-declined">Заблокирован</Badge>
         ) : !user.is_email_verified ? (
           <Badge className="bg-status-pending/12 text-status-pending">Email не подтверждён</Badge>
         ) : null}

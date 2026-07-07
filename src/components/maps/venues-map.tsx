@@ -75,6 +75,8 @@ export function VenuesMap({
       mapRef.current?.destroy();
       mapRef.current = null;
     };
+    // Карта создаётся один раз; points/zoom подхватывает эффект маркеров ниже.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const pointsKey = points.map((p) => p.id).join(",");

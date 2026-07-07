@@ -5,7 +5,7 @@ import { Suspense } from "react";
 
 import { PartnerFilters } from "@/components/features/partner-filters";
 import { PartnerRequestCard } from "@/components/features/partner-request-card";
-import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { CardGridSkeleton, EmptyState, ErrorState } from "@/components/common/states";
 import { IconUsers } from "@/components/ui/icons";
 import { usePartnerRequests } from "@/hooks/usePartners";
 import { useAuthStatus } from "@/hooks/useMe";
@@ -62,7 +62,7 @@ function PartnersListInner() {
       <PartnerFilters value={filter} onChange={patch} showSuitable={authed} />
 
       {query.isPending ? (
-        <CardListSkeleton />
+        <CardGridSkeleton />
       ) : query.isError ? (
         <ErrorState onRetry={() => query.refetch()} />
       ) : query.data.items.length === 0 ? (
@@ -72,7 +72,7 @@ function PartnersListInner() {
           description="Под выбранные фильтры объявлений нет. Сбросьте фильтры или создайте своё."
         />
       ) : (
-        <div className="pu-reveal space-y-3">
+        <div className="pu-reveal grid gap-3 md:grid-cols-2">
           {query.data.items.map((request) => (
             <PartnerRequestCard key={request.id} request={request} />
           ))}
@@ -93,7 +93,7 @@ function setOrDelete(params: URLSearchParams, key: string, value: string | undef
 
 export function PartnersListView() {
   return (
-    <Suspense fallback={<CardListSkeleton />}>
+    <Suspense fallback={<CardGridSkeleton />}>
       <PartnersListInner />
     </Suspense>
   );

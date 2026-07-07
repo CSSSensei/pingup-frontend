@@ -3,6 +3,7 @@ import type { ComponentType, SVGProps } from "react";
 import {
   IconAward,
   IconCalendar,
+  IconDumbbell,
   IconPaddle,
   IconPin,
   IconTrophy,
@@ -21,7 +22,7 @@ export interface NavItem {
 // Разделы каталога (§1: отдельные разделы, не хаб). Единый источник для сайдбара и таб-бара.
 export const PRIMARY_NAV: NavItem[] = [
   { href: "/games", label: "Игры", icon: IconPaddle },
-  { href: "/trainings", label: "Тренировки", icon: IconCalendar },
+  { href: "/trainings", label: "Тренировки", icon: IconDumbbell },
   { href: "/partners", label: "Напарники", icon: IconUsers },
   { href: "/tournaments", label: "Турниры", icon: IconTrophy },
   { href: "/venues", label: "Залы", icon: IconPin },

@@ -13,57 +13,67 @@ export function PartnerRequestCard({ request }: { request: PartnerRequestRead })
   return (
     <Link
       href={`/partners/${request.id}`}
-      className="block rounded-lg border border-border bg-surface p-4 shadow-card transition-colors hover:border-border-strong"
+      className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-card transition-colors hover:border-border-strong"
     >
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <PartnerStatusBadge status={request.status} />
-          {request.has_responded && (
-            <span className="inline-flex items-center gap-1 rounded-pill bg-status-confirmed/12 px-[9px] py-[3px] text-xs font-bold text-status-confirmed">
-              <IconCheck size={12} /> Вы откликнулись
-            </span>
-          )}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <PartnerStatusBadge status={request.status} />
+        {request.has_responded && (
+          <span className="inline-flex items-center gap-1 rounded-pill bg-status-confirmed/12 px-[9px] py-[3px] text-xs font-bold text-status-confirmed">
+            <IconCheck size={12} /> Вы откликнулись
+          </span>
+        )}
+      </div>
+
+      <div>
+        <h3 className="line-clamp-2 text-[17px] leading-[1.25] font-extrabold tracking-[-0.01em] text-fg">
+          {request.title}
+        </h3>
+        {request.description && (
+          <p className="mt-1.5 line-clamp-2 text-[13.5px] leading-[1.5] text-fg-2">
+            {request.description}
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5 text-[13.5px] font-medium text-fg-2">
+        <div>
+          <span className="text-muted">Уровень:</span>{" "}
+          {skillRangeLabel(request.desired_skill_min, request.desired_skill_max)}
         </div>
+        {request.desired_gender && (
+          <div>
+            <span className="text-muted">Пол:</span> {GENDER_LABELS[request.desired_gender]}
+          </div>
+        )}
+        {ratingRangeLabel(request.desired_rating_min, request.desired_rating_max) && (
+          <div>
+            <span className="text-muted">Рейтинг:</span>{" "}
+            {ratingRangeLabel(request.desired_rating_min, request.desired_rating_max)}
+          </div>
+        )}
+        {request.event_type && (
+          <div>
+            <span className="text-muted">Формат:</span> {EVENT_TYPE_LABELS[request.event_type]}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-auto flex items-center gap-2 border-t border-border pt-3">
+        {author ? (
+          <>
+            <Avatar src={author.avatar_url} name={author.display_name} size={28} />
+            <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-fg">
+              {author.display_name}
+            </span>
+            {author.skill_level && <LevelBadge level={author.skill_level} />}
+          </>
+        ) : (
+          <span className="flex-1" />
+        )}
         <span className="flex-none text-xs font-bold text-muted">
           {responsesLabel(request.responses_count)}
         </span>
       </div>
-
-      <h3 className="mt-2 text-[15px] font-bold text-fg">{request.title}</h3>
-      {request.description && (
-        <p className="mt-1 line-clamp-2 text-[13.5px] text-fg-2">{request.description}</p>
-      )}
-
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] font-medium text-fg-2">
-        <span>
-          <span className="text-muted">Уровень:</span>{" "}
-          {skillRangeLabel(request.desired_skill_min, request.desired_skill_max)}
-        </span>
-        {request.desired_gender && (
-          <span>
-            <span className="text-muted">Пол:</span> {GENDER_LABELS[request.desired_gender]}
-          </span>
-        )}
-        {ratingRangeLabel(request.desired_rating_min, request.desired_rating_max) && (
-          <span>
-            <span className="text-muted">Рейтинг:</span>{" "}
-            {ratingRangeLabel(request.desired_rating_min, request.desired_rating_max)}
-          </span>
-        )}
-        {request.event_type && (
-          <span>
-            <span className="text-muted">Формат:</span> {EVENT_TYPE_LABELS[request.event_type]}
-          </span>
-        )}
-      </div>
-
-      {author && (
-        <div className="mt-3 flex items-center gap-2 border-t border-border pt-3">
-          <Avatar src={author.avatar_url} name={author.display_name} size={28} />
-          <span className="truncate text-[13px] font-semibold text-fg">{author.display_name}</span>
-          {author.skill_level && <LevelBadge level={author.skill_level} />}
-        </div>
-      )}
     </Link>
   );
 }

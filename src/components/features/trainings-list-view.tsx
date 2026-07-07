@@ -6,8 +6,8 @@ import { Suspense } from "react";
 import { EventCard } from "@/components/features/event-card";
 import { EventFilters } from "@/components/features/event-filters";
 import { ChipSelect, FilterRow } from "@/components/features/filters/filter-bar";
-import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/states";
-import { IconCalendar } from "@/components/ui/icons";
+import { CardGridSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { IconDumbbell } from "@/components/ui/icons";
 import { useEvents } from "@/hooks/useEvents";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
 import { GENDERS, SKILL_LEVELS, type Gender, type SkillLevel } from "@/lib/enums";
@@ -93,17 +93,17 @@ function TrainingsListInner() {
       </EventFilters>
 
       {isPending ? (
-        <CardListSkeleton />
+        <CardGridSkeleton />
       ) : isError ? (
         <ErrorState onRetry={() => active.forEach((q) => q.refetch())} />
       ) : items.length === 0 ? (
         <EmptyState
-          icon={<IconCalendar size={34} />}
+          icon={<IconDumbbell size={34} />}
           title="Пока нет тренировок"
           description="Здесь появятся групповые тренировки и спарринги в Смоленске. Создайте свою."
         />
       ) : (
-        <div className="pu-reveal space-y-3">
+        <div className="pu-reveal grid gap-3 md:grid-cols-2">
           {items.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}
@@ -120,7 +120,7 @@ function setOrDelete(params: URLSearchParams, key: string, value: string | undef
 
 export function TrainingsListView() {
   return (
-    <Suspense fallback={<CardListSkeleton />}>
+    <Suspense fallback={<CardGridSkeleton />}>
       <TrainingsListInner />
     </Suspense>
   );

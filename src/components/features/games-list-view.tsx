@@ -5,7 +5,7 @@ import { Suspense } from "react";
 
 import { EventCard } from "@/components/features/event-card";
 import { EventFilters } from "@/components/features/event-filters";
-import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { CardGridSkeleton, EmptyState, ErrorState } from "@/components/common/states";
 import { IconPaddle } from "@/components/ui/icons";
 import { useEvents } from "@/hooks/useEvents";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
@@ -51,7 +51,7 @@ function GamesListInner() {
       <EventFilters value={filter} onChange={patch} />
 
       {query.isPending ? (
-        <CardListSkeleton />
+        <CardGridSkeleton />
       ) : query.isError ? (
         <ErrorState onRetry={() => query.refetch()} />
       ) : query.data.items.length === 0 ? (
@@ -61,7 +61,7 @@ function GamesListInner() {
           description="Здесь появятся ближайшие игры в Смоленске. Загляните позже или создайте свою."
         />
       ) : (
-        <div className="pu-reveal space-y-3">
+        <div className="pu-reveal grid gap-3 md:grid-cols-2">
           {query.data.items.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}
@@ -78,7 +78,7 @@ function setOrDelete(params: URLSearchParams, key: string, value: string | undef
 
 export function GamesListView() {
   return (
-    <Suspense fallback={<CardListSkeleton />}>
+    <Suspense fallback={<CardGridSkeleton />}>
       <GamesListInner />
     </Suspense>
   );

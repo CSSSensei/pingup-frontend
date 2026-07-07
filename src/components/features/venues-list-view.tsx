@@ -6,7 +6,7 @@ import { Suspense, useEffect, useState } from "react";
 import { VenueCard } from "@/components/features/venue-card";
 import { VenueFilters, VENUE_SORT_OPTIONS } from "@/components/features/venue-filters";
 import { VenuesMap } from "@/components/maps/venues-map";
-import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { VenueCardSkeleton, EmptyState, ErrorState } from "@/components/common/states";
 import { IconPin } from "@/components/ui/icons";
 import { useVenues } from "@/hooks/useVenues";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
@@ -89,7 +89,7 @@ function VenuesListInner() {
       </div>
 
       {query.isPending ? (
-        <CardListSkeleton />
+        <VenueCardSkeleton />
       ) : query.isError ? (
         <ErrorState onRetry={() => query.refetch()} />
       ) : query.data.items.length === 0 ? (
@@ -135,7 +135,7 @@ function setOrDelete(params: URLSearchParams, key: string, value: string | undef
 
 export function VenuesListView() {
   return (
-    <Suspense fallback={<CardListSkeleton />}>
+    <Suspense fallback={<VenueCardSkeleton />}>
       <VenuesListInner />
     </Suspense>
   );

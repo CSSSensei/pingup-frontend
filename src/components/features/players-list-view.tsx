@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 
 import { PlayerCard } from "@/components/features/player-card";
 import { PlayerFilters } from "@/components/features/player-filters";
-import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { PlayerCardSkeleton, EmptyState, ErrorState } from "@/components/common/states";
 import { IconUser } from "@/components/ui/icons";
 import { useProfiles } from "@/hooks/useProfiles";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
@@ -81,7 +81,7 @@ function PlayersListInner() {
       <PlayerFilters value={filter} search={search} onSearch={setSearch} onChange={patch} />
 
       {query.isPending ? (
-        <CardListSkeleton />
+        <PlayerCardSkeleton />
       ) : query.isError ? (
         <ErrorState onRetry={() => query.refetch()} />
       ) : query.data.items.length === 0 ? (
@@ -119,7 +119,7 @@ function setOrDelete(params: URLSearchParams, key: string, value: string | undef
 
 export function PlayersListView() {
   return (
-    <Suspense fallback={<CardListSkeleton />}>
+    <Suspense fallback={<PlayerCardSkeleton />}>
       <PlayersListInner />
     </Suspense>
   );

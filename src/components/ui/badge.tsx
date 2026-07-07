@@ -56,6 +56,13 @@ export function LevelBadge({ level, plus = false }: { level: SkillLevel; plus?: 
   );
 }
 
+// Диапазон уровней одним бейджем: один уровень — просто он, диапазон — минимальный со знаком «+».
+export function LevelRangeBadge({ min, max }: { min: SkillLevel | null; max: SkillLevel | null }) {
+  if (min) return <LevelBadge level={min} plus={max == null || max !== min} />;
+  if (max) return <LevelBadge level={max} />;
+  return null;
+}
+
 export function StatusBadge({ status }: { status: EventStatus }) {
   return <span className={cn(base, EVENT_STATUS_BADGE[status])}>{EVENT_STATUS_LABELS[status]}</span>;
 }

@@ -5,7 +5,7 @@ import { Suspense } from "react";
 
 import { TournamentCard } from "@/components/features/tournament-card";
 import { TournamentFilters } from "@/components/features/tournament-filters";
-import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/states";
+import { CardGridSkeleton, EmptyState, ErrorState } from "@/components/common/states";
 import { IconTrophy } from "@/components/ui/icons";
 import { useTournaments } from "@/hooks/useTournaments";
 import { SMOLENSK_CITY_ID } from "@/lib/constants";
@@ -58,7 +58,7 @@ function TournamentsListInner() {
       <TournamentFilters value={filter} onChange={patch} />
 
       {query.isPending ? (
-        <CardListSkeleton />
+        <CardGridSkeleton />
       ) : query.isError ? (
         <ErrorState onRetry={() => query.refetch()} />
       ) : query.data.items.length === 0 ? (
@@ -68,7 +68,7 @@ function TournamentsListInner() {
           description="Под выбранные фильтры турниров нет. Сбросьте фильтры или создайте свой."
         />
       ) : (
-        <div className="pu-reveal space-y-3">
+        <div className="pu-reveal grid gap-3 md:grid-cols-2">
           {query.data.items.map((tournament) => (
             <TournamentCard key={tournament.id} tournament={tournament} />
           ))}
@@ -85,7 +85,7 @@ function setOrDelete(params: URLSearchParams, key: string, value: string | undef
 
 export function TournamentsListView() {
   return (
-    <Suspense fallback={<CardListSkeleton />}>
+    <Suspense fallback={<CardGridSkeleton />}>
       <TournamentsListInner />
     </Suspense>
   );

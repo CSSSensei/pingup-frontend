@@ -31,7 +31,19 @@ export const IconSearch = (p: IconProps) => (
 export const IconPaddle = (p: IconProps) => (
   <Svg {...p}>
     <circle cx="13.5" cy="8.5" r="6" />
-    <path d="M9 13 4.6 17.4a2.1 2.1 0 0 0 3 3L12 16" />
+    <path d="M8.3 11.5 4.2 15.5a1.6 1.6 0 0 0 2.3 2.3L10.5 13.7" />
+  </Svg>
+);
+
+export const IconDumbbell = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="m6.5 6.5 11 11" />
+    <path d="m21 21-1-1" />
+    <path d="m3 3 1 1" />
+    <path d="m18 22 4-4" />
+    <path d="m2 6 4-4" />
+    <path d="m3 10 7-7" />
+    <path d="m14 21 7-7" />
   </Svg>
 );
 

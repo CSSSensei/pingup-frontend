@@ -8,6 +8,7 @@ export const metadata = {
   title: "Тренировки по настольному теннису — Смоленск",
   description:
     "Групповые тренировки и спарринги по настольному теннису в Смоленске.",
+  alternates: { canonical: "/trainings" },
 };
 
 export default function TrainingsPage() {

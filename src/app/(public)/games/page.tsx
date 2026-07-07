@@ -5,9 +5,10 @@ import { LinkButton } from "@/components/ui/link-button";
 import { IconPlus } from "@/components/ui/icons";
 
 export const metadata = {
-  title: "Игры в настольный теннис",
+  title: "Матчи по настольному теннису",
   description:
     "Ближайшие игры в настольный теннис в Смоленске: находите напарников, записывайтесь и играйте.",
+  alternates: { canonical: "/games" },
 };
 
 export default function GamesPage() {

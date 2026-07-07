@@ -6,6 +6,7 @@ export const metadata = {
   title: "Топ игроков в настольный теннис — Смоленск",
   description:
     "Официальный рейтинг настольного тенниса Смоленска по данным теннис67.рф",
+  alternates: { canonical: "/rating" },
 };
 
 export default function RatingPage() {

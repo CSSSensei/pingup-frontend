@@ -5,6 +5,7 @@ import { LegalDocument } from "@/components/legal/legal-document";
 export const metadata: Metadata = {
   title: "Пользовательское соглашение",
   description: "Условия использования сервиса pingup — поиск партнёров, залов и турниров по настольному теннису.",
+  alternates: { canonical: "/legal/terms" },
 };
 
 export default function TermsPage() {

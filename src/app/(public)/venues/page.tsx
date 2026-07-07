@@ -8,6 +8,7 @@ export const metadata = {
   title: "Залы для настольного тенниса — Смоленск",
   description:
     "Каталог залов настольного тенниса в Смоленске: адреса на карте, столы, график работы, цены и фото.",
+  alternates: { canonical: "/venues" },
 };
 
 export default function VenuesPage() {

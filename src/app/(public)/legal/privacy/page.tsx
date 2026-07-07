@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Политика обработки персональных данных",
   description:
     "Как pingup собирает, использует и защищает персональные данные пользователей в соответствии с 152-ФЗ.",
+  alternates: { canonical: "/legal/privacy" },
 };
 
 export default function PrivacyPolicyPage() {

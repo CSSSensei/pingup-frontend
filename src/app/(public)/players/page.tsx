@@ -6,6 +6,7 @@ export const metadata = {
   title: "Игроки в настольный теннис — Смоленск",
   description:
     "Каталог игроков в настольный теннис в Смоленске. Найдите напарника или тренера.",
+  alternates: { canonical: "/players" },
 };
 
 export default function PlayersPage() {

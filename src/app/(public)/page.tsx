@@ -9,6 +9,10 @@ import { GuestAuthButtons } from "@/components/layout/guest-auth-buttons";
 import { IconChevronRight, IconPaddle, IconPin, IconTrophy } from "@/components/ui/icons";
 import { SUPPORT_URL } from "@/lib/links";
 
+export const metadata = {
+  alternates: { canonical: "/" },
+};
+
 const FEATURES: {
   href: string;
   icon: ReactNode;

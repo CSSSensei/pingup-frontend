@@ -8,6 +8,7 @@ export const metadata = {
   title: "Турниры по настольному теннису — Смоленск",
   description:
     "Официальные и любительские турниры по настольному теннису в Смоленске: расписание, категории и регистрация.",
+  alternates: { canonical: "/tournaments" },
 };
 
 export default function TournamentsPage() {

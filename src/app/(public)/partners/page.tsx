@@ -8,6 +8,7 @@ export const metadata = {
   title: "Поиск напарника по настольному теннису — Смоленск",
   description:
     "Объявления о поиске напарника для игры в настольный теннис в Смоленске: находите напарников близкого уровня и договаривайтесь о встрече.",
+  alternates: { canonical: "/partners" },
 };
 
 export default function PartnersPage() {

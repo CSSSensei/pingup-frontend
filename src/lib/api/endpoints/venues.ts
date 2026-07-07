@@ -11,6 +11,8 @@ import type {
   ManagedVenueRead,
   Paginated,
   ReviewRead,
+  ScheduleException,
+  ScheduleExceptionCreatePayload,
   VenueBookingRead,
   VenueCreatePayload,
   VenueFilterParams,
@@ -82,6 +84,22 @@ export const venuesApi = {
 
   bookings: (venueId: number) =>
     apiFetch<VenueBookingRead[]>(`${API_PREFIX}/venues/${venueId}/bookings`),
+
+  scheduleExceptions: {
+    list: (venueId: number, params: { from?: string; to?: string } = {}) =>
+      apiFetch<ScheduleException[]>(
+        `${API_PREFIX}/venues/${venueId}/schedule-exceptions${toQuery(params)}`,
+      ),
+    create: (venueId: number, body: ScheduleExceptionCreatePayload) =>
+      apiFetch<ScheduleException>(`${API_PREFIX}/venues/${venueId}/schedule-exceptions`, {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+    remove: (venueId: number, excId: number) =>
+      apiFetch<void>(`${API_PREFIX}/venues/${venueId}/schedule-exceptions/${excId}`, {
+        method: "DELETE",
+      }),
+  },
 
   moderation: {
     events: (venueId: number, filter: AdminEventFilterParams = {}) =>

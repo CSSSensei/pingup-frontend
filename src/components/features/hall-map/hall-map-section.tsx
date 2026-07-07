@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BallSpinner } from "@/components/ui/spinner";
 import { useVenueLayout } from "@/hooks/useHallMap";
 import { useMe } from "@/hooks/useMe";
-import { MIN_BOOKING_MIN, availableStarts, availableStartsForTable, hasFreeSlot } from "@/lib/hallSchedule";
+import { MIN_BOOKING_MIN, availableStartsFromOpen, hasFreeSlot } from "@/lib/hallSchedule";
 import { isoToMoscowDate, moscowIso } from "@/lib/schemas/event";
 import { isModerator } from "@/lib/roles";
 import { cn } from "@/lib/utils";
@@ -51,27 +51,20 @@ export function HallMapSection({ venue }: { venue: VenueRead }) {
     [today],
   );
 
-  const startMsList = useMemo(
+  const activeTables = useMemo(() => (tables ?? []).filter((t) => t.is_active), [tables]);
+  // open_intervals с бэка уже учитывают исключения зала/стола на эту дату.
+  const dayClosed =
+    !!tables && tables.length > 0 && activeTables.every((t) => t.open_intervals.length === 0);
+  const freeCount = useMemo(
     () =>
-      availableStarts(venue.working_hours, date, MIN_BOOKING_MIN).map((s) =>
-        Date.parse(moscowIso(date, s)),
-      ),
-    [venue.working_hours, date],
+      activeTables.filter((t) => {
+        const starts = availableStartsFromOpen(t.open_intervals, date, MIN_BOOKING_MIN).map((s) =>
+          Date.parse(moscowIso(date, s)),
+        );
+        return hasFreeSlot(t.bookings, starts);
+      }).length,
+    [activeTables, date],
   );
-  const dayClosed = startMsList.length === 0;
-  const freeCount = useMemo(() => {
-    if (!tables) return 0;
-    return tables.filter((t) => {
-      if (!t.is_active) return false;
-      const starts = availableStartsForTable(
-        venue.working_hours,
-        t.schedule,
-        date,
-        MIN_BOOKING_MIN,
-      ).map((s) => Date.parse(moscowIso(date, s)));
-      return hasFreeSlot(t.bookings, starts);
-    }).length;
-  }, [tables, venue.working_hours, date]);
 
   if (!canEdit && tables && tables.length === 0) return null;
 
@@ -175,7 +168,6 @@ export function HallMapSection({ venue }: { venue: VenueRead }) {
               <HallMap
                 venueId={venue.id}
                 venueSlug={venue.slug}
-                workingHours={venue.working_hours}
                 mode={mode}
                 date={date}
                 onExitEdit={() => setMode("view")}

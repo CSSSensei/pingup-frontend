@@ -67,6 +67,7 @@ export const qk = {
   userVenueRoles: (userId: number) => ["userVenueRoles", userId] as const,
   managedVenues: () => ["managedVenues"] as const,
   venueBookings: (venueId: number) => ["venueBookings", venueId] as const,
+  venueScheduleExceptions: (venueId: number) => ["venueScheduleExceptions", venueId] as const,
   venueModEvents: (venueId: number) => ["venueModEvents", venueId] as const,
   venueModReviews: (venueId: number) => ["venueModReviews", venueId] as const,
 };

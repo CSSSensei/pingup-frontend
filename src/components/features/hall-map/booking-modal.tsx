@@ -12,7 +12,7 @@ import { Select } from "@/components/ui/select";
 import { toast } from "@/components/ui/toast";
 import { useCancelBooking, useCreateBooking, useVenueLayout } from "@/hooks/useHallMap";
 import { useHasContact } from "@/hooks/useHasContact";
-import { availableStartsForTable, dayIntervals, overlaps, slotEnd } from "@/lib/hallSchedule";
+import { availableStartsFromOpen, overlaps, slotEnd } from "@/lib/hallSchedule";
 import { formatTimeRange } from "@/lib/format";
 import { isoToMoscowDate, moscowIso } from "@/lib/schemas/event";
 import { useAuthStore } from "@/stores/auth";
@@ -31,14 +31,12 @@ const DURATIONS = [
 export function BookingModal({
   venueId,
   venueSlug,
-  workingHours,
   table,
   initialDate,
   onClose,
 }: {
   venueId: number;
   venueSlug: string;
-  workingHours: Record<string, unknown> | null;
   table: HallTable;
   initialDate: string;
   onClose: () => void;
@@ -56,22 +54,23 @@ export function BookingModal({
   const [cancellingId, setCancellingId] = useState<number | null>(null);
 
   const slotsLoading = layoutQuery.isPending || layoutQuery.isFetching;
-  const bookings = useMemo(
-    () => layoutQuery.data?.tables.find((t) => t.id === table.id)?.bookings ?? [],
+  const freshTable = useMemo(
+    () => layoutQuery.data?.tables.find((t) => t.id === table.id) ?? null,
     [layoutQuery.data, table.id],
   );
+  const bookings = freshTable?.bookings ?? [];
 
-  const dayClosed = useMemo(
-    () => dayIntervals(workingHours, date).length === 0,
-    [workingHours, date],
-  );
+  const dayClosed = !slotsLoading && (freshTable?.open_intervals.length ?? 0) === 0;
 
   const chips = useMemo(() => {
-    return availableStartsForTable(workingHours, table.schedule, date, duration).filter((s) => {
+    const open = freshTable?.open_intervals ?? [];
+    return availableStartsFromOpen(open, date, duration).filter((s) => {
       const startMs = Date.parse(moscowIso(date, s));
       return !overlaps(bookings, startMs, startMs + duration * 60_000);
     });
-  }, [workingHours, table.schedule, date, duration, bookings]);
+    // bookings derived from freshTable; freshTable identity covers it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [freshTable, date, duration]);
 
   const selectedStart = chips.includes(start) ? start : "";
 

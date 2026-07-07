@@ -47,7 +47,7 @@ import type {
   SkillLevel,
   TournamentStatus,
 } from "@/lib/enums";
-import type { WeekScheduleMap } from "@/lib/schedule";
+import type { Interval, WeekScheduleMap } from "@/lib/schedule";
 
 export type UserRole = "guest" | "user" | "moderator" | "admin";
 
@@ -549,6 +549,7 @@ export interface HallTable {
   rotation: number;
   is_active: boolean;
   schedule: WeekScheduleMap | null;
+  open_intervals: Interval[];
   bookings: TableBooking[];
 }
 
@@ -951,6 +952,37 @@ export interface UserVenueRoleRead {
   venue_name: string;
   venue_slug: string;
   role: VenueStaffRole;
+}
+
+export type ScheduleExceptionKind = "closed" | "hours" | "block";
+
+export interface ScheduleException {
+  id: number;
+  venue_id: number;
+  table_id: number | null;
+  date_from: string;
+  date_to: string;
+  kind: ScheduleExceptionKind;
+  intervals: Interval[] | null;
+  reason: string | null;
+  created_at: string;
+}
+
+export interface ScheduleExceptionCreatePayload {
+  table_id?: number | null;
+  date_from: string;
+  date_to: string;
+  kind: ScheduleExceptionKind;
+  intervals?: Interval[];
+  reason?: string;
+}
+
+export interface BookingConflict {
+  booking_id: number;
+  table_id: number;
+  table_label: string | null;
+  starts_at: string;
+  ends_at: string;
 }
 
 export interface VenueBookingRead {

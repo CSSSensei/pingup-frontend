@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
+import { ScheduleExceptionsSection } from "@/components/features/schedule/schedule-exceptions-section";
 import { VenueModerationSection } from "@/components/features/venue-moderation-section";
 import { EmptyState, ErrorState } from "@/components/common/states";
 import { PageHeader } from "@/components/common/page-header";
@@ -99,6 +100,8 @@ function ManagedVenueCard({ venue }: { venue: ManagedVenueRead }) {
           )}
         </div>
       )}
+
+      {isCaretaker && <ScheduleExceptionsSection venueId={venue.venue_id} />}
 
       {isModerator && <VenueModerationSection venueId={venue.venue_id} />}
     </section>

@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { IconBan, IconCheck, IconClock, IconPlus, IconRefresh, IconTrash, IconX } from "@/components/ui/icons";
 import { toast } from "@/components/ui/toast";
 import { useCancelBooking, useSaveHallLayout, useVenueLayout } from "@/hooks/useHallMap";
-import { MIN_BOOKING_MIN, availableStartsForTable, hasFreeSlot } from "@/lib/hallSchedule";
+import { MIN_BOOKING_MIN, availableStartsFromOpen, hasFreeSlot } from "@/lib/hallSchedule";
 import { eventHref } from "@/lib/links";
 import Link from "next/link";
 import { moscowIso } from "@/lib/schemas/event";
@@ -44,14 +44,12 @@ function clamp(v: number, min: number, max: number): number {
 export function HallMap({
   venueId,
   venueSlug,
-  workingHours,
   mode,
   date,
   onExitEdit,
 }: {
   venueId: number;
   venueSlug: string;
-  workingHours: Record<string, unknown> | null;
   mode: "view" | "edit";
   date: string;
   onExitEdit: () => void;
@@ -83,20 +81,18 @@ export function HallMap({
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const [showTableSchedule, setShowTableSchedule] = useState(false);
 
-  const hallStartMsList = useMemo(
-    () =>
-      availableStartsForTable(workingHours, null, date, MIN_BOOKING_MIN).map((s) =>
-        Date.parse(moscowIso(date, s)),
-      ),
-    [workingHours, date],
-  );
+  // Зал закрыт в этот день, если у всех активных столов нет доступных часов (учитывает исключения).
+  const dayClosed = useMemo(() => {
+    const ts = layout?.tables ?? [];
+    return ts.length > 0 && ts.every((t) => !t.is_active || t.open_intervals.length === 0);
+  }, [layout]);
 
   const tableStartsMs = useCallback(
     (t: HallTable) =>
-      availableStartsForTable(workingHours, t.schedule, date, MIN_BOOKING_MIN).map((s) =>
+      availableStartsFromOpen(t.open_intervals, date, MIN_BOOKING_MIN).map((s) =>
         Date.parse(moscowIso(date, s)),
       ),
-    [workingHours, date],
+    [date],
   );
 
   useEffect(() => {
@@ -145,7 +141,7 @@ export function HallMap({
     (e: ReactMouseEvent<SVGGElement>, key: string) => {
       const down = downPosRef.current;
       if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8) return;
-      if (hallStartMsList.length === 0) {
+      if (dayClosed) {
         toast("Зал в этот день не работает");
         return;
       }
@@ -158,7 +154,7 @@ export function HallMap({
         setInfoTable(t);
       }
     },
-    [hallStartMsList, tableStartsMs, layout],
+    [dayClosed, tableStartsMs, layout],
   );
 
   const captureCtm = () => {
@@ -465,7 +461,6 @@ export function HallMap({
         <BookingModal
           venueId={venueId}
           venueSlug={venueSlug}
-          workingHours={workingHours}
           table={bookingTable}
           initialDate={date}
           onClose={() => setBookingTable(null)}

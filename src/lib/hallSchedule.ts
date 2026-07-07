@@ -92,6 +92,15 @@ export function availableStarts(
   return startsFromIntervals(dayIntervals(workingHours, date), date, durationMin);
 }
 
+export function availableStartsFromOpen(
+  openIntervals: DayInterval[],
+  date: string,
+  durationMin: number,
+): string[] {
+  if (!date) return [];
+  return startsFromIntervals(openIntervals, date, durationMin);
+}
+
 function tableDayIntervals(schedule: WeekScheduleMap, date: string): DayInterval[] {
   const dow = new Date(`${date}T12:00:00Z`).getUTCDay();
   if (Number.isNaN(dow)) return [];

@@ -7,7 +7,11 @@ import { venuesApi } from "@/lib/api/endpoints/venues";
 import { handleApiError } from "@/lib/errors/handle";
 import { qk } from "@/lib/queryKeys";
 import { useAuthStatus } from "@/hooks/useMe";
-import type { AdminReviewUpdatePayload, EventUpdatePayload } from "@/types/api";
+import type {
+  AdminReviewUpdatePayload,
+  EventUpdatePayload,
+  ScheduleExceptionCreatePayload,
+} from "@/types/api";
 
 const authed = (status: string) => status === "authed";
 
@@ -35,6 +39,39 @@ export function useCancelVenueBooking(venueId: number) {
     mutationFn: (bookingId: number) => bookingsApi.cancel(bookingId),
     onError: handleApiError,
     onSuccess: () => qc.invalidateQueries({ queryKey: qk.venueBookings(venueId) }),
+  });
+}
+
+export function useVenueScheduleExceptions(venueId: number, enabled = true) {
+  const status = useAuthStatus();
+  return useQuery({
+    queryKey: qk.venueScheduleExceptions(venueId),
+    queryFn: () => venuesApi.scheduleExceptions.list(venueId),
+    enabled: authed(status) && enabled && venueId > 0,
+  });
+}
+
+export function useCreateScheduleException(venueId: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: ScheduleExceptionCreatePayload) =>
+      venuesApi.scheduleExceptions.create(venueId, body),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.venueScheduleExceptions(venueId) });
+      qc.invalidateQueries({ queryKey: qk.venueLayouts(venueId) });
+    },
+  });
+}
+
+export function useDeleteScheduleException(venueId: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (excId: number) => venuesApi.scheduleExceptions.remove(venueId, excId),
+    onError: handleApiError,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.venueScheduleExceptions(venueId) });
+      qc.invalidateQueries({ queryKey: qk.venueLayouts(venueId) });
+    },
   });
 }
 

@@ -7,6 +7,7 @@ import { useState, type ReactNode } from "react";
 import { Logo } from "@/components/brand/logo";
 import { EmailGateModal } from "@/components/features/email-gate-modal";
 import { EmailVerifyBanner } from "@/components/layout/email-verify-banner";
+import { GuestAuthButtons } from "@/components/layout/guest-auth-buttons";
 import { MoreSheet } from "@/components/layout/more-sheet";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { MOBILE_TABS, PERSONAL_NAV, PRIMARY_NAV, isActivePath } from "@/components/layout/nav-config";
@@ -101,20 +102,7 @@ function TopBar({ authed, home }: { authed: boolean; home: string }) {
               <UserMenu />
             </>
           ) : (
-            <>
-              <Link
-                href="/login"
-                className="flex h-10 items-center rounded border border-border bg-surface px-4 text-sm font-bold text-fg hover:bg-surface-2"
-              >
-                Войти
-              </Link>
-              <Link
-                href="/register"
-                className="flex h-10 items-center rounded bg-primary px-4 text-sm font-bold text-white shadow-card hover:bg-primary-600"
-              >
-                Регистрация
-              </Link>
-            </>
+            <GuestAuthButtons />
           )}
         </div>
       </div>

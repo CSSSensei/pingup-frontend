@@ -108,8 +108,8 @@ export function VenuesMap({
       {status === "unavailable" && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-surface-2 px-6 text-center">
           <IconPin size={28} className="text-muted" />
-          <p className="text-sm font-bold text-fg-2">Карта недоступна</p>
-          <p className="text-xs text-muted">Не задан ключ API Яндекс Карт</p>
+          <p className="text-sm font-bold text-fg-2">Карта не загрузилась</p>
+          <p className="text-xs text-muted">Попробуйте отключить VPN</p>
         </div>
       )}
       {status === "loading" && (

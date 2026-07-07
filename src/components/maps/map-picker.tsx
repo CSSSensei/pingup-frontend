@@ -100,7 +100,7 @@ export function MapPicker({
   if (status === "unavailable") {
     return (
       <p className={cn("rounded border border-dashed border-border bg-surface-2 px-3 py-2.5 text-xs text-muted", className)}>
-        Карта недоступна (нет ключа API) — укажите координаты вручную, например из Яндекс Карт.
+        Карта не загрузилась. Отключите VPN или укажите координаты вручную.
       </p>
     );
   }

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { YandexMetrika } from "@/components/analytics/yandex-metrika";
+import { CookieConsentBanner } from "@/components/layout/cookie-consent-banner";
 import { SITE_URL } from "@/lib/site";
 import { Providers } from "./providers";
 import "./globals.css";
@@ -29,6 +31,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="font-sans antialiased">
         <Providers>{children}</Providers>
+        <CookieConsentBanner />
+        <YandexMetrika />
       </body>
     </html>
   );

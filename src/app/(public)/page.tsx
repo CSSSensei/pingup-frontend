@@ -143,12 +143,19 @@ export default async function LandingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Разработка — phasalo"
-                className="opacity-50 transition-opacity hover:opacity-80"
+                className="group relative"
               >
                 <img
                   src="/brand/phasalo-logo.svg"
                   alt="phasalo"
-                  className="h-6 w-auto"
+                  className="h-6 w-auto opacity-50 transition-opacity duration-200 group-hover:opacity-0 group-focus-visible:opacity-0 motion-reduce:transition-none"
+                  draggable={false}
+                />
+                <img
+                  src="/brand/phasalo-logo-color.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute top-0 left-0 h-6 w-auto opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
                   draggable={false}
                 />
               </a>
@@ -157,12 +164,19 @@ export default async function LandingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Дизайн — KF production"
-                className="opacity-50 transition-opacity hover:opacity-80"
+                className="group relative"
               >
                 <img
                   src="/brand/kf-logo.svg"
                   alt="KF production"
-                  className="h-7 w-auto"
+                  className="h-7 w-auto opacity-50 transition-opacity duration-200 group-hover:opacity-0 group-focus-visible:opacity-0 motion-reduce:transition-none"
+                  draggable={false}
+                />
+                <img
+                  src="/brand/kf-logo-color.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute top-0 left-0 h-7 w-auto opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
                   draggable={false}
                 />
               </a>

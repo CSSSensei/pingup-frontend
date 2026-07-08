@@ -4,9 +4,11 @@ import { IconStar } from "@/components/ui/icons";
 import {
   EVENT_STATUS_BADGE,
   EVENT_STATUS_LABELS,
+  GENDER_BADGE,
   GENDER_LABELS,
   PARTNER_STATUS_BADGE,
   PARTNER_STATUS_LABELS,
+  PLAYING_HAND_NOUN_LABELS,
   REPORT_STATUS_BADGE,
   REPORT_STATUS_LABELS,
   SKILL_BADGE,
@@ -18,6 +20,7 @@ import {
   type EventStatus,
   type Gender,
   type PartnerRequestStatus,
+  type PlayingHand,
   type ReportStatus,
   type SkillLevel,
   type TournamentStatus,
@@ -69,7 +72,11 @@ export function StatusBadge({ status }: { status: EventStatus }) {
 }
 
 export function GenderBadge({ gender }: { gender: Gender | "all" }) {
-  return <Badge>{GENDER_LABELS[gender]}</Badge>;
+  return <span className={cn(base, GENDER_BADGE[gender])}>{GENDER_LABELS[gender]}</span>;
+}
+
+export function PlayingHandBadge({ hand }: { hand: PlayingHand }) {
+  return <Badge>{PLAYING_HAND_NOUN_LABELS[hand]}</Badge>;
 }
 
 export function PartnerStatusBadge({ status }: { status: PartnerRequestStatus }) {

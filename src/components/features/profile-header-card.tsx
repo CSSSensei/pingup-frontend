@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
 import { Avatar } from "@/components/common/avatar";
-import { Badge, LevelBadge } from "@/components/ui/badge";
-import { GENDER_LABELS, PLAYING_HAND_LABELS, type Gender, type PlayingHand, type SkillLevel } from "@/lib/enums";
+import { Badge, GenderBadge, LevelBadge, PlayingHandBadge } from "@/components/ui/badge";
+import { type Gender, type PlayingHand, type SkillLevel } from "@/lib/enums";
 import { ageLabel, ageLabelFromNumber } from "@/lib/players";
 import { cn } from "@/lib/utils";
 
@@ -49,9 +49,9 @@ export function ProfileHeaderCard({
           </div>
           <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
             {data.skillLevel && <LevelBadge level={data.skillLevel} />}
-            {data.gender && <Badge>{GENDER_LABELS[data.gender]}</Badge>}
+            {data.gender && <GenderBadge gender={data.gender} />}
             {age && <Badge>{age}</Badge>}
-            {data.playingHand && <Badge>Рука: {PLAYING_HAND_LABELS[data.playingHand]}</Badge>}
+            {data.playingHand && <PlayingHandBadge hand={data.playingHand} />}
           </div>
         </div>
 

@@ -26,14 +26,15 @@
   --color-border: #e7e7ea;
   --color-border-strong: #d6d6db;
 
-  /* Уровни игроков (--skill-*) */
   --color-skill-beginner: #2e7d5b;
   --color-skill-amateur: #2f7da8;
   --color-skill-intermediate: #3a5bb5;
   --color-skill-advanced: #7a4fb0;
   --color-skill-pro: #b07a1f;
 
-  /* Статусы событий/участия (--status-*) */
+  --color-gender-male: #2f6fd0;
+  --color-gender-female: #d24f92;
+
   --color-status-open: #2e7d5b;
   --color-status-full: #6b7280;
   --color-status-progress: #2f7da8;

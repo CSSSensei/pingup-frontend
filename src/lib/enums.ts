@@ -77,12 +77,23 @@ export const GENDER_LABELS: Record<Gender | "all", string> = {
   all: "Любой",
 };
 
+export const GENDER_BADGE: Record<Gender | "all", string> = {
+  male: "bg-gender-male/12 text-gender-male",
+  female: "bg-gender-female/12 text-gender-female",
+  all: "bg-surface-3 text-fg-2",
+};
+
 export const PLAYING_HANDS = ["right", "left"] as const;
 export type PlayingHand = (typeof PLAYING_HANDS)[number];
 
 export const PLAYING_HAND_LABELS: Record<PlayingHand, string> = {
   right: "Правая",
   left: "Левая",
+};
+
+export const PLAYING_HAND_NOUN_LABELS: Record<PlayingHand, string> = {
+  right: "Правша",
+  left: "Левша",
 };
 
 export const PARTICIPANT_STATUSES = [

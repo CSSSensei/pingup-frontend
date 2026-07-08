@@ -24,9 +24,11 @@ export function PlayerCard({ player }: { player: ProfilePublic }) {
           <div className="text-[22px] leading-none font-extrabold text-fg">
             {player.current_rating}
           </div>
-          <div className="mt-1 text-[10px] font-bold tracking-wide text-muted uppercase">
-            {player.rating_is_stale ? "неактуально" : "рейтинг"}
-          </div>
+          {player.rating_is_stale && (
+            <div className="mt-1 text-[10px] font-bold tracking-wide text-muted uppercase">
+              неактуально
+            </div>
+          )}
         </div>
       )}
     </>

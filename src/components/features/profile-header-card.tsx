@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 import { Avatar } from "@/components/common/avatar";
 import { Badge, LevelBadge } from "@/components/ui/badge";
 import { GENDER_LABELS, PLAYING_HAND_LABELS, type Gender, type PlayingHand, type SkillLevel } from "@/lib/enums";
-import { ageLabel } from "@/lib/players";
+import { ageLabel, ageLabelFromNumber } from "@/lib/players";
+import { cn } from "@/lib/utils";
 
 export interface ProfileHeaderData {
   displayName: string;
@@ -13,8 +14,10 @@ export interface ProfileHeaderData {
   gender: Gender | null;
   playingHand: PlayingHand | null;
   birthDate?: string | null;
+  age?: number | null;
   currentRating: number | null;
   ratingStale: boolean;
+  ratingDelta?: number | null;
 }
 
 export function ProfileHeaderCard({
@@ -26,7 +29,7 @@ export function ProfileHeaderCard({
   actions?: ReactNode;
   as?: "h1" | "h2";
 }) {
-  const age = ageLabel(data.birthDate);
+  const age = data.age != null ? ageLabelFromNumber(data.age) : ageLabel(data.birthDate);
 
   return (
     <div className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
@@ -55,8 +58,13 @@ export function ProfileHeaderCard({
         {data.currentRating != null && (
           <div className="flex w-full flex-none items-center justify-between gap-3 rounded-lg bg-surface-2 px-4 py-2.5 sm:w-auto sm:flex-col sm:justify-center sm:px-5 sm:py-3 sm:text-center">
             <div className="text-[11px] font-bold tracking-wide text-muted uppercase">Рейтинг</div>
-            <div className="text-2xl leading-none font-extrabold text-fg sm:my-0.5 sm:text-3xl">
-              {data.currentRating}
+            <div className="flex items-center gap-1.5 sm:my-0.5 sm:flex-col sm:gap-1">
+              <div className="text-2xl leading-none font-extrabold text-fg sm:text-3xl">
+                {data.currentRating}
+              </div>
+              {data.ratingDelta != null && data.ratingDelta !== 0 && (
+                <RatingDeltaChip delta={data.ratingDelta} />
+              )}
             </div>
             <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold">
               <span
@@ -77,5 +85,21 @@ export function ProfileHeaderCard({
 
       {actions && <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-4">{actions}</div>}
     </div>
+  );
+}
+
+// Изменение рейтинга за 30 дней — компактный чип в блоке рейтинга.
+function RatingDeltaChip({ delta }: { delta: number }) {
+  const up = delta > 0;
+  return (
+    <span
+      title="Изменение за 30 дней"
+      className={cn(
+        "rounded-pill px-1.5 py-[1px] text-[11px] font-bold",
+        up ? "bg-status-confirmed/12 text-status-confirmed" : "bg-status-declined/12 text-status-declined",
+      )}
+    >
+      {up ? `+${delta}` : `−${Math.abs(delta)}`}
+    </span>
   );
 }

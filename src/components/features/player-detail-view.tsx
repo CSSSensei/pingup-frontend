@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-
 import { PlayerDetail } from "@/components/features/player-detail";
+import { ReportButton } from "@/components/features/report-button";
+import { DetailTopBar } from "@/components/common/detail-top-bar";
 import { EmptyState, ErrorState } from "@/components/common/states";
 import { ApiError } from "@/lib/api/client";
-import { IconArrowLeft } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProfile } from "@/hooks/useProfiles";
 
@@ -14,13 +13,20 @@ export function PlayerDetailView({ slug }: { slug: string }) {
 
   return (
     <div className="space-y-4">
-      <Link
-        href="/players"
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-fg"
-      >
-        <IconArrowLeft size={16} />
-        Все игроки
-      </Link>
+      <DetailTopBar
+        backHref="/players"
+        backLabel="Все игроки"
+        action={
+          query.data && (
+            <ReportButton
+              targetType="user"
+              targetId={query.data.user_id}
+              ownerId={query.data.user_id}
+              loginNext={`/players/${slug}`}
+            />
+          )
+        }
+      />
 
       {query.isPending ? (
         <DetailSkeleton />

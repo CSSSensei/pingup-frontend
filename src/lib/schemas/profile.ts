@@ -27,6 +27,7 @@ export const profileEditSchema = z
     skill_level: optionalEnum(SKILL_LEVELS),
     playing_hand: optionalEnum(PLAYING_HANDS),
     birth_date: z.string().trim().optional(),
+    age_visible: z.boolean(),
     blade: z.string().trim().max(120, "Слишком длинно — до 120 символов").optional(),
     rubber_forehand: z.string().trim().max(120, "Слишком длинно — до 120 символов").optional(),
     rubber_backhand: z.string().trim().max(120, "Слишком длинно — до 120 символов").optional(),

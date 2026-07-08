@@ -16,7 +16,7 @@ export default async function VenuePage({ params }: { params: Promise<{ slug: st
   const { slug } = await params;
 
   return (
-    <PublicShell>
+    <PublicShell className="max-w-2xl">
       <VenueDetailView slug={slug} />
     </PublicShell>
   );

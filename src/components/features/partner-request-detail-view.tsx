@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-
 import { PartnerRequestDetail } from "@/components/features/partner-request-detail";
+import { ReportButton } from "@/components/features/report-button";
+import { DetailTopBar } from "@/components/common/detail-top-bar";
 import { EmptyState, ErrorState } from "@/components/common/states";
 import { ApiError } from "@/lib/api/client";
-import { IconArrowLeft } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePartnerRequest } from "@/hooks/usePartners";
 
@@ -14,13 +13,20 @@ export function PartnerRequestDetailView({ id }: { id: number }) {
 
   return (
     <div className="space-y-4">
-      <Link
-        href="/partners"
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-fg"
-      >
-        <IconArrowLeft size={16} />
-        Все объявления
-      </Link>
+      <DetailTopBar
+        backHref="/partners"
+        backLabel="Все объявления"
+        action={
+          query.data && (
+            <ReportButton
+              targetType="partner_request"
+              targetId={query.data.id}
+              ownerId={query.data.author_id}
+              loginNext={`/partners/${query.data.id}`}
+            />
+          )
+        }
+      />
 
       {query.isPending ? (
         <DetailSkeleton />

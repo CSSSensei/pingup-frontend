@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-
 import { VenueDetail } from "@/components/features/venue-detail";
+import { ReportButton } from "@/components/features/report-button";
+import { DetailTopBar } from "@/components/common/detail-top-bar";
 import { EmptyState, ErrorState } from "@/components/common/states";
 import { ApiError } from "@/lib/api/client";
-import { IconArrowLeft } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useVenue } from "@/hooks/useVenues";
 
@@ -14,13 +13,19 @@ export function VenueDetailView({ slug }: { slug: string }) {
 
   return (
     <div className="space-y-4">
-      <Link
-        href="/venues"
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-fg"
-      >
-        <IconArrowLeft size={16} />
-        Все залы
-      </Link>
+      <DetailTopBar
+        backHref="/venues"
+        backLabel="Все залы"
+        action={
+          query.data && (
+            <ReportButton
+              targetType="venue"
+              targetId={query.data.id}
+              loginNext={`/venues/${query.data.slug}`}
+            />
+          )
+        }
+      />
 
       {query.isPending ? (
         <DetailSkeleton />

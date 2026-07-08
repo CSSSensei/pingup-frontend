@@ -48,6 +48,7 @@ function toDefaults(p: ProfileMe): ProfileEditValues {
     skill_level: p.skill_level ?? "",
     playing_hand: p.playing_hand ?? "",
     birth_date: p.birth_date ?? "",
+    age_visible: p.age_visible,
     blade: p.blade ?? "",
     rubber_forehand: p.rubber_forehand ?? "",
     rubber_backhand: p.rubber_backhand ?? "",
@@ -140,6 +141,7 @@ function EditForm({ profile }: { profile: ProfileMe }) {
       skill_level: (v.skill_level || null) as ProfileUpdate["skill_level"],
       playing_hand: (v.playing_hand || null) as ProfileUpdate["playing_hand"],
       birth_date: v.birth_date?.trim() || null,
+      age_visible: v.age_visible,
       blade: v.blade?.trim() || null,
       rubber_forehand: v.rubber_forehand?.trim() || null,
       rubber_backhand: v.rubber_backhand?.trim() || null,
@@ -272,6 +274,22 @@ function EditForm({ profile }: { profile: ProfileMe }) {
             </Select>
           </Field>
         </div>
+
+        <Controller
+          control={control}
+          name="age_visible"
+          render={({ field }) => (
+            <label className="flex cursor-pointer items-center justify-between gap-3 rounded bg-surface-2 px-3.5 py-3">
+              <span>
+                <span className="block text-sm font-bold text-fg">Показывать возраст в профиле</span>
+                <span className="mt-0.5 block text-xs text-muted">
+                  Другие увидят число полных лет, а не дату рождения.
+                </span>
+              </span>
+              <Switch checked={field.value} onCheckedChange={field.onChange} label="Показывать возраст" />
+            </label>
+          )}
+        />
 
         <Field label="О себе" error={errors.bio?.message}>
           <Textarea

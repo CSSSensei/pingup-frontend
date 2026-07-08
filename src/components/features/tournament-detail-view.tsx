@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-
 import { TournamentDetail } from "@/components/features/tournament-detail";
+import { ReportButton } from "@/components/features/report-button";
+import { DetailTopBar } from "@/components/common/detail-top-bar";
 import { EmptyState, ErrorState } from "@/components/common/states";
 import { ApiError } from "@/lib/api/client";
-import { IconArrowLeft } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTournament } from "@/hooks/useTournaments";
 
@@ -14,13 +13,20 @@ export function TournamentDetailView({ slug }: { slug: string }) {
 
   return (
     <div className="space-y-4">
-      <Link
-        href="/tournaments"
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-fg"
-      >
-        <IconArrowLeft size={16} />
-        Все турниры
-      </Link>
+      <DetailTopBar
+        backHref="/tournaments"
+        backLabel="Все турниры"
+        action={
+          query.data && (
+            <ReportButton
+              targetType="tournament"
+              targetId={query.data.id}
+              ownerId={query.data.organizer_id}
+              loginNext={`/tournaments/${query.data.slug}`}
+            />
+          )
+        }
+      />
 
       {query.isPending ? (
         <DetailSkeleton />

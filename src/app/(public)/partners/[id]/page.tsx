@@ -19,7 +19,7 @@ export default async function PartnerRequestPage({ params }: { params: Promise<{
   if (!Number.isInteger(requestId) || requestId <= 0) notFound();
 
   return (
-    <PublicShell>
+    <PublicShell className="max-w-2xl">
       <PartnerRequestDetailView id={requestId} />
     </PublicShell>
   );

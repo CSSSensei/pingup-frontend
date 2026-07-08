@@ -79,6 +79,7 @@ export interface ProfileMe {
   gender: Gender | null;
   skill_level: SkillLevel | null;
   birth_date: string | null;
+  age_visible: boolean;
   avatar_url: string | null;
   is_coach: boolean;
   current_rating: number | null;
@@ -100,6 +101,7 @@ export interface ProfileUpdate {
   gender?: Gender | null;
   skill_level?: SkillLevel | null;
   birth_date?: string | null;
+  age_visible?: boolean;
   is_coach?: boolean | null;
   playing_hand?: PlayingHand | null;
   blade?: string | null;
@@ -182,6 +184,7 @@ export interface ProfilePublic {
   current_rating: number | null;
   rating_is_stale: boolean;
   rating_delta_30d: number | null;
+  age: number | null;
 }
 
 // Публичная деталь профиля: ProfilePublic + контакты (заполняются только под Bearer;

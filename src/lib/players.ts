@@ -13,9 +13,8 @@ export function ageFromBirthDate(value: string | null | undefined): number | nul
   return age >= 0 && age <= 130 ? age : null;
 }
 
-export function ageLabel(value: string | null | undefined): string | null {
-  const age = ageFromBirthDate(value);
-  if (age == null) return null;
+export function ageLabelFromNumber(age: number | null | undefined): string | null {
+  if (age == null || age < 0) return null;
   const mod10 = age % 10;
   const mod100 = age % 100;
   const word =
@@ -25,6 +24,10 @@ export function ageLabel(value: string | null | undefined): string | null {
         ? "года"
         : "лет";
   return `${age} ${word}`;
+}
+
+export function ageLabel(value: string | null | undefined): string | null {
+  return ageLabelFromNumber(ageFromBirthDate(value));
 }
 
 const RATING_SOURCE_LABELS: Record<string, string> = {

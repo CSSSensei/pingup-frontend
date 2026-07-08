@@ -22,7 +22,7 @@ export default async function TournamentDetailPage({
   if (!slug) notFound();
 
   return (
-    <PublicShell>
+    <PublicShell className="max-w-2xl">
       <TournamentDetailView slug={slug} />
     </PublicShell>
   );

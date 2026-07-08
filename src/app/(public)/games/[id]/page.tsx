@@ -19,7 +19,7 @@ export default async function GameDetailPage({ params }: { params: Promise<{ id:
   if (!Number.isInteger(eventId) || eventId <= 0) notFound();
 
   return (
-    <PublicShell>
+    <PublicShell className="max-w-2xl">
       <EventDetailView id={eventId} section="games" />
     </PublicShell>
   );

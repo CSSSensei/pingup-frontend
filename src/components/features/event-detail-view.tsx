@@ -1,13 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { EventDetail } from "@/components/features/event-detail";
+import { ReportButton } from "@/components/features/report-button";
+import { DetailTopBar } from "@/components/common/detail-top-bar";
 import { EmptyState, ErrorState } from "@/components/common/states";
 import { ApiError } from "@/lib/api/client";
-import { IconArrowLeft } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEvent } from "@/hooks/useEvents";
 import { eventHref, eventSection, type EventSection } from "@/lib/links";
@@ -32,13 +32,20 @@ export function EventDetailView({ id, section }: { id: number; section: EventSec
 
   return (
     <div className="space-y-4">
-      <Link
-        href={`/${section}`}
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-fg"
-      >
-        <IconArrowLeft size={16} />
-        {text.back}
-      </Link>
+      <DetailTopBar
+        backHref={`/${section}`}
+        backLabel={text.back}
+        action={
+          query.data && (
+            <ReportButton
+              targetType="event"
+              targetId={query.data.id}
+              ownerId={query.data.organizer_id}
+              loginNext={eventHref(query.data)}
+            />
+          )
+        }
+      />
 
       {query.isPending || wrongSection ? (
         <DetailSkeleton />

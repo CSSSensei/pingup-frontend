@@ -74,6 +74,13 @@ export function MyProfileView() {
 
       <RatingSection profile={profile} />
 
+      {profile.bio && (
+        <section className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
+          <h2 className="mb-2 text-sm font-bold text-fg-2">О себе</h2>
+          <p className="text-[15px] whitespace-pre-line text-fg-2">{profile.bio}</p>
+        </section>
+      )}
+
       <EquipmentCard
         data={{
           blade: profile.blade,
@@ -81,13 +88,6 @@ export function MyProfileView() {
           rubberBackhand: profile.rubber_backhand,
         }}
       />
-
-      {profile.bio && (
-        <section className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
-          <h2 className="mb-2 text-sm font-bold text-fg-2">О себе</h2>
-          <p className="text-[15px] whitespace-pre-line text-fg-2">{profile.bio}</p>
-        </section>
-      )}
 
       <ContactLinks telegram={profile.telegram_username} phone={profile.phone} mode="self" />
       {profile.phone && (

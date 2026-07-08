@@ -27,6 +27,10 @@ export function formatMonthYear(iso: string): string {
   return monthYearFmt.format(new Date(iso));
 }
 
+export function formatMonthYearShort(iso: string): string {
+  return monthYearFmt.format(new Date(iso)).replace(/\s*г\.?$/, "");
+}
+
 const dayMonthYearFmt = new Intl.DateTimeFormat("ru-RU", {
   timeZone: TZ,
   day: "numeric",

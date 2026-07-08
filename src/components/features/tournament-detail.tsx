@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { Avatar } from "@/components/common/avatar";
 import { RegisterButton } from "@/components/features/register-button";
-import { ReportButton } from "@/components/features/report-button";
 import {
   Badge,
   GenderBadge,
@@ -124,15 +123,6 @@ export function TournamentDetail({ tournament }: { tournament: TournamentRead })
       )}
 
       <ParticipantsSection tournamentId={t.id} />
-
-      <div className="flex justify-end">
-        <ReportButton
-          targetType="tournament"
-          targetId={t.id}
-          ownerId={t.organizer_id}
-          loginNext={`/tournaments/${t.slug}`}
-        />
-      </div>
     </div>
   );
 }

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ContactLinks } from "@/components/features/contact-links";
 import { EquipmentCard } from "@/components/features/equipment-card";
 import { PlayerReviews } from "@/components/features/player-reviews";
-import { ReportButton } from "@/components/features/report-button";
 import { ProfileHeaderCard } from "@/components/features/profile-header-card";
 import { RatingChart } from "@/components/features/rating-chart";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,8 +30,10 @@ export function PlayerDetail({ profile, slug }: { profile: ProfileDetail; slug: 
           skillLevel: profile.skill_level,
           gender: profile.gender,
           playingHand: profile.playing_hand,
+          age: profile.age,
           currentRating: profile.current_rating,
           ratingStale: profile.rating_is_stale,
+          ratingDelta: profile.rating_delta_30d,
         }}
         actions={
           isSelf ? (
@@ -58,6 +59,13 @@ export function PlayerDetail({ profile, slug }: { profile: ProfileDetail; slug: 
         </section>
       ) : null}
 
+      {profile.bio && (
+        <section className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
+          <h2 className="mb-2 text-sm font-bold text-fg-2">О себе</h2>
+          <p className="text-[15px] whitespace-pre-line text-fg-2">{profile.bio}</p>
+        </section>
+      )}
+
       <EquipmentCard
         data={{
           blade: profile.blade,
@@ -66,32 +74,17 @@ export function PlayerDetail({ profile, slug }: { profile: ProfileDetail; slug: 
         }}
       />
 
-      {profile.bio && (
-        <section className="rounded-lg border border-border bg-surface p-5 shadow-card sm:p-6">
-          <h2 className="mb-2 text-sm font-bold text-fg-2">О себе</h2>
-          <p className="text-[15px] whitespace-pre-line text-fg-2">{profile.bio}</p>
-        </section>
-      )}
-
       <ContactLinks
         telegram={profile.telegram_username}
         phone={profile.phone}
         mode={contactMode}
         loginNext={`/players/${slug}`}
       />
+      {isSelf && (profile.telegram_username || profile.phone) && (
+        <p className="px-1 text-xs text-muted">Так ваши контакты видят вошедшие игроки.</p>
+      )}
 
       <PlayerReviews profile={profile} slug={slug} />
-
-      {!isSelf && (
-        <div className="flex justify-end pt-1">
-          <ReportButton
-            targetType="user"
-            targetId={profile.user_id}
-            ownerId={profile.user_id}
-            loginNext={`/players/${slug}`}
-          />
-        </div>
-      )}
     </div>
   );
 }

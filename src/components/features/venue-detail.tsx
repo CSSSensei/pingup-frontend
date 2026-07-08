@@ -5,7 +5,6 @@ import { useState } from "react";
 
 import { EventCard } from "@/components/features/event-card";
 import { HallMapSection } from "@/components/features/hall-map/hall-map-section";
-import { ReportButton } from "@/components/features/report-button";
 import { ReviewsSection } from "@/components/features/reviews-section";
 import { VenueHours } from "@/components/features/schedule/venue-hours";
 import { VenuesMap } from "@/components/maps/venues-map";
@@ -266,10 +265,6 @@ export function VenueDetail({ venue }: { venue: VenueRead }) {
         denormAvg={Number(venue.rating_avg)}
         denormCount={venue.reviews_count}
       />
-
-      <div className="flex justify-end">
-        <ReportButton targetType="venue" targetId={venue.id} loginNext={`/venues/${venue.slug}`} />
-      </div>
     </div>
   );
 }

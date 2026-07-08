@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 
-import { formatDayMonthYear, formatMonthYear } from "@/lib/format";
+import { formatDayMonthYear, formatMonthYearShort } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { RatingPoint } from "@/types/api";
 
@@ -46,12 +46,14 @@ export function RatingChart({
   const n = visible.length;
 
   const ratings = visible.map((p) => p.rating);
-  const min = Math.min(...ratings);
-  const max = Math.max(...ratings);
-  const span = max - min || 1;
+  const { ticks: yTickVals, lo: yLo, hi: yHi } = yScale(
+    Math.min(...ratings),
+    Math.max(...ratings),
+  );
+  const span = yHi - yLo || 1;
 
   const xAt = (i: number) => PAD_L + (n === 1 ? 0 : (i / (n - 1)) * PLOT_W);
-  const yAt = (r: number) => PAD_T + (1 - (r - min) / span) * PLOT_H;
+  const yAt = (r: number) => PAD_T + (1 - (r - yLo) / span) * PLOT_H;
 
   const line = visible
     .map((p, i) => `${i === 0 ? "M" : "L"}${xAt(i).toFixed(1)} ${yAt(p.rating).toFixed(1)}`)
@@ -77,7 +79,6 @@ export function RatingChart({
   }
   const delta = cur - refRating;
 
-  const yTickVals = yTicks(min, max);
   const xTickIdx = xLabelIndices(n);
 
   const drawKey = `${win}:${n}:${visible[0].recorded_at}:${visible[n - 1].recorded_at}`;
@@ -101,10 +102,7 @@ export function RatingChart({
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           {title && <h3 className="mb-1.5 text-sm font-bold text-fg-2">{title}</h3>}
-          <div className="flex flex-wrap items-baseline gap-2.5">
-            <span className="text-[26px] leading-none font-extrabold tracking-[-0.01em] text-fg">
-              {cur}
-            </span>
+          <div className="flex flex-wrap items-center gap-2">
             <DeltaBadge delta={delta} />
             <span className="text-xs text-muted">{winLabel}</span>
           </div>
@@ -201,7 +199,7 @@ export function RatingChart({
                   fontSize={11}
                   fill="var(--color-muted)"
                 >
-                  {formatMonthYear(visible[i].recorded_at)}
+                  {formatMonthYearShort(visible[i].recorded_at)}
                 </text>
               </g>
             );
@@ -306,13 +304,26 @@ function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v));
 }
 
-function yTicks(min: number, max: number): number[] {
-  if (min === max) return [min];
-  const count = 4;
-  const step = (max - min) / count;
-  const out: number[] = [];
-  for (let i = 0; i <= count; i++) out.push(Math.round(min + step * i));
-  return Array.from(new Set(out));
+// Округляет шаг оси до «красивого» (1/2/5 × 10ⁿ), чтобы деления были круглыми.
+function niceStep(range: number, targetTicks: number): number {
+  const rough = range / Math.max(1, targetTicks - 1);
+  const exp = Math.floor(Math.log10(rough));
+  const base = 10 ** exp;
+  const frac = rough / base;
+  const niceFrac = frac <= 1 ? 1 : frac <= 2 ? 2 : frac <= 5 ? 5 : 10;
+  return niceFrac * base;
+}
+
+// Шкала Y с круглыми делениями и небольшим паддингом сверху/снизу.
+// Рейтинги целочисленные — шаг не опускаем ниже 1.
+function yScale(dataMin: number, dataMax: number): { ticks: number[]; lo: number; hi: number } {
+  if (dataMin === dataMax) return { ticks: [dataMin], lo: dataMin - 1, hi: dataMin + 1 };
+  const step = Math.max(1, niceStep(dataMax - dataMin, 5));
+  const lo = Math.floor(dataMin / step) * step;
+  const hi = Math.ceil(dataMax / step) * step;
+  const ticks: number[] = [];
+  for (let v = lo; v <= hi + step / 2; v += step) ticks.push(Math.round(v));
+  return { ticks, lo, hi };
 }
 
 function xLabelIndices(n: number): number[] {

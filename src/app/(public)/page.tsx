@@ -143,12 +143,12 @@ export default async function LandingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Разработка — phasalo"
-                className="opacity-75 transition-opacity hover:opacity-100"
+                className="opacity-50 transition-opacity hover:opacity-80"
               >
                 <img
                   src="/brand/phasalo-logo.svg"
                   alt="phasalo"
-                  className="h-8 w-auto"
+                  className="h-6 w-auto"
                   draggable={false}
                 />
               </a>
@@ -157,12 +157,12 @@ export default async function LandingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Дизайн — KF production"
-                className="opacity-75 transition-opacity hover:opacity-100"
+                className="opacity-50 transition-opacity hover:opacity-80"
               >
                 <img
                   src="/brand/kf-logo.svg"
                   alt="KF production"
-                  className="h-9 w-auto"
+                  className="h-7 w-auto"
                   draggable={false}
                 />
               </a>

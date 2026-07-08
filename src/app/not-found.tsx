@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <main className="relative min-h-screen bg-surface">
-      <header className="mx-auto flex h-16 max-w-[1160px] items-center px-5">
+      <header className="mx-auto flex h-16 max-w-[1320px] items-center px-5">
         <Link href="/" aria-label="pingup">
           <Logo className="h-9" />
         </Link>

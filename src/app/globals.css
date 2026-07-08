@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
-/* Менять брендбук = менять эти переменные, не литералы в компонентах. */
 @theme {
-  --font-sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans:
+    "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --color-primary: #1c5fd0;
@@ -125,6 +125,7 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    scrollbar-gutter: stable;
   }
   body {
     background: var(--color-surface-2);
@@ -156,7 +157,6 @@
   }
 }
 
-/* Проявление подгруженного контента (списки, детальные карточки). */
 .pu-reveal {
   animation: pu-reveal 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -178,7 +178,7 @@
   stroke-dasharray: 1;
   animation: pu-draw 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
-/* Заливка проявляется ПОСЛЕ того, как линия дорисовалась до правого края (0.9s). */
+
 .rating-area-in {
   animation: pu-fade 0.4s ease-out 0.9s both;
 }

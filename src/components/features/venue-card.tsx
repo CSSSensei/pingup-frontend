@@ -1,7 +1,13 @@
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
-import { IconClock, IconPaddle, IconPin, IconShieldCheck, IconStar } from "@/components/ui/icons";
+import {
+  IconClock,
+  IconPaddle,
+  IconPin,
+  IconShieldCheck,
+  IconStar,
+} from "@/components/ui/icons";
 import { formatDistance } from "@/lib/format";
 import { mediaUrl } from "@/lib/media";
 import {
@@ -29,10 +35,17 @@ export function VenueCard({ venue }: { venue: VenueRead }) {
       href={`/venues/${venue.slug}`}
       className="flex flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-card transition-colors hover:border-border-strong"
     >
-      <div className="relative h-[118px]" style={cover ? undefined : { background: stripes }}>
+      <div
+        className="relative h-[168px]"
+        style={cover ? undefined : { background: stripes }}
+      >
         {cover ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={cover} alt={venue.name} className="size-full object-cover" />
+          <img
+            src={cover}
+            alt={venue.name}
+            className="size-full object-cover"
+          />
         ) : (
           <>
             <span className="absolute inset-0 flex items-center justify-center font-mono text-[11px] tracking-wider text-muted">
@@ -59,7 +72,9 @@ export function VenueCard({ venue }: { venue: VenueRead }) {
 
       <div className="flex flex-1 flex-col gap-2.5 p-4">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-[15.5px] leading-tight font-extrabold text-fg">{venue.name}</h3>
+          <h3 className="text-[15.5px] leading-tight font-extrabold text-fg">
+            {venue.name}
+          </h3>
           {rating && (
             <span className="inline-flex flex-none items-center gap-1 text-[13.5px] font-extrabold text-skill-pro">
               <IconStar size={15} />
@@ -71,7 +86,9 @@ export function VenueCard({ venue }: { venue: VenueRead }) {
         <div className="flex items-center gap-1.5 text-[13.5px] text-fg-2">
           <IconPin size={15} className="flex-none text-muted" />
           <span className="truncate">{venue.address}</span>
-          {venue.distance_km != null && <Badge tone="soft">{formatDistance(venue.distance_km)}</Badge>}
+          {venue.distance_km != null && (
+            <Badge tone="soft">{formatDistance(venue.distance_km)}</Badge>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">

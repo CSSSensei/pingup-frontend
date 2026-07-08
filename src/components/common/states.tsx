@@ -28,7 +28,9 @@ export function EmptyState({
     >
       {icon && <div className="mb-3 text-muted">{icon}</div>}
       <h3 className="text-base font-bold text-fg">{title}</h3>
-      {description && <p className="mt-1 max-w-sm text-sm text-muted">{description}</p>}
+      {description && (
+        <p className="mt-1 max-w-sm text-sm text-muted">{description}</p>
+      )}
       {action && <div className="mt-5">{action}</div>}
     </div>
   );
@@ -122,7 +124,7 @@ export function VenueCardSkeleton({ count = 4 }: { count?: number }) {
           key={i}
           className="flex flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-card"
         >
-          <Skeleton className="h-[118px] w-full rounded-none" />
+          <Skeleton className="h-[168px] w-full rounded-none" />
           <div className="flex flex-col gap-2.5 p-4">
             <div className="flex items-center justify-between gap-2">
               <Skeleton className="h-5 w-36" />

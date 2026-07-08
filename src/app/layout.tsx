@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
 import { YandexMetrika } from "@/components/analytics/yandex-metrika";
@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   },
   description:
     "pingup — найди напарника, зал, турнир и тренировку по настольному теннису в Смоленске.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#a00010",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

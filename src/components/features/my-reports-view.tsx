@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 
 import { MyReportCard } from "@/components/features/my-report-card";
 import { CardListSkeleton, EmptyState, ErrorState } from "@/components/common/states";
 import { PageHeader } from "@/components/common/page-header";
-import { IconArrowLeft, IconFlag } from "@/components/ui/icons";
+import { IconFlag } from "@/components/ui/icons";
 import { useMyReports } from "@/hooks/useReports";
 import { REPORT_STATUSES, REPORT_STATUS_LABELS, type ReportStatus } from "@/lib/enums";
 import { cn } from "@/lib/utils";
@@ -25,13 +24,6 @@ export function MyReportsView() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-6 sm:py-8">
-      <Link
-        href="/me"
-        className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-fg"
-      >
-        <IconArrowLeft size={16} /> Мои
-      </Link>
-
       <PageHeader title="Мои жалобы" description="Статус ваших обращений к модераторам" />
 
       <div className="mb-5 flex gap-1 overflow-x-auto rounded-lg border border-border bg-surface p-1">

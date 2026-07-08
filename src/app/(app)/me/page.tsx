@@ -31,11 +31,6 @@ export default function MyPage() {
       <PageHeader
         title="Мои"
         description="Игры, тренировки, турниры и объявления, где вы участвуете или которые создали"
-        actions={
-          <LinkButton href="/me/reports" variant="ghost" size="sm">
-            Мои жалобы
-          </LinkButton>
-        }
       />
 
       <div className="mb-5 flex gap-1 overflow-x-auto rounded-lg border border-border bg-surface p-1">

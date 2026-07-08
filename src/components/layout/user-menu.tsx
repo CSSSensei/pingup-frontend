@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Avatar } from "@/components/common/avatar";
 import {
   IconBuilding,
+  IconFlag,
   IconLogOut,
   IconSend,
   IconSettings,
@@ -68,6 +69,9 @@ export function UserMenu() {
           </MenuLink>
           <MenuLink href="/settings" icon={<IconSettings size={17} />} onClick={() => setOpen(false)}>
             Настройки
+          </MenuLink>
+          <MenuLink href="/reports" icon={<IconFlag size={17} />} onClick={() => setOpen(false)}>
+            Мои жалобы
           </MenuLink>
           {managedVenues && managedVenues.length > 0 && (
             <MenuLink href="/my-venues" icon={<IconBuilding size={17} />} onClick={() => setOpen(false)}>

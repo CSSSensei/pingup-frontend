@@ -3,7 +3,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { Logo } from "@/components/brand/logo";
 import { HeroParallax } from "@/components/landing/hero-parallax";
 import { SiteHeader } from "@/components/layout/site-header";
 import {
@@ -114,34 +113,63 @@ export default async function LandingPage() {
       </main>
 
       <footer className="relative border-t border-border bg-surface">
-        <div className="mx-auto flex max-w-[1320px] flex-col items-start gap-5 px-5 py-8 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3.5 sm:py-[26px]">
-          <div className="flex items-center gap-2.5">
-            <Logo variant="mark" alt="" className="h-9" />
-            <span className="text-[13px] text-muted">
-              © 2026 pingup · Смоленск
-            </span>
+        <div className="mx-auto max-w-[1320px] px-5 py-10">
+          <div className="flex flex-col gap-9 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
+            <nav className="flex flex-wrap gap-x-7 gap-y-1 text-sm text-muted">
+              <a
+                href={SUPPORT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="-my-1 py-2 transition-colors hover:text-primary"
+              >
+                Поддержка
+              </a>
+              <Link
+                href="/legal/terms"
+                className="-my-1 py-2 transition-colors hover:text-primary"
+              >
+                Пользовательское соглашение
+              </Link>
+              <Link
+                href="/legal/privacy"
+                className="-my-1 py-2 transition-colors hover:text-primary"
+              >
+                Конфиденциальность
+              </Link>
+            </nav>
+            <div className="flex items-center gap-8">
+              <a
+                href="https://t.me/phasalo"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Разработка — phasalo"
+                className="opacity-75 transition-opacity hover:opacity-100"
+              >
+                <img
+                  src="/brand/phasalo-logo.svg"
+                  alt="phasalo"
+                  className="h-8 w-auto"
+                  draggable={false}
+                />
+              </a>
+              <a
+                href="https://kfprod.ru"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Дизайн — KF production"
+                className="opacity-75 transition-opacity hover:opacity-100"
+              >
+                <img
+                  src="/brand/kf-logo.svg"
+                  alt="KF production"
+                  className="h-9 w-auto"
+                  draggable={false}
+                />
+              </a>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-x-[18px] gap-y-1 text-[13px] text-muted">
-            <a
-              href={SUPPORT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="-my-1 py-2 transition-colors hover:text-primary"
-            >
-              Поддержка
-            </a>
-            <Link
-              href="/legal/terms"
-              className="-my-1 py-2 transition-colors hover:text-primary"
-            >
-              Пользовательское соглашение
-            </Link>
-            <Link
-              href="/legal/privacy"
-              className="-my-1 py-2 transition-colors hover:text-primary"
-            >
-              Конфиденциальность
-            </Link>
+          <div className="mt-5 text-[13px] text-muted">
+            © 2026 pingup · Смоленск
           </div>
         </div>
       </footer>

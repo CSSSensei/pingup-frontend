@@ -2,8 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
@@ -39,6 +40,7 @@ import {
   type ChangePasswordValues,
 } from "@/lib/schemas/account";
 import { useAuthStore } from "@/stores/auth";
+import { useConsentStore } from "@/stores/consent";
 import type { MeResponse, SessionRead } from "@/types/api";
 
 export function AccountSettings() {
@@ -68,6 +70,7 @@ export function AccountSettings() {
         <div className="space-y-4">
           <AccountSection me={me.data} onSessionEnd={endSession} />
           <MarketingSection me={me.data} />
+          <CookieSection />
           <SessionsSection onSessionEnd={endSession} />
           <DangerZone onDeleted={() => endSession("/")} />
         </div>
@@ -369,6 +372,56 @@ function MarketingSection({ me }: { me: MeResponse }) {
           label="Согласие на рассылку"
         />
       </label>
+    </Section>
+  );
+}
+
+function CookieSection() {
+  const consent = useConsentStore((s) => s.consent);
+  const hydrated = useConsentStore((s) => s.hydrated);
+  const hydrate = useConsentStore((s) => s.hydrate);
+  const decide = useConsentStore((s) => s.decide);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
+  const onToggle = (next: boolean) => {
+    const wasGranted = consent === "granted";
+    decide(next ? "granted" : "denied");
+    if (!next && wasGranted) {
+      window.location.reload();
+      return;
+    }
+    toast.success(next ? "Аналитические cookie включены" : "Аналитические cookie отключены");
+  };
+
+  return (
+    <Section title="Настройки cookie">
+      <label className="flex cursor-pointer items-center justify-between gap-3">
+        <span>
+          <span className="block text-sm font-bold text-fg">Аналитика</span>
+          <span className="mt-0.5 block text-xs text-muted">
+            Собираем обезличенную статистику посещений через Яндекс Метрику. Это помогает понимать, какие страницы полезны, и улучшать сервис.
+          </span>
+        </span>
+        <Switch
+          checked={consent === "granted"}
+          onCheckedChange={onToggle}
+          disabled={!hydrated}
+          label="Аналитические cookie"
+        />
+      </label>
+
+      <div className="h-px bg-border" />
+
+      <p className="text-xs text-muted">
+        Подробнее — в{" "}
+        <Link href="/legal/privacy" className="font-bold text-primary hover:underline">
+          Политике конфиденциальности
+        </Link>
+        .
+      </p>
     </Section>
   );
 }

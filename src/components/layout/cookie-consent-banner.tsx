@@ -24,7 +24,7 @@ export function CookieConsentBanner() {
       <div
         role="region"
         aria-label="Согласие на использование cookie"
-        className="pointer-events-auto w-full max-w-md rounded-lg border border-border bg-surface/95 p-4 shadow-float backdrop-blur-md motion-safe:animate-[pu-toast_0.28s_cubic-bezier(0.22,1,0.36,1)] sm:p-5"
+        className="pointer-events-auto w-full max-w-md rounded-lg border border-border bg-surface/85 p-4 shadow-float backdrop-blur-md motion-safe:animate-[pu-toast_0.28s_cubic-bezier(0.22,1,0.36,1)] sm:p-5"
       >
         <div className="flex items-start gap-3">
           <div className="flex size-9 flex-none items-center justify-center rounded-full bg-primary-tint text-primary">
